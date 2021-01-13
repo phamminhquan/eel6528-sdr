@@ -1,6 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <iostream>
 #include <cstdio>
 #include <cstdlib>
 #include <stdexcept>
@@ -42,7 +43,7 @@ class logger {
             }
 
             // file open successfully, notify the user by logging to file and cout
-            this->log(true, "Status: Started new logger at %s", _filename.c_str());
+            this->log(true, "Status: Started new logger at %s", _filepath.c_str());
         }
 
         // destructor
@@ -95,7 +96,7 @@ class logger {
                 // check if file is open
                 if (file == NULL) {
                     // notify user of error by printing to cout
-                    std::cout << "Error: Can't open " << _filepath << " for logging" << std::endl;
+                    std::cout << "Error: Can't open " << filepath << " for logging" << std::endl;
 
                     // throw error to stop program
                     throw std::invalid_argument("Can't open log file");
