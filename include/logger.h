@@ -8,8 +8,12 @@
 #include <cstdarg>
 #include <mutex>
 
+
+using namespace std;
+
+
 // Logger to file
-class logger {
+class Logger {
     private:
         // log file handler
         FILE * file;
@@ -25,7 +29,7 @@ class logger {
 
     public:
         // constructor
-        logger(std::string _header, std::string _filepath) {
+        Logger(std::string _header, std::string _filepath) {
             // putting input argument to object attribute
             filepath = _filepath;
             header = _header;
@@ -47,7 +51,7 @@ class logger {
         }
 
         // destructor
-        ~logger() {
+        ~Logger() {
             // notify use that the object is closing
             this->log(true, "Status: Closing the logger");
 

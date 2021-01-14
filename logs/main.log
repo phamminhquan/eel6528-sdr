@@ -1,0 +1,3 @@
+[1610507066042944] [Main] Status: Started new logger at ../logs/main.log
+[1610507066043066] [Main] Hello World!
+[1610507066043093] [Main] Status: Closing the logger
