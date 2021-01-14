@@ -42,7 +42,7 @@ class Config {
 
             } catch (exception& e) {
                 // log error
-                logger->log(e.what());
+                logger->log(true, e.what());
 
                 // throw error
                 throw "Failed to construct Config object, exception is in log file";
