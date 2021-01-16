@@ -1,1 +1,1 @@
-/usr/bin/c++     CMakeFiles/test.dir/src/config-test.cpp.o  -o test  -ljsoncpp -ljsoncpp 
+/usr/bin/c++     CMakeFiles/test.dir/src/uhd-boost-test.cpp.o  -o test  -ljsoncpp -ljsoncpp /usr/lib/x86_64-linux-gnu/libuhd.so /usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.71.0 /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.71.0 /usr/lib/x86_64-linux-gnu/libboost_system.so.1.71.0 /usr/lib/x86_64-linux-gnu/libboost_atomic.so.1.71.0 -lpthread 

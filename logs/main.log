@@ -7,3 +7,35 @@
 [1610813158596594] [Main] Status: Started new logger at ../logs/main.log
 [1610813158596841] [Main] Hello World!
 [1610813158596867] [Main] Status: Closing the logger
+[1610822234488266] [Main] Status: Started new logger at ../logs/main.log
+[1610822234488482] [Main] Name: N/A
+[1610822234488513] [Main] 
+[1610822235488731] [Main] Name: N/A
+[1610822235488811] [Main] 
+[1610822236489054] [Main] Name: N/A
+[1610822236489134] [Main] 
+[1610822237489363] [Main] Name: N/A
+[1610822237489444] [Main] 
+[1610822238489709] [Main] Name: N/A
+[1610822238489786] [Main] 
+[1610822239490014] [Main] Name: N/A
+[1610822239490122] [Main] 
+[1610822240490353] [Main] Name: N/A
+[1610822240490441] [Main] 
+[1610822240645415] [Main] Status: Closing the logger
+[1610822514902162] [Main] Status: Started new logger at ../logs/main.log
+[1610822514902367] [Main] Name: N/A
+[1610822514902401] [Main] Age: -1
+[1610822515902619] [Main] Name: N/A
+[1610822515902705] [Main] Age: -1
+[1610822516902949] [Main] Name: N/A
+[1610822516903035] [Main] Age: -1
+[1610822517903258] [Main] Name: N/A
+[1610822517903343] [Main] Age: -1
+[1610822518903584] [Main] Name: N/A
+[1610822518903672] [Main] Age: -1
+[1610822519903897] [Main] Name: N/A
+[1610822519904006] [Main] Age: -1
+[1610822520904235] [Main] Name: N/A
+[1610822520904320] [Main] Age: -1
+[1610822521755757] [Main] Status: Closing the logger

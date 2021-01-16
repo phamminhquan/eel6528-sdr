@@ -57,28 +57,33 @@ include CMakeFiles/test.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test.dir/flags.make
 
-CMakeFiles/test.dir/src/config-test.cpp.o: CMakeFiles/test.dir/flags.make
-CMakeFiles/test.dir/src/config-test.cpp.o: ../src/config-test.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/src/config-test.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/src/config-test.cpp.o -c /home/quanpham/eel6528-sdr/src/config-test.cpp
+CMakeFiles/test.dir/src/uhd-boost-test.cpp.o: CMakeFiles/test.dir/flags.make
+CMakeFiles/test.dir/src/uhd-boost-test.cpp.o: ../src/uhd-boost-test.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/src/uhd-boost-test.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/src/uhd-boost-test.cpp.o -c /home/quanpham/eel6528-sdr/src/uhd-boost-test.cpp
 
-CMakeFiles/test.dir/src/config-test.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/src/config-test.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/quanpham/eel6528-sdr/src/config-test.cpp > CMakeFiles/test.dir/src/config-test.cpp.i
+CMakeFiles/test.dir/src/uhd-boost-test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/src/uhd-boost-test.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/quanpham/eel6528-sdr/src/uhd-boost-test.cpp > CMakeFiles/test.dir/src/uhd-boost-test.cpp.i
 
-CMakeFiles/test.dir/src/config-test.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/src/config-test.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/quanpham/eel6528-sdr/src/config-test.cpp -o CMakeFiles/test.dir/src/config-test.cpp.s
+CMakeFiles/test.dir/src/uhd-boost-test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/src/uhd-boost-test.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/quanpham/eel6528-sdr/src/uhd-boost-test.cpp -o CMakeFiles/test.dir/src/uhd-boost-test.cpp.s
 
 # Object files for target test
 test_OBJECTS = \
-"CMakeFiles/test.dir/src/config-test.cpp.o"
+"CMakeFiles/test.dir/src/uhd-boost-test.cpp.o"
 
 # External object files for target test
 test_EXTERNAL_OBJECTS =
 
-test: CMakeFiles/test.dir/src/config-test.cpp.o
+test: CMakeFiles/test.dir/src/uhd-boost-test.cpp.o
 test: CMakeFiles/test.dir/build.make
+test: /usr/lib/x86_64-linux-gnu/libuhd.so
+test: /usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.71.0
+test: /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.71.0
+test: /usr/lib/x86_64-linux-gnu/libboost_system.so.1.71.0
+test: /usr/lib/x86_64-linux-gnu/libboost_atomic.so.1.71.0
 test: CMakeFiles/test.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/quanpham/eel6528-sdr/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test.dir/link.txt --verbose=$(VERBOSE)

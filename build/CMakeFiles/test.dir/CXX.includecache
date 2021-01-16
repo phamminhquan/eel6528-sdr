@@ -6,18 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/quanpham/eel6528-sdr/include/config.h
-string
--
-logger.h
-/home/quanpham/eel6528-sdr/include/logger.h
-exception
--
-fstream
--
-jsoncpp/json/json.h
--
-
 /home/quanpham/eel6528-sdr/include/logger.h
 iostream
 -
@@ -32,9 +20,13 @@ cstdarg
 mutex
 -
 
-/home/quanpham/eel6528-sdr/src/config-test.cpp
+/home/quanpham/eel6528-sdr/src/uhd-boost-test.cpp
 ../include/logger.h
 /home/quanpham/eel6528-sdr/include/logger.h
-../include/config.h
-/home/quanpham/eel6528-sdr/include/config.h
+uhd/utils/safe_main.hpp
+-
+boost/program_options.hpp
+-
+csignal
+-
 

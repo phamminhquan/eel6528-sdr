@@ -123,32 +123,32 @@ test/fast:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
 .PHONY : test/fast
 
-src/config-test.o: src/config-test.cpp.o
+src/uhd-boost-test.o: src/uhd-boost-test.cpp.o
 
-.PHONY : src/config-test.o
+.PHONY : src/uhd-boost-test.o
 
 # target to build an object file
-src/config-test.cpp.o:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/config-test.cpp.o
-.PHONY : src/config-test.cpp.o
+src/uhd-boost-test.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/uhd-boost-test.cpp.o
+.PHONY : src/uhd-boost-test.cpp.o
 
-src/config-test.i: src/config-test.cpp.i
+src/uhd-boost-test.i: src/uhd-boost-test.cpp.i
 
-.PHONY : src/config-test.i
+.PHONY : src/uhd-boost-test.i
 
 # target to preprocess a source file
-src/config-test.cpp.i:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/config-test.cpp.i
-.PHONY : src/config-test.cpp.i
+src/uhd-boost-test.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/uhd-boost-test.cpp.i
+.PHONY : src/uhd-boost-test.cpp.i
 
-src/config-test.s: src/config-test.cpp.s
+src/uhd-boost-test.s: src/uhd-boost-test.cpp.s
 
-.PHONY : src/config-test.s
+.PHONY : src/uhd-boost-test.s
 
 # target to generate assembly for a file
-src/config-test.cpp.s:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/config-test.cpp.s
-.PHONY : src/config-test.cpp.s
+src/uhd-boost-test.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/src/uhd-boost-test.cpp.s
+.PHONY : src/uhd-boost-test.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
-	@echo "... src/config-test.o"
-	@echo "... src/config-test.i"
-	@echo "... src/config-test.s"
+	@echo "... src/uhd-boost-test.o"
+	@echo "... src/uhd-boost-test.i"
+	@echo "... src/uhd-boost-test.s"
 .PHONY : help
 
 
