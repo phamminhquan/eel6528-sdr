@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/quanpham/eel6528-sdr/include/config.h
+string
+-
+logger.h
+/home/quanpham/eel6528-sdr/include/logger.h
+exception
+-
+fstream
+-
+jsoncpp/json/json.h
+-
+
+/home/quanpham/eel6528-sdr/include/logger.h
+iostream
+-
+cstdio
+-
+cstdlib
+-
+stdexcept
+-
+cstdarg
+-
+mutex
+-
+
+/home/quanpham/eel6528-sdr/src/config-test.cpp
+../include/logger.h
+/home/quanpham/eel6528-sdr/include/logger.h
+../include/config.h
+/home/quanpham/eel6528-sdr/include/config.h
+

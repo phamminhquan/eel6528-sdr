@@ -4,3 +4,6 @@
 [1610587247830949] [Main] Status: Started new logger at ../logs/main.log
 [1610587247831249] [Main] Hello World!
 [1610587247831282] [Main] Status: Closing the logger
+[1610813158596594] [Main] Status: Started new logger at ../logs/main.log
+[1610813158596841] [Main] Hello World!
+[1610813158596867] [Main] Status: Closing the logger
