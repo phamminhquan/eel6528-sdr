@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/quanpham/eel6528-sdr/include/fifo.h
+mutex
+-
+list
+-
+
+/home/quanpham/eel6528-sdr/include/logger.h
+iostream
+-
+cstdio
+-
+cstdlib
+-
+stdexcept
+-
+cstdarg
+-
+mutex
+-
+
+/home/quanpham/eel6528-sdr/src/fifo-test.cpp
+../include/logger.h
+/home/quanpham/eel6528-sdr/include/logger.h
+../include/fifo.h
+/home/quanpham/eel6528-sdr/include/fifo.h
+thread
+-
+uhd/utils/safe_main.hpp
+-
+uhd/utils/thread.hpp
+-
+boost/program_options.hpp
+-
+sstream
+-
+csignal
+-
+
