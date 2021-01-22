@@ -71,7 +71,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[]) {
                     " messages left in FIFO)");
         else
             main_logger.log(" FIFO is empty");
-        std::this_thread::sleep_for(std::chrono::milliseconds(80));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     
     // join threads
@@ -96,10 +96,10 @@ void print_age(std::string name, int age, tsFIFO<std::string>& fifo) {
     uhd::set_thread_priority_safe(1.0, true);
     // construct string to push to fifo
     std::ostringstream message;
-    message << "Main thread popped messagefrom thread #"
+    message << "Main thread popped message from thread #"
         << std::this_thread::get_id()
         << ": " + name + " is " + std::to_string(age)
-        << "years old";
+        << " years old";
     // check ctrl-c
     while (not stop_signal_called) {
         fifo.push(message.str());

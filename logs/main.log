@@ -210,3 +210,150 @@
 [1611331277055862] [Main]  FIFO is empty
 [1611331277135918] [Main]  FIFO is empty
 [1611331277291827] [Main] Status: Closing the logger
+[1611332744953502] [Main] Status: Started new logger at ../logs/main.log
+[1611332744953705] [Main]  FIFO is empty
+[1611332745033764] [Main] Main thread popped messagefrom thread #139664704685824: Adam is 3years old (2 messages left in FIFO)
+[1611332745113826] [Main] Main thread popped messagefrom thread #139664696293120: Adam is 3years old (1 messages left in FIFO)
+[1611332745193881] [Main] Main thread popped messagefrom thread #139664687900416: Adam is 3years old (0 messages left in FIFO)
+[1611332745273934] [Main]  FIFO is empty
+[1611332745353974] [Main]  FIFO is empty
+[1611332745434032] [Main]  FIFO is empty
+[1611332745514082] [Main]  FIFO is empty
+[1611332745594138] [Main]  FIFO is empty
+[1611332745674190] [Main]  FIFO is empty
+[1611332745754246] [Main]  FIFO is empty
+[1611332745834295] [Main]  FIFO is empty
+[1611332745914359] [Main]  FIFO is empty
+[1611332745994426] [Main] Main thread popped messagefrom thread #139664704685824: Adam is 3years old (2 messages left in FIFO)
+[1611332746074491] [Main] Main thread popped messagefrom thread #139664696293120: Adam is 3years old (1 messages left in FIFO)
+[1611332746154558] [Main] Main thread popped messagefrom thread #139664687900416: Adam is 3years old (0 messages left in FIFO)
+[1611332746234621] [Main]  FIFO is empty
+[1611332746314685] [Main]  FIFO is empty
+[1611332746394746] [Main]  FIFO is empty
+[1611332746474812] [Main]  FIFO is empty
+[1611332746554881] [Main]  FIFO is empty
+[1611332746634941] [Main]  FIFO is empty
+[1611332746715001] [Main]  FIFO is empty
+[1611332746795065] [Main]  FIFO is empty
+[1611332746875130] [Main]  FIFO is empty
+[1611332746955198] [Main] Main thread popped messagefrom thread #139664704685824: Adam is 3years old (2 messages left in FIFO)
+[1611332747035263] [Main] Main thread popped messagefrom thread #139664696293120: Adam is 3years old (1 messages left in FIFO)
+[1611332747115330] [Main] Main thread popped messagefrom thread #139664687900416: Adam is 3years old (0 messages left in FIFO)
+[1611332747195398] [Main]  FIFO is empty
+[1611332747275463] [Main]  FIFO is empty
+[1611332747355528] [Main]  FIFO is empty
+[1611332747435597] [Main]  FIFO is empty
+[1611332747515663] [Main]  FIFO is empty
+[1611332747595728] [Main]  FIFO is empty
+[1611332747675794] [Main]  FIFO is empty
+[1611332747755857] [Main]  FIFO is empty
+[1611332747835922] [Main]  FIFO is empty
+[1611332747915980] [Main]  FIFO is empty
+[1611332747996049] [Main] Main thread popped messagefrom thread #139664704685824: Adam is 3years old (2 messages left in FIFO)
+[1611332748076112] [Main] Main thread popped messagefrom thread #139664696293120: Adam is 3years old (1 messages left in FIFO)
+[1611332748156180] [Main] Main thread popped messagefrom thread #139664687900416: Adam is 3years old (0 messages left in FIFO)
+[1611332748236242] [Main]  FIFO is empty
+[1611332748316295] [Main]  FIFO is empty
+[1611332748396364] [Main]  FIFO is empty
+[1611332748476428] [Main]  FIFO is empty
+[1611332748556493] [Main]  FIFO is empty
+[1611332748636546] [Main]  FIFO is empty
+[1611332748716611] [Main]  FIFO is empty
+[1611332748796677] [Main]  FIFO is empty
+[1611332748876741] [Main]  FIFO is empty
+[1611332748956820] [Main] Main thread popped messagefrom thread #139664704685824: Adam is 3years old (2 messages left in FIFO)
+[1611332749036886] [Main] Main thread popped messagefrom thread #139664696293120: Adam is 3years old (1 messages left in FIFO)
+[1611332749116942] [Main] Main thread popped messagefrom thread #139664687900416: Adam is 3years old (0 messages left in FIFO)
+[1611332749197005] [Main]  FIFO is empty
+[1611332749277074] [Main]  FIFO is empty
+[1611332749357139] [Main]  FIFO is empty
+[1611332749437205] [Main]  FIFO is empty
+[1611332749517274] [Main]  FIFO is empty
+[1611332749597334] [Main]  FIFO is empty
+[1611332749677401] [Main]  FIFO is empty
+[1611332749757465] [Main]  FIFO is empty
+[1611332749837533] [Main]  FIFO is empty
+[1611332749917581] [Main]  FIFO is empty
+[1611332749997648] [Main] Main thread popped messagefrom thread #139664704685824: Adam is 3years old (2 messages left in FIFO)
+[1611332750077715] [Main] Main thread popped messagefrom thread #139664696293120: Adam is 3years old (1 messages left in FIFO)
+[1611332750157774] [Main] Main thread popped messagefrom thread #139664687900416: Adam is 3years old (0 messages left in FIFO)
+[1611332750237837] [Main]  FIFO is empty
+[1611332750954068] [Main] Status: Closing the logger
+[1611332873737250] [Main] Status: Started new logger at ../logs/main.log
+[1611332873737492] [Main]  FIFO is empty
+[1611332873837563] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (2 messages left in FIFO)
+[1611332873937635] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (1 messages left in FIFO)
+[1611332874037701] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (0 messages left in FIFO)
+[1611332874137762] [Main]  FIFO is empty
+[1611332874237826] [Main]  FIFO is empty
+[1611332874337894] [Main]  FIFO is empty
+[1611332874437958] [Main]  FIFO is empty
+[1611332874538022] [Main]  FIFO is empty
+[1611332874638086] [Main]  FIFO is empty
+[1611332874738153] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (2 messages left in FIFO)
+[1611332874838217] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (1 messages left in FIFO)
+[1611332874938282] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (0 messages left in FIFO)
+[1611332875038349] [Main]  FIFO is empty
+[1611332875138413] [Main]  FIFO is empty
+[1611332875238474] [Main]  FIFO is empty
+[1611332875338545] [Main]  FIFO is empty
+[1611332875438625] [Main]  FIFO is empty
+[1611332875538689] [Main]  FIFO is empty
+[1611332875638754] [Main]  FIFO is empty
+[1611332875738825] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (2 messages left in FIFO)
+[1611332875838884] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (1 messages left in FIFO)
+[1611332875938949] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (0 messages left in FIFO)
+[1611332876039011] [Main]  FIFO is empty
+[1611332876139078] [Main]  FIFO is empty
+[1611332876239144] [Main]  FIFO is empty
+[1611332876339206] [Main]  FIFO is empty
+[1611332876439270] [Main]  FIFO is empty
+[1611332876539338] [Main]  FIFO is empty
+[1611332876639398] [Main]  FIFO is empty
+[1611332876739463] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (2 messages left in FIFO)
+[1611332876839531] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (1 messages left in FIFO)
+[1611332876939598] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (0 messages left in FIFO)
+[1611332877039670] [Main]  FIFO is empty
+[1611332877139731] [Main]  FIFO is empty
+[1611332877239803] [Main]  FIFO is empty
+[1611332877339867] [Main]  FIFO is empty
+[1611332877439932] [Main]  FIFO is empty
+[1611332877539997] [Main]  FIFO is empty
+[1611332877640072] [Main]  FIFO is empty
+[1611332877740143] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (2 messages left in FIFO)
+[1611332877840208] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (1 messages left in FIFO)
+[1611332877940278] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (0 messages left in FIFO)
+[1611332878040342] [Main]  FIFO is empty
+[1611332878140403] [Main]  FIFO is empty
+[1611332878240469] [Main]  FIFO is empty
+[1611332878340537] [Main]  FIFO is empty
+[1611332878440610] [Main]  FIFO is empty
+[1611332878540688] [Main]  FIFO is empty
+[1611332878640752] [Main]  FIFO is empty
+[1611332878740811] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (2 messages left in FIFO)
+[1611332878840868] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (1 messages left in FIFO)
+[1611332878940957] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (0 messages left in FIFO)
+[1611332879041019] [Main]  FIFO is empty
+[1611332879141073] [Main]  FIFO is empty
+[1611332879241129] [Main]  FIFO is empty
+[1611332879341186] [Main]  FIFO is empty
+[1611332879441246] [Main]  FIFO is empty
+[1611332879541313] [Main]  FIFO is empty
+[1611332879641370] [Main]  FIFO is empty
+[1611332879741429] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (2 messages left in FIFO)
+[1611332879841491] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (1 messages left in FIFO)
+[1611332879941557] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (0 messages left in FIFO)
+[1611332880041632] [Main]  FIFO is empty
+[1611332880141714] [Main]  FIFO is empty
+[1611332880241782] [Main]  FIFO is empty
+[1611332880341847] [Main]  FIFO is empty
+[1611332880441916] [Main]  FIFO is empty
+[1611332880541978] [Main]  FIFO is empty
+[1611332880642047] [Main]  FIFO is empty
+[1611332880742110] [Main] Main thread popped message from thread #140471549015808: Adam is 5 years old (2 messages left in FIFO)
+[1611332880842167] [Main] Main thread popped message from thread #140471540623104: Adam is 5 years old (1 messages left in FIFO)
+[1611332880942231] [Main] Main thread popped message from thread #140471532230400: Adam is 5 years old (0 messages left in FIFO)
+[1611332881042282] [Main]  FIFO is empty
+[1611332881142332] [Main]  FIFO is empty
+[1611332881242386] [Main]  FIFO is empty
+[1611332881737912] [Main] Status: Closing the logger
