@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(sdr)
 
+# Link pthread package
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 # Link jsoncpp package
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
@@ -45,3 +49,5 @@ message(STATUS "Linking shared jsoncpp library.")
 target_link_libraries(test ${JSONCPP_LIBRARIES})
 message(STATUS "Linking shared UHD library.")
 target_link_libraries(test ${UHD_LIBRARIES} ${Boost_LIBRARIES})
+message(STATUS "Linking shared pthread library.")
+target_link_libraries(test ${CMAKE_THREAD_LIBS_INT})

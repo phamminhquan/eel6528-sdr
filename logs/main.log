@@ -134,3 +134,79 @@
 [1611194201122490] [Main]  FIFO is empty
 [1611194201202557] [Main] Main thread popped messagefrom thread #140587814004480: Hello is 1years old (2 messages left in FIFO)
 [1611194202160313] [Main] Status: Closing the logger
+[1611331271291346] [Main] Status: Started new logger at ../logs/main.log
+[1611331271291593] [Main] Main thread popped messagefrom thread #139840762930944: N/A is -1years old (1 messages left in FIFO)
+[1611331271371646] [Main] Main thread popped messagefrom thread #139840754538240: N/A is -1years old (1 messages left in FIFO)
+[1611331271451714] [Main] Main thread popped messagefrom thread #139840746145536: N/A is -1years old (0 messages left in FIFO)
+[1611331271531784] [Main]  FIFO is empty
+[1611331271611858] [Main]  FIFO is empty
+[1611331271691923] [Main]  FIFO is empty
+[1611331271771993] [Main]  FIFO is empty
+[1611331271852052] [Main]  FIFO is empty
+[1611331271932138] [Main]  FIFO is empty
+[1611331272012196] [Main]  FIFO is empty
+[1611331272092241] [Main]  FIFO is empty
+[1611331272172306] [Main]  FIFO is empty
+[1611331272252384] [Main]  FIFO is empty
+[1611331272332454] [Main] Main thread popped messagefrom thread #139840754538240: N/A is -1years old (2 messages left in FIFO)
+[1611331272412533] [Main] Main thread popped messagefrom thread #139840762930944: N/A is -1years old (1 messages left in FIFO)
+[1611331272492599] [Main] Main thread popped messagefrom thread #139840746145536: N/A is -1years old (0 messages left in FIFO)
+[1611331272572662] [Main]  FIFO is empty
+[1611331272652720] [Main]  FIFO is empty
+[1611331272732780] [Main]  FIFO is empty
+[1611331272812838] [Main]  FIFO is empty
+[1611331272892895] [Main]  FIFO is empty
+[1611331272972958] [Main]  FIFO is empty
+[1611331273053016] [Main]  FIFO is empty
+[1611331273133085] [Main]  FIFO is empty
+[1611331273213145] [Main]  FIFO is empty
+[1611331273293197] [Main] Main thread popped messagefrom thread #139840754538240: N/A is -1years old (2 messages left in FIFO)
+[1611331273373252] [Main] Main thread popped messagefrom thread #139840762930944: N/A is -1years old (1 messages left in FIFO)
+[1611331273453313] [Main] Main thread popped messagefrom thread #139840746145536: N/A is -1years old (0 messages left in FIFO)
+[1611331273533372] [Main]  FIFO is empty
+[1611331273613435] [Main]  FIFO is empty
+[1611331273693488] [Main]  FIFO is empty
+[1611331273773556] [Main]  FIFO is empty
+[1611331273853618] [Main]  FIFO is empty
+[1611331273933677] [Main]  FIFO is empty
+[1611331274013737] [Main]  FIFO is empty
+[1611331274093796] [Main]  FIFO is empty
+[1611331274173863] [Main]  FIFO is empty
+[1611331274253923] [Main]  FIFO is empty
+[1611331274333986] [Main] Main thread popped messagefrom thread #139840754538240: N/A is -1years old (2 messages left in FIFO)
+[1611331274414046] [Main] Main thread popped messagefrom thread #139840746145536: N/A is -1years old (1 messages left in FIFO)
+[1611331274494107] [Main] Main thread popped messagefrom thread #139840762930944: N/A is -1years old (0 messages left in FIFO)
+[1611331274574165] [Main]  FIFO is empty
+[1611331274654223] [Main]  FIFO is empty
+[1611331274734274] [Main]  FIFO is empty
+[1611331274814330] [Main]  FIFO is empty
+[1611331274894386] [Main]  FIFO is empty
+[1611331274974440] [Main]  FIFO is empty
+[1611331275054505] [Main]  FIFO is empty
+[1611331275134559] [Main]  FIFO is empty
+[1611331275214614] [Main]  FIFO is empty
+[1611331275294666] [Main] Main thread popped messagefrom thread #139840754538240: N/A is -1years old (2 messages left in FIFO)
+[1611331275374727] [Main] Main thread popped messagefrom thread #139840762930944: N/A is -1years old (1 messages left in FIFO)
+[1611331275454775] [Main] Main thread popped messagefrom thread #139840746145536: N/A is -1years old (0 messages left in FIFO)
+[1611331275534819] [Main]  FIFO is empty
+[1611331275614873] [Main]  FIFO is empty
+[1611331275694930] [Main]  FIFO is empty
+[1611331275774983] [Main]  FIFO is empty
+[1611331275855036] [Main]  FIFO is empty
+[1611331275935093] [Main]  FIFO is empty
+[1611331276015146] [Main]  FIFO is empty
+[1611331276095201] [Main]  FIFO is empty
+[1611331276175254] [Main]  FIFO is empty
+[1611331276255311] [Main]  FIFO is empty
+[1611331276335366] [Main] Main thread popped messagefrom thread #139840754538240: N/A is -1years old (2 messages left in FIFO)
+[1611331276415414] [Main] Main thread popped messagefrom thread #139840762930944: N/A is -1years old (1 messages left in FIFO)
+[1611331276495473] [Main] Main thread popped messagefrom thread #139840746145536: N/A is -1years old (0 messages left in FIFO)
+[1611331276575532] [Main]  FIFO is empty
+[1611331276655576] [Main]  FIFO is empty
+[1611331276735628] [Main]  FIFO is empty
+[1611331276815684] [Main]  FIFO is empty
+[1611331276895747] [Main]  FIFO is empty
+[1611331276975801] [Main]  FIFO is empty
+[1611331277055862] [Main]  FIFO is empty
+[1611331277135918] [Main]  FIFO is empty
+[1611331277291827] [Main] Status: Closing the logger
