@@ -123,32 +123,32 @@ test/fast:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
 .PHONY : test/fast
 
-fifo-test.o: fifo-test.cpp.o
+lab1.o: lab1.cpp.o
 
-.PHONY : fifo-test.o
+.PHONY : lab1.o
 
 # target to build an object file
-fifo-test.cpp.o:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/fifo-test.cpp.o
-.PHONY : fifo-test.cpp.o
+lab1.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab1.cpp.o
+.PHONY : lab1.cpp.o
 
-fifo-test.i: fifo-test.cpp.i
+lab1.i: lab1.cpp.i
 
-.PHONY : fifo-test.i
+.PHONY : lab1.i
 
 # target to preprocess a source file
-fifo-test.cpp.i:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/fifo-test.cpp.i
-.PHONY : fifo-test.cpp.i
+lab1.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab1.cpp.i
+.PHONY : lab1.cpp.i
 
-fifo-test.s: fifo-test.cpp.s
+lab1.s: lab1.cpp.s
 
-.PHONY : fifo-test.s
+.PHONY : lab1.s
 
 # target to generate assembly for a file
-fifo-test.cpp.s:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/fifo-test.cpp.s
-.PHONY : fifo-test.cpp.s
+lab1.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab1.cpp.s
+.PHONY : lab1.cpp.s
 
 # Help Target
 help:
@@ -159,9 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
-	@echo "... fifo-test.o"
-	@echo "... fifo-test.i"
-	@echo "... fifo-test.s"
+	@echo "... lab1.o"
+	@echo "... lab1.i"
+	@echo "... lab1.s"
 .PHONY : help
 
 

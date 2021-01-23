@@ -28,6 +28,7 @@ set(BOOST_MIN_VERSION 1.71)
 include(UHDBoost)
 
 # need these include and link directories for the build
+find_package(Boost COMPONENTS system filesystem program_options REQUIRED)
 include_directories(
     ${Boost_INCLUDE_DIRS}
     ${UHD_INCLUDE_DIRS}
