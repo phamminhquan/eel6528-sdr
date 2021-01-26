@@ -27,6 +27,11 @@
 
 namespace po = boost::program_options;
 
+// create a block type which is a pair of block number and vector of samples
+template <typename samp_type>
+using Block = typename std::pair<int, std::vector<samp_type>>;
+
+
 /***********************************************************************
  * Signal handlers
  **********************************************************************/
@@ -67,7 +72,8 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
     size_t samps_per_buff,
     int num_requested_samples,
     double settling_time,
-    std::vector<size_t> rx_channel_nums)
+    std::vector<size_t> rx_channel_nums,
+    tsFIFO<Block<samp_type>>& process_fifo)
 {
     Logger recv_logger("Recv", "./recv.log");
     
@@ -119,6 +125,9 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
     recv_logger.log("Number of requested samples: " + std::to_string(num_requested_samples));
 
     recv_logger.log("While loop");
+    // create a block to push to fifo and block counter
+    Block<samp_type> block;
+    block.first = 0;
     while (not stop_signal_called
            and (num_requested_samples > num_total_samps or num_requested_samples == 0)) {
         size_t num_rx_samps = rx_stream->recv(buff_ptrs, samps_per_buff, md, timeout);
@@ -148,13 +157,25 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
         }
 
         num_total_samps += num_rx_samps;
-        //recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
-        //recv_logger.log("Write buffer to file");
+        recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
+        recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
         for (size_t i = 0; i < outfiles.size(); i++) {
             outfiles[i]->write(
                 (const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
+            // update block before pushing to fifo 
+            block.second = buffs[i];
+            // push current samples to fifo
+            process_fifo.push(block);
+            // increment block counter
+            block.first++;
         }
+        recv_logger.log("Check fifo size: " + std::to_string(process_fifo.size()));
     }
+
+    // Check fifo entry size
+    process_fifo.pop(block);
+    recv_logger.log("Check fifo block number: " + std::to_string(block.first));
+    recv_logger.log("Check fifo block size: " + std::to_string(block.second.size()));
 
     // Shut down receiver
     recv_logger.log("Shut down receiver");
@@ -261,7 +282,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     for (size_t ch = 0; ch < rx_channel_nums.size(); ch++) {
         size_t channel = rx_channel_nums[ch];
         if (rx_channel_nums.size() > 1) {
-            //std::cout << "Configuring RX Channel " << channel << std::endl;
             main_logger.log("Configuring RX Channel " + std::to_string(channel));
         }
 
@@ -328,19 +348,28 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     // reset usrp time to prepare for transmit/receive
     main_logger.log("Setting device timestamp to 0");
-    rx_usrp->set_time_now(uhd::time_spec_t(0.0));
+    rx_usrp->set_time_now(uhd::time_spec_t(0.0)); 
 
-    // recv to file
-    if (type == "double")
+    // recv to file as function 
+    if (type == "double") {
+        // create a fifo buffer for processing
+        tsFIFO<Block<std::complex<double>>> fifo;
+        // call receive function
         recv_to_file<std::complex<double>>(
-            rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums);
-    else if (type == "float")
+            rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
+    } else if (type == "float") {
+        // create a fifo buffer for processing
+        tsFIFO<Block<std::complex<float>>> fifo;
+        // call receive function
         recv_to_file<std::complex<float>>(
-            rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums);
-    else if (type == "short")
+            rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
+    } else if (type == "short") {
+        // create a fifo buffer for processing
+        tsFIFO<Block<std::complex<short>>> fifo;
+        // call receive function
         recv_to_file<std::complex<short>>(
-            rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums);
-    else {
+            rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
+    } else {
         // clean up transmit worker
         stop_signal_called = true;
         //transmit_thread.join_all();

@@ -1,12 +1,44 @@
-[1611631920526737] [Recv] Status: Started new logger at ./recv.log
-[1611631920526772] [Recv] Create receive streamer
-[1611631920527014] [Recv] Prepare buffers for received samples and metadata
-[1611631920527035] [Recv] Number of receive channels: 1
-[1611631920527072] [Recv] Number of samples per buffer: 1000
-[1611631920527142] [Recv] Create ofstream object
-[1611631920527221] [Recv] Setup streaming
-[1611631920527261] [Recv] Number of requested samples: 1000
-[1611631920527274] [Recv] While loop
-[1611631920727939] [Recv] Shut down receiver
-[1611631920728103] [Recv] Close files
-[1611631920728350] [Recv] Status: Closing the logger
+[1611685730239570] [Recv] Status: Started new logger at ./recv.log
+[1611685730239611] [Recv] Create receive streamer
+[1611685730239914] [Recv] Prepare buffers for received samples and metadata
+[1611685730239942] [Recv] Number of receive channels: 1
+[1611685730239955] [Recv] Number of samples per buffer: 100
+[1611685730239982] [Recv] Create ofstream object
+[1611685730240113] [Recv] Setup streaming
+[1611685730240168] [Recv] Number of requested samples: 1000
+[1611685730240193] [Recv] While loop
+[1611685730440196] [Recv] Total number of samles: 100
+[1611685730440279] [Recv] Number of rx samples: 100
+[1611685730440392] [Recv] Check fifo size: 1
+[1611685730440452] [Recv] Total number of samles: 200
+[1611685730440481] [Recv] Number of rx samples: 100
+[1611685730440544] [Recv] Check fifo size: 2
+[1611685730440571] [Recv] Total number of samles: 300
+[1611685730440604] [Recv] Number of rx samples: 100
+[1611685730440655] [Recv] Check fifo size: 3
+[1611685730440698] [Recv] Total number of samles: 400
+[1611685730440725] [Recv] Number of rx samples: 100
+[1611685730440777] [Recv] Check fifo size: 4
+[1611685730440805] [Recv] Total number of samles: 500
+[1611685730440831] [Recv] Number of rx samples: 100
+[1611685730440884] [Recv] Check fifo size: 5
+[1611685730440912] [Recv] Total number of samles: 600
+[1611685730440938] [Recv] Number of rx samples: 100
+[1611685730440992] [Recv] Check fifo size: 6
+[1611685730441019] [Recv] Total number of samles: 700
+[1611685730441047] [Recv] Number of rx samples: 100
+[1611685730441100] [Recv] Check fifo size: 7
+[1611685730441128] [Recv] Total number of samles: 800
+[1611685730441155] [Recv] Number of rx samples: 100
+[1611685730441211] [Recv] Check fifo size: 8
+[1611685730441239] [Recv] Total number of samles: 900
+[1611685730441263] [Recv] Number of rx samples: 100
+[1611685730441315] [Recv] Check fifo size: 9
+[1611685730441342] [Recv] Total number of samles: 1000
+[1611685730441371] [Recv] Number of rx samples: 100
+[1611685730441426] [Recv] Check fifo size: 10
+[1611685730441458] [Recv] Check fifo block number: 0
+[1611685730441486] [Recv] Check fifo block size: 100
+[1611685730441513] [Recv] Shut down receiver
+[1611685730441601] [Recv] Close files
+[1611685730441856] [Recv] Status: Closing the logger
