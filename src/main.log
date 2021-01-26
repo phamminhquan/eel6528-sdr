@@ -1,0 +1,21 @@
+[1611631919025817] [Main] Status: Started new logger at ./main.log
+[1611631919026188] [Main] Createing the receive usrp device with: 
+[1611631920525920] [Main] Using RX Device: Single USRP:
+  Device: USRP2 / N-Series Device
+  Mboard 0: N210r4
+  RX Channel: 0
+    RX DSP: 0
+    RX Dboard: A
+    RX Subdev: SBXv3 RX
+  TX Channel: 0
+    TX DSP: 0
+    TX Dboard: A
+    TX Subdev: SBXv3 TX
+
+[1611631920525965] [Main] Setting RX Rate: 1.000000Msps
+[1611631920526059] [Main] Actual RX Rate: 1.000000Msps
+[1611631920526095] [Main] Setting RX Freq: 2437.000000MHz
+[1611631920526350] [Main] Actual RX Freq: 2437.000000
+[1611631920526571] [Main] Checking RX: LO: locked
+[1611631920526622] [Main] Setting device timestamp to 0
+[1611631921755239] [Main] Status: Closing the logger

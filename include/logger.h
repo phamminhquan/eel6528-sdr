@@ -35,7 +35,7 @@ class Logger {
             header = _header;
 
             // open file in append mode
-            file = std::fopen(_filepath.c_str(), "a");
+            file = std::fopen(_filepath.c_str(), "w");
 
             // check file open error
             if (file == NULL) {
