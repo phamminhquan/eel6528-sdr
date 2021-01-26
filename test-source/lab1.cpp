@@ -47,9 +47,9 @@ void sig_int_handler(int)
  * Processing thread function
  **********************************************************************/
 template <typename samp_type>
-void power_average(tsFIFO<Block<samp_type>>& process_fifo) {
+void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_number) {
     // create logger
-    Logger proc_logger("Process", "./process.log");
+    Logger proc_logger("Process " + std::to_string(thread_number) , "./process" + std::to_string(thread_number) + ".log");
     
     // create dummy block and average variables
     Block<samp_type> block;
@@ -68,7 +68,8 @@ void power_average(tsFIFO<Block<samp_type>>& process_fifo) {
             }
             average_power /= block_size;
             // print out average
-            proc_logger.log("Block #: " + std::to_string(block.first) +
+            proc_logger.log("Thread: " + std::to_string(thread_number) +
+                            "\tBlock #: " + std::to_string(block.first) +
                             "\tAverage power: " + std::to_string(average_power));
         }
     }
@@ -243,6 +244,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
 
+    // program specific variables
+    size_t num_proc_threads;
+
     // setup the program options
     po::options_description desc("Allowed options");
     // clang-format off
@@ -264,6 +268,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("otw", po::value<std::string>(&otw)->default_value("sc16"), "specify the over-the-wire sample mode")
         ("rx-channels", po::value<std::string>(&rx_channels)->default_value("0"), "which RX channel(s) to use (specify \"0\", \"1\", \"0,1\", etc)")
         ("rx-int-n", "tune USRP RX with integer-N tuning")
+        ("num-proc-threads", po::value<size_t>(&num_proc_threads)->default_value(1), "number of processing threads")
     ;
     // clang-format on
     po::variables_map vm;
@@ -385,7 +390,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     }
 
     // set up threads worker
-    int num_proc_threads = 1; 
     std::thread worker[num_proc_threads];
 
     // reset usrp time to prepare for transmit/receive
@@ -398,7 +402,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<double>>> fifo;
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
-            worker[i] = std::thread(&power_average<std::complex<double>>, std::ref(fifo));
+            worker[i] = std::thread(&power_average<std::complex<double>>,
+                    std::ref(fifo), i);
         // call receive function
         recv_to_file<std::complex<double>>(
             rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
@@ -407,7 +412,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> fifo;
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
-            worker[i] = std::thread(&power_average<std::complex<float>>, std::ref(fifo));
+            worker[i] = std::thread(&power_average<std::complex<float>>,
+                    std::ref(fifo), i);
         // call receive function
         recv_to_file<std::complex<float>>(
             rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
@@ -416,7 +422,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<short>>> fifo;
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
-            worker[i] = std::thread(&power_average<std::complex<short>>, std::ref(fifo));
+            worker[i] = std::thread(&power_average<std::complex<short>>,
+                    std::ref(fifo), i);
         // call receive function
         recv_to_file<std::complex<short>>(
             rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
