@@ -22,6 +22,7 @@
 #include <fstream>
 #include <iostream>
 
+#include <thread>
 #include "../include/logger.h"
 #include "../include/fifo.h"
 
@@ -40,6 +41,42 @@ void sig_int_handler(int)
 {
     stop_signal_called = true;
 }
+
+
+/***********************************************************************
+ * Processing thread function
+ **********************************************************************/
+template <typename samp_type>
+void power_average(tsFIFO<Block<samp_type>>& process_fifo) {
+    // create logger
+    Logger proc_logger("Process", "./process.log");
+    
+    // create dummy block and average variables
+    Block<samp_type> block;
+    int block_size = 0;
+    float average_power = 0;
+
+    // check ctrl-c and fifo empty
+    while (not stop_signal_called) {
+        if (process_fifo.size() != 0) {
+            // pop block from fifo
+            process_fifo.pop(block);
+            block_size = block.second.size();
+            // compute average power
+            for (int i=0; i<block_size; i++) {
+                average_power += std::pow(std::abs(block.second[i]), 2);
+            }
+            average_power /= block_size;
+            // print out average
+            proc_logger.log("Block #: " + std::to_string(block.first) +
+                            "\tAverage power: " + std::to_string(average_power));
+        }
+    }
+
+    // notify user that processing thread is done
+    proc_logger.log("Processing thread is done and closing");
+}
+
 
 
 /***********************************************************************
@@ -75,6 +112,7 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
     std::vector<size_t> rx_channel_nums,
     tsFIFO<Block<samp_type>>& process_fifo)
 {
+    // create logger
     Logger recv_logger("Recv", "./recv.log");
     
     int num_total_samps = 0;
@@ -157,8 +195,8 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
         }
 
         num_total_samps += num_rx_samps;
-        recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
-        recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
+        //recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
+        //recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
         for (size_t i = 0; i < outfiles.size(); i++) {
             outfiles[i]->write(
                 (const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
@@ -169,13 +207,13 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
             // increment block counter
             block.first++;
         }
-        recv_logger.log("Check fifo size: " + std::to_string(process_fifo.size()));
+        //recv_logger.log("Check fifo size: " + std::to_string(process_fifo.size()));
     }
 
     // Check fifo entry size
-    process_fifo.pop(block);
-    recv_logger.log("Check fifo block number: " + std::to_string(block.first));
-    recv_logger.log("Check fifo block size: " + std::to_string(block.second.size()));
+    //process_fifo.pop(block);
+    //recv_logger.log("Check fifo block number: " + std::to_string(block.first));
+    //recv_logger.log("Check fifo block size: " + std::to_string(block.second.size()));
 
     // Shut down receiver
     recv_logger.log("Shut down receiver");
@@ -195,7 +233,7 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
  **********************************************************************/
 int UHD_SAFE_MAIN(int argc, char* argv[])
 {
-    
+    // create logger
     Logger main_logger("Main", "./main.log");
     
     // receive variables to be set by po
@@ -346,6 +384,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         main_logger.log("Press Ctrl+C to stop streaming");
     }
 
+    // set up threads worker
+    int num_proc_threads = 1; 
+    std::thread worker[num_proc_threads];
+
     // reset usrp time to prepare for transmit/receive
     main_logger.log("Setting device timestamp to 0");
     rx_usrp->set_time_now(uhd::time_spec_t(0.0)); 
@@ -354,18 +396,27 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     if (type == "double") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<double>>> fifo;
+        // create thread for the processing function before receiving samples
+        for (int i=0; i<num_proc_threads; i++)
+            worker[i] = std::thread(&power_average<std::complex<double>>, std::ref(fifo));
         // call receive function
         recv_to_file<std::complex<double>>(
             rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
     } else if (type == "float") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<float>>> fifo;
+        // create thread for the processing function before receiving samples
+        for (int i=0; i<num_proc_threads; i++)
+            worker[i] = std::thread(&power_average<std::complex<float>>, std::ref(fifo));
         // call receive function
         recv_to_file<std::complex<float>>(
             rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
     } else if (type == "short") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<short>>> fifo;
+        // create thread for the processing function before receiving samples
+        for (int i=0; i<num_proc_threads; i++)
+            worker[i] = std::thread(&power_average<std::complex<short>>, std::ref(fifo));
         // call receive function
         recv_to_file<std::complex<short>>(
             rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
@@ -376,11 +427,16 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         throw std::runtime_error("Unknown type " + type);
     }
     
-
+    
     // clean up transmit worker
     stop_signal_called = true;
     //transmit_thread.join_all();
     
+    // join all processing thread
+    for (int i=0; i<num_proc_threads; i++) {
+        if (worker[i].joinable())
+            worker[i].join();
+    }
 
     // finished
     std::cout << std::endl << "Done!" << std::endl << std::endl;

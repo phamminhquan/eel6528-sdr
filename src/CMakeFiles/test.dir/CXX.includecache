@@ -57,6 +57,8 @@ fstream
 -
 iostream
 -
+thread
+-
 ../include/logger.h
 /home/quanpham/eel6528-sdr/include/logger.h
 ../include/fifo.h

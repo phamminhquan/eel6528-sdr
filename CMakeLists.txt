@@ -3,6 +3,7 @@ project(sdr)
 
 # Link pthread package
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 find_package(Threads REQUIRED)
 
 # Link jsoncpp package

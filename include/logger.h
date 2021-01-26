@@ -53,7 +53,7 @@ class Logger {
         // destructor
         ~Logger() {
             // notify use that the object is closing
-            this->log("Status: Closing the logger");
+            this->logf("Status: Closing the logger");
 
             // close the file
             std::fclose(file);
