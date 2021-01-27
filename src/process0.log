@@ -1,9 +1,0 @@
-[1611692818052011] [Process 0] Status: Started new logger at ./process0.log
-[1611692818252381] [Process 0] Thread: 0	Block #: 1	Average power: 0.001361
-[1611692818252629] [Process 0] Thread: 0	Block #: 3	Average power: 0.001352
-[1611692818252678] [Process 0] Thread: 0	Block #: 4	Average power: 0.001305
-[1611692818252698] [Process 0] Thread: 0	Block #: 6	Average power: 0.001257
-[1611692818252885] [Process 0] Thread: 0	Block #: 7	Average power: 0.001232
-[1611692818252916] [Process 0] Thread: 0	Block #: 9	Average power: 0.001200
-[1611692818253036] [Process 0] Processing thread is done and closing
-[1611692818253046] [Process 0] Status: Closing the logger

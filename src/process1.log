@@ -1,7 +1,0 @@
-[1611692818052054] [Process 1] Status: Started new logger at ./process1.log
-[1611692818252332] [Process 1] Thread: 1	Block #: 0	Average power: 0.001310
-[1611692818252381] [Process 1] Thread: 1	Block #: 2	Average power: 0.001362
-[1611692818252685] [Process 1] Thread: 1	Block #: 5	Average power: 0.001291
-[1611692818252889] [Process 1] Thread: 1	Block #: 8	Average power: 0.001224
-[1611692818253036] [Process 1] Processing thread is done and closing
-[1611692818253051] [Process 1] Status: Closing the logger

@@ -1,9 +1,0 @@
-[1611692457496543] [Process 2] Status: Started new logger at ./process2.log
-[1611692457696883] [Process 2] Thread ID: 2	Block #: 0	Average power: 0.001305
-[1611692457696923] [Process 2] Thread ID: 2	Block #: 2	Average power: 0.001355
-[1611692457697284] [Process 2] Thread ID: 2	Block #: 3	Average power: 0.001354
-[1611692457697336] [Process 2] Thread ID: 2	Block #: 5	Average power: 0.001295
-[1611692457697529] [Process 2] Thread ID: 2	Block #: 7	Average power: 0.001237
-[1611692457697554] [Process 2] Thread ID: 2	Block #: 8	Average power: 0.001204
-[1611692457697670] [Process 2] Processing thread is done and closing
-[1611692457697676] [Process 2] Status: Closing the logger
