@@ -1,0 +1,28 @@
+[1611949395651372] [Process 1] Status: Started new logger at ./process1.log
+[1611949395882606] [Process 1] Thread: 1	Block #: 2	Average power: -46.084831dB
+[1611949395932577] [Process 1] Thread: 1	Block #: 7	Average power: -50.018265dB
+[1611949395962639] [Process 1] Thread: 1	Block #: 10	Average power: -49.643990dB
+[1611949396002568] [Process 1] Thread: 1	Block #: 14	Average power: -49.293003dB
+[1611949396052356] [Process 1] Thread: 1	Block #: 19	Average power: -49.233059dB
+[1611949396082432] [Process 1] Thread: 1	Block #: 22	Average power: -49.127991dB
+[1611949396102400] [Process 1] Thread: 1	Block #: 24	Average power: -49.617882dB
+[1611949396112621] [Process 1] Thread: 1	Block #: 25	Average power: -49.668983dB
+[1611949396122333] [Process 1] Thread: 1	Block #: 26	Average power: -49.242897dB
+[1611949396142342] [Process 1] Thread: 1	Block #: 28	Average power: -49.068638dB
+[1611949396162323] [Process 1] Thread: 1	Block #: 30	Average power: -49.669624dB
+[1611949396172500] [Process 1] Thread: 1	Block #: 31	Average power: -49.319401dB
+[1611949396212412] [Process 1] Thread: 1	Block #: 35	Average power: -48.407516dB
+[1611949396232377] [Process 1] Thread: 1	Block #: 37	Average power: -48.175102dB
+[1611949396242518] [Process 1] Thread: 1	Block #: 38	Average power: -49.399189dB
+[1611949396282448] [Process 1] Thread: 1	Block #: 42	Average power: -49.357147dB
+[1611949396302406] [Process 1] Thread: 1	Block #: 44	Average power: -48.922161dB
+[1611949396332585] [Process 1] Thread: 1	Block #: 47	Average power: -47.983887dB
+[1611949396352617] [Process 1] Thread: 1	Block #: 49	Average power: -49.179047dB
+[1611949396362563] [Process 1] Thread: 1	Block #: 50	Average power: -49.097725dB
+[1611949396402863] [Process 1] Thread: 1	Block #: 54	Average power: -49.763733dB
+[1611949396412810] [Process 1] Thread: 1	Block #: 55	Average power: -50.004021dB
+[1611949396422857] [Process 1] Thread: 1	Block #: 56	Average power: -50.495789dB
+[1611949396432492] [Process 1] Thread: 1	Block #: 57	Average power: -49.022827dB
+[1611949396462590] [Process 1] Thread: 1	Block #: 60	Average power: -50.624031dB
+[1611949396480840] [Process 1] Processing thread is done and closing
+[1611949396480855] [Process 1] Status: Closing the logger
