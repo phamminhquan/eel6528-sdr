@@ -55,6 +55,7 @@ void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_numb
     Block<samp_type> block;
     int block_size = 0;
     float average_power = 0;
+    float average_power_db = 0;
 
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
@@ -71,10 +72,11 @@ void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_numb
 
             }
             average_power /= block_size;
+            average_power_db = 10*std::log10(average_power);
             // print out average
             proc_logger.log("Thread: " + std::to_string(thread_number) +
                             "\tBlock #: " + std::to_string(block.first) +
-                            "\tAverage power: " + std::to_string(average_power));
+                            "\tAverage power: " + std::to_string(average_power_db) + "dB");
         }
     }
 
