@@ -65,6 +65,10 @@ void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_numb
             // compute average power
             for (int i=0; i<block_size; i++) {
                 average_power += std::pow(std::abs(block.second[i]), 2);
+                //proc_logger.log("Sample: " + std::to_string(i) +
+                //        "\tAmp: " + std::to_string(std::abs(block.second[i])) +
+                //        "\tAve: " + std::to_string(average_power));
+
             }
             average_power /= block_size;
             // print out average
@@ -123,6 +127,10 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
     stream_args.channels             = rx_channel_nums;
     uhd::rx_streamer::sptr rx_stream = usrp->get_rx_stream(stream_args);
 
+    // allocate a buffer which we re-use for each channel
+    if (samps_per_buff == 0)
+        samps_per_buff = rx_stream->get_max_num_samps() * 10;
+ 
     // Prepare buffers for received samples and metadata
     recv_logger.log("Prepare buffers for received samples and metadata");
     recv_logger.log("Number of receive channels: " + std::to_string(rx_channel_nums.size()));
@@ -199,8 +207,8 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
         //recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
         //recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
         for (size_t i = 0; i < outfiles.size(); i++) {
-            outfiles[i]->write(
-                (const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
+            //outfiles[i]->write(
+            //    (const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
             // update block before pushing to fifo 
             block.second = buffs[i];
             // push current samples to fifo
@@ -257,7 +265,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("type", po::value<std::string>(&type)->default_value("float"), "sample type in file: double, float, or short")
         ("nsamps", po::value<size_t>(&total_num_samps)->default_value(0), "total number of samples to receive")
         ("settling", po::value<double>(&settling)->default_value(double(0.2)), "settling time (seconds) before receiving")
-        ("rx-spb", po::value<size_t>(&rx_spb), "samples per buffer")
+        ("rx-spb", po::value<size_t>(&rx_spb)->default_value(0), "samples per buffer")
         ("rx-rate", po::value<double>(&rx_rate), "rate of receive incoming samples")
         ("rx-freq", po::value<double>(&rx_freq), "receive RF center frequency in Hz")
         ("rx-gain", po::value<double>(&rx_gain), "gain for the receive RF chain")
@@ -315,13 +323,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     main_logger.log("Actual RX Rate: " + std::to_string(rx_usrp->get_rx_rate()/1e6) + "Msps");
 
 
-    // set the rx samples per buf
-    if (not vm.count("rx-spb")) {
-        std::cerr << "Please specify the receive number of samples per bbuffer with --rx-spb" << std::endl;
-        return ~0;
-    }
-
-
     for (size_t ch = 0; ch < rx_channel_nums.size(); ch++) {
         size_t channel = rx_channel_nums[ch];
         if (rx_channel_nums.size() > 1) {
@@ -359,6 +360,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
             rx_usrp->set_rx_antenna(rx_ant, channel);
     }
 
+
+    // check ref and lo lock detect
     std::vector<std::string> rx_sensor_names;
     rx_sensor_names = rx_usrp->get_rx_sensor_names(0);
     if (std::find(rx_sensor_names.begin(), rx_sensor_names.end(), "lo_locked")
