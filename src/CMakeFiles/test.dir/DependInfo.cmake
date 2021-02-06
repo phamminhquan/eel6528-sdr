@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/quanpham/eel6528-sdr/src/lab1.cpp" "/home/quanpham/eel6528-sdr/src/CMakeFiles/test.dir/lab1.cpp.o"
+  "/home/quanpham/eel6528-sdr/src/lab2.cpp" "/home/quanpham/eel6528-sdr/src/CMakeFiles/test.dir/lab2.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

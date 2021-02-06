@@ -1,10 +1,3 @@
-//
-// Copyright 2010-2012,2014-2015 Ettus Research LLC
-// Copyright 2018 Ettus Research, a National Instruments Company
-//
-// SPDX-License-Identifier: GPL-3.0-or-later
-//
-
 //#include "wavetable.hpp"
 #include <uhd/exception.hpp>
 #include <uhd/types/tune_request.hpp>
@@ -37,20 +30,20 @@ using Block = typename std::pair<int, std::vector<samp_type>>;
  * Signal handlers
  **********************************************************************/
 static bool stop_signal_called = false;
-void sig_int_handler(int)
-{
+void sig_int_handler(int) {
     stop_signal_called = true;
 }
 
 
+
 /***********************************************************************
- * Processing thread function
+ * Power averaging thread function
  **********************************************************************/
 template <typename samp_type>
-void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_number) {
+void power_average(tsFIFO<Block<samp_type>>& fifo_out, const int thread_number) {
     // create logger
-    Logger proc_logger("Process " + std::to_string(thread_number) , "./process" + std::to_string(thread_number) + ".log");
-    
+    Logger proc_logger("PowerAverage " + std::to_string(thread_number) , "./power_average" + std::to_string(thread_number) + ".log");
+
     // create dummy block and average variables
     Block<samp_type> block;
     int block_size = 0;
@@ -59,9 +52,9 @@ void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_numb
 
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
-        if (process_fifo.size() != 0) {
+        if (fifo_out.size() != 0) {
             // pop block from fifo
-            process_fifo.pop(block);
+            fifo_out.pop(block);
             block_size = block.second.size();
             // compute average power
             for (int i=0; i<block_size; i++) {
@@ -81,7 +74,34 @@ void power_average(tsFIFO<Block<samp_type>>& process_fifo, const int thread_numb
     }
 
     // notify user that processing thread is done
-    proc_logger.log("Processing thread is done and closing");
+    proc_logger.log("Power averaging thread is done and closing");
+}
+
+
+
+/***********************************************************************
+ * Filtering thread function
+ **********************************************************************/
+template <typename samp_type>
+void filter(tsFIFO<Block<samp_type>>& fifo_in,
+        tsFIFO<Block<samp_type>>& fifo_out) {
+    // create logger
+    Logger proc_logger("Filter", "./filter.log");
+    
+    // create dummy block and average variables
+    Block<samp_type> block;
+    int block_size = 0;
+
+    // check ctrl-c and fifo empty
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop block from fifo
+            fifo_in.pop(block);
+            block_size = block.second.size();
+        } 
+    }
+    // notify user that processing thread is done
+    proc_logger.log("Filtering thread is done and closing");
 }
 
 
@@ -117,7 +137,7 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
     int num_requested_samples,
     double settling_time,
     std::vector<size_t> rx_channel_nums,
-    tsFIFO<Block<samp_type>>& process_fifo)
+    tsFIFO<Block<samp_type>>& fifo_in)
 {
     // create logger
     Logger recv_logger("Recv", "./recv.log");
@@ -214,7 +234,7 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
             // update block before pushing to fifo 
             block.second = buffs[i];
             // push current samples to fifo
-            process_fifo.push(block);
+            fifo_in.push(block);
             // increment block counter
             block.first++;
         }
@@ -395,7 +415,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     }
 
     // set up threads worker
-    std::thread worker[num_proc_threads];
+    std::thread filter_worker;
+    std::thread power_average_worker[num_proc_threads];
 
     // reset usrp time to prepare for transmit/receive
     main_logger.log("Setting device timestamp to 0");
@@ -404,34 +425,46 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // recv to file as function 
     if (type == "double") {
         // create a fifo buffer for processing
-        tsFIFO<Block<std::complex<double>>> fifo;
-        // create thread for the processing function before receiving samples
+        tsFIFO<Block<std::complex<double>>> fifo_in;
+        tsFIFO<Block<std::complex<double>>> fifo_out;
+        // create thread for multirate filtering
+        filter_worker = std::thread(&filter<std::complex<double>>,
+                std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for the power averaging function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
-            worker[i] = std::thread(&power_average<std::complex<double>>,
-                    std::ref(fifo), i);
+            power_average_worker[i] = std::thread(&power_average<std::complex<double>>,
+                    std::ref(fifo_out), i);
         // call receive function
         recv_to_file<std::complex<double>>(
-            rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
+            rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
     } else if (type == "float") {
         // create a fifo buffer for processing
-        tsFIFO<Block<std::complex<float>>> fifo;
+        tsFIFO<Block<std::complex<float>>> fifo_in;
+        tsFIFO<Block<std::complex<float>>> fifo_out;
+        // create thread for multirate filtering
+        filter_worker = std::thread(&filter<std::complex<float>>,
+                std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
-            worker[i] = std::thread(&power_average<std::complex<float>>,
-                    std::ref(fifo), i);
+            power_average_worker[i] = std::thread(&power_average<std::complex<float>>,
+                    std::ref(fifo_out), i);
         // call receive function
         recv_to_file<std::complex<float>>(
-            rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
+            rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
     } else if (type == "short") {
         // create a fifo buffer for processing
-        tsFIFO<Block<std::complex<short>>> fifo;
+        tsFIFO<Block<std::complex<short>>> fifo_in;
+        tsFIFO<Block<std::complex<short>>> fifo_out;
+        // create thread for multirate filtering
+        filter_worker = std::thread(&filter<std::complex<short>>,
+                std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
-            worker[i] = std::thread(&power_average<std::complex<short>>,
-                    std::ref(fifo), i);
+            power_average_worker[i] = std::thread(&power_average<std::complex<short>>,
+                    std::ref(fifo_out), i);
         // call receive function
         recv_to_file<std::complex<short>>(
-            rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo);
+            rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
     } else {
         // clean up transmit worker
         stop_signal_called = true;
@@ -445,9 +478,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     //transmit_thread.join_all();
     
     // join all processing thread
+    if (filter_worker.joinable())
+        filter_worker.join();
     for (int i=0; i<num_proc_threads; i++) {
-        if (worker[i].joinable())
-            worker[i].join();
+        if (power_average_worker[i].joinable())
+            power_average_worker[i].join();
     }
 
     // finished

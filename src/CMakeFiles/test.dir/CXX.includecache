@@ -26,7 +26,7 @@ cstdarg
 mutex
 -
 
-/home/quanpham/eel6528-sdr/src/lab1.cpp
+/home/quanpham/eel6528-sdr/src/lab2.cpp
 uhd/exception.hpp
 -
 uhd/types/tune_request.hpp
