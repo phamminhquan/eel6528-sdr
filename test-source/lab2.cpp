@@ -18,6 +18,7 @@
 #include <thread>
 #include "../include/logger.h"
 #include "../include/fifo.h"
+#include "../include/filters.hpp"
 
 namespace po = boost::program_options;
 

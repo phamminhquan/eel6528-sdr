@@ -123,6 +123,33 @@ test/fast:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
 .PHONY : test/fast
 
+filters.o: filters.cpp.o
+
+.PHONY : filters.o
+
+# target to build an object file
+filters.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/filters.cpp.o
+.PHONY : filters.cpp.o
+
+filters.i: filters.cpp.i
+
+.PHONY : filters.i
+
+# target to preprocess a source file
+filters.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/filters.cpp.i
+.PHONY : filters.cpp.i
+
+filters.s: filters.cpp.s
+
+.PHONY : filters.s
+
+# target to generate assembly for a file
+filters.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/filters.cpp.s
+.PHONY : filters.cpp.s
+
 lab2.o: lab2.cpp.o
 
 .PHONY : lab2.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
+	@echo "... filters.o"
+	@echo "... filters.i"
+	@echo "... filters.s"
 	@echo "... lab2.o"
 	@echo "... lab2.i"
 	@echo "... lab2.s"

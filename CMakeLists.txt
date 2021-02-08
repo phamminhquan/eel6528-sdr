@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(sdr)
+set(CMAKE_CXX_COMPILER g++)
+
+# Link FFTW
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lm -lfftw3f -lfftw3f_threads")
+
+# Link VOLK
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_VOLE -lvolk")
 
 # Link pthread package
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -53,3 +60,5 @@ message(STATUS "Linking shared UHD library.")
 target_link_libraries(test ${UHD_LIBRARIES} ${Boost_LIBRARIES})
 message(STATUS "Linking shared pthread library.")
 target_link_libraries(test ${CMAKE_THREAD_LIBS_INT})
+message(STATUS "Linking shared FFTW3 library.")
+target_link_libraries(test fftw3)
