@@ -6,6 +6,7 @@ CMakeFiles/test.dir/include/filters.cpp.o
  /home/quanpham/eel6528-sdr/include/filters.cpp
  /home/quanpham/eel6528-sdr/include/filters.hpp
 CMakeFiles/test.dir/lab2.cpp.o
- /home/quanpham/eel6528-sdr/include/fifo.h
- /home/quanpham/eel6528-sdr/include/logger.h
+ ../include/fifo.h
+ ../include/filter-taps.h
+ ../include/logger.h
  /home/quanpham/eel6528-sdr/src/lab2.cpp

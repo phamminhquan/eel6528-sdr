@@ -1,5 +1,5 @@
-[1612895632696349] [Filter] Status: Started new logger at ./filter.log
-[1612895632696413] [Filter] Down-sampling factor D: 1
-[1612895632696439] [Filter] Up-sampling factor U: 1
-[1612895635164337] [Filter] Filtering thread is done and closing
-[1612895635164404] [Filter] Status: Closing the logger
+[1612902035148832] [Filter] Status: Started new logger at ./filter.log
+[1612902035148912] [Filter] Down-sampling factor D: 1
+[1612902035148935] [Filter] Up-sampling factor U: 1
+[1612902037121513] [Filter] Filtering thread is done and closing
+[1612902037121560] [Filter] Status: Closing the logger

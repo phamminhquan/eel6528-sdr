@@ -14,10 +14,12 @@
 #include <csignal>
 #include <fstream>
 #include <iostream>
-
 #include <thread>
-#include "../include/logger.h"
-#include "../include/fifo.h"
+
+#include "logger.h"
+#include "fifo.h"
+#include "filter-taps.h"
+
 
 namespace po = boost::program_options;
 
@@ -283,6 +285,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
     int D, U;
+    std::string taps_filename;
 
     // program specific variables
     size_t num_proc_threads;
@@ -310,8 +313,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-int-n", "tune USRP RX with integer-N tuning")
         ("D,d", po::value<int>(&D)->default_value(1), "Down-sampling factor")
         ("U,u", po::value<int>(&U)->default_value(1), "Up-sampling factor")
+        ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("nthreads", po::value<size_t>(&num_proc_threads)->default_value(1), "number of processing (power averager) threads")
     ;
+
     // clang-format on
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -322,6 +327,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         std::cout << boost::format("UHD RX Average Sample Power %s") % desc << std::endl;
         return ~0;
     }
+
+    // setup the filter taps object
+    if (not vm.count("taps-file")) {
+            std::cerr << "Please specify the filter taps file with --taps-file"
+                      << std::endl;
+            return ~0;
+    }
+    FilterTaps taps (taps_filename);   
+    main_logger.log("Filter length L: " + std::to_string(taps.len()));
 
     // create a usrp device
     main_logger.log("Createing the receive usrp device with: " + rx_args);
