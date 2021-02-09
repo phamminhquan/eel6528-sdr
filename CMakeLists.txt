@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(sdr)
+set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER g++)
 
-# Link FFTW
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lm -lfftw3f -lfftw3f_threads")
+# Add source directory
+file(GLOB SOURCES "src/*.cpp" "include/*.cpp")
 
 # Link VOLK
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_VOLE -lvolk")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_VOLK")
 
 # Link pthread package
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -19,14 +20,7 @@ pkg_check_modules(JSONCPP jsoncpp)
 link_libraries(${JSONCPP_LIBRARIES})
 
 # Link uhd and boost package
-# To add UHD as a dependency to this project, add a line such as this:
 find_package(UHD 3.15.0 REQUIRED)
-# The version in  ^^^^^  here is a minimum version.
-# To specify an exact version:
-#find_package(UHD 4.0.0 EXACT REQUIRED)
-
-# This example also requires Boost.
-# Set components here, then include UHDBoost to do the actual finding
 set(UHD_BOOST_REQUIRED_COMPONENTS
     program_options
     system
@@ -46,9 +40,8 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 # Include header directory
 include_directories(include)
-
-# Add source directory
-file(GLOB SOURCES "src/*.cpp")
+include_directories(/usr/include)
+link_directories(/usr/lib/x86_64-linux-gnu)
 
 add_executable(test ${SOURCES})
 
@@ -61,4 +54,4 @@ target_link_libraries(test ${UHD_LIBRARIES} ${Boost_LIBRARIES})
 message(STATUS "Linking shared pthread library.")
 target_link_libraries(test ${CMAKE_THREAD_LIBS_INT})
 message(STATUS "Linking shared FFTW3 library.")
-target_link_libraries(test fftw3)
+target_link_libraries(test fftw3f fftw3f_threads volk)

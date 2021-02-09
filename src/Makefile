@@ -123,32 +123,32 @@ test/fast:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
 .PHONY : test/fast
 
-filters.o: filters.cpp.o
+include/filters.o: include/filters.cpp.o
 
-.PHONY : filters.o
+.PHONY : include/filters.o
 
 # target to build an object file
-filters.cpp.o:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/filters.cpp.o
-.PHONY : filters.cpp.o
+include/filters.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/filters.cpp.o
+.PHONY : include/filters.cpp.o
 
-filters.i: filters.cpp.i
+include/filters.i: include/filters.cpp.i
 
-.PHONY : filters.i
+.PHONY : include/filters.i
 
 # target to preprocess a source file
-filters.cpp.i:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/filters.cpp.i
-.PHONY : filters.cpp.i
+include/filters.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/filters.cpp.i
+.PHONY : include/filters.cpp.i
 
-filters.s: filters.cpp.s
+include/filters.s: include/filters.cpp.s
 
-.PHONY : filters.s
+.PHONY : include/filters.s
 
 # target to generate assembly for a file
-filters.cpp.s:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/filters.cpp.s
-.PHONY : filters.cpp.s
+include/filters.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/filters.cpp.s
+.PHONY : include/filters.cpp.s
 
 lab2.o: lab2.cpp.o
 
@@ -186,9 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
-	@echo "... filters.o"
-	@echo "... filters.i"
-	@echo "... filters.s"
+	@echo "... include/filters.o"
+	@echo "... include/filters.i"
+	@echo "... include/filters.s"
 	@echo "... lab2.o"
 	@echo "... lab2.i"
 	@echo "... lab2.s"

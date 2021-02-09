@@ -1,0 +1,21 @@
+[1612893528552275] [Main] Status: Started new logger at ./main.log
+[1612893528552311] [Main] Using VOLK
+[1612893528552401] [Main] Createing the receive usrp device with: 
+[1612893530000849] [Main] Using RX Device: Single USRP:
+  Device: USRP2 / N-Series Device
+  Mboard 0: N210r4
+  RX Channel: 0
+    RX DSP: 0
+    RX Dboard: A
+    RX Subdev: SBXv3 RX
+  TX Channel: 0
+    TX DSP: 0
+    TX Dboard: A
+    TX Subdev: SBXv3 TX
+
+[1612893530000888] [Main] Setting RX Rate: 1.000000Msps
+[1612893530000971] [Main] Actual RX Rate: 1.000000Msps
+[1612893530000988] [Main] Setting RX Freq: 2437.000000MHz
+[1612893530001180] [Main] Actual RX Freq: 2437.000000
+[1612893530001319] [Main] Checking RX: LO: unlocked
+[1612893531251228] [Main] Status: Closing the logger

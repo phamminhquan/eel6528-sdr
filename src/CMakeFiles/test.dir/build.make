@@ -57,18 +57,18 @@ include CMakeFiles/test.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test.dir/flags.make
 
-CMakeFiles/test.dir/filters.cpp.o: CMakeFiles/test.dir/flags.make
-CMakeFiles/test.dir/filters.cpp.o: filters.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/filters.cpp.o"
-	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/filters.cpp.o -c /home/quanpham/eel6528-sdr/src/filters.cpp
+CMakeFiles/test.dir/include/filters.cpp.o: CMakeFiles/test.dir/flags.make
+CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/include/filters.cpp.o"
+	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/include/filters.cpp.o -c /home/quanpham/eel6528-sdr/include/filters.cpp
 
-CMakeFiles/test.dir/filters.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/filters.cpp.i"
-	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/quanpham/eel6528-sdr/src/filters.cpp > CMakeFiles/test.dir/filters.cpp.i
+CMakeFiles/test.dir/include/filters.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/include/filters.cpp.i"
+	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/quanpham/eel6528-sdr/include/filters.cpp > CMakeFiles/test.dir/include/filters.cpp.i
 
-CMakeFiles/test.dir/filters.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/filters.cpp.s"
-	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/quanpham/eel6528-sdr/src/filters.cpp -o CMakeFiles/test.dir/filters.cpp.s
+CMakeFiles/test.dir/include/filters.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/include/filters.cpp.s"
+	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/quanpham/eel6528-sdr/include/filters.cpp -o CMakeFiles/test.dir/include/filters.cpp.s
 
 CMakeFiles/test.dir/lab2.cpp.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/lab2.cpp.o: lab2.cpp
@@ -85,13 +85,13 @@ CMakeFiles/test.dir/lab2.cpp.s: cmake_force
 
 # Object files for target test
 test_OBJECTS = \
-"CMakeFiles/test.dir/filters.cpp.o" \
+"CMakeFiles/test.dir/include/filters.cpp.o" \
 "CMakeFiles/test.dir/lab2.cpp.o"
 
 # External object files for target test
 test_EXTERNAL_OBJECTS =
 
-test: CMakeFiles/test.dir/filters.cpp.o
+test: CMakeFiles/test.dir/include/filters.cpp.o
 test: CMakeFiles/test.dir/lab2.cpp.o
 test: CMakeFiles/test.dir/build.make
 test: /usr/lib/x86_64-linux-gnu/libuhd.so
