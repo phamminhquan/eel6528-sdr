@@ -1,0 +1,3 @@
+[1612895632696477] [PowerAverage 0] Status: Started new logger at ./power_average0.log
+[1612895635164337] [PowerAverage 0] Power averaging thread is done and closing
+[1612895635164383] [PowerAverage 0] Status: Closing the logger

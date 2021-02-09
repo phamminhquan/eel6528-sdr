@@ -83,11 +83,16 @@ void power_average(tsFIFO<Block<samp_type>>& fifo_out, const int thread_number) 
  * Filtering thread function
  **********************************************************************/
 template <typename samp_type>
-void filter(tsFIFO<Block<samp_type>>& fifo_in,
+void filter(int D, int U,
+        tsFIFO<Block<samp_type>>& fifo_in,
         tsFIFO<Block<samp_type>>& fifo_out) {
     // create logger
     Logger proc_logger("Filter", "./filter.log");
     
+    // print out down sampling and up sampling factors
+    proc_logger.log("Down-sampling factor D: " + std::to_string(D));
+    proc_logger.log("Up-sampling factor U: " + std::to_string(U));
+
     // create dummy block and average variables
     Block<samp_type> block;
     int block_size = 0;
@@ -277,6 +282,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     size_t total_num_samps, rx_spb;
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
+    int D, U;
 
     // program specific variables
     size_t num_proc_threads;
@@ -302,7 +308,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("otw", po::value<std::string>(&otw)->default_value("sc16"), "specify the over-the-wire sample mode")
         ("rx-channels", po::value<std::string>(&rx_channels)->default_value("0"), "which RX channel(s) to use (specify \"0\", \"1\", \"0,1\", etc)")
         ("rx-int-n", "tune USRP RX with integer-N tuning")
-        ("num-proc-threads", po::value<size_t>(&num_proc_threads)->default_value(1), "number of processing threads")
+        ("D,d", po::value<int>(&D)->default_value(1), "Down-sampling factor")
+        ("U,u", po::value<int>(&U)->default_value(1), "Up-sampling factor")
+        ("nthreads", po::value<size_t>(&num_proc_threads)->default_value(1), "number of processing (power averager) threads")
     ;
     // clang-format on
     po::variables_map vm;
@@ -433,42 +441,48 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<double>>> fifo_out;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<double>>,
-                std::ref(fifo_in), std::ref(fifo_out));
+                D, U, std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the power averaging function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<double>>,
                     std::ref(fifo_out), i);
         // call receive function
         recv_to_file<std::complex<double>>(
-            rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
+            rx_usrp, "fc64", otw, file,
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, fifo_in);
     } else if (type == "float") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<float>>> fifo_in;
         tsFIFO<Block<std::complex<float>>> fifo_out;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<float>>,
-                std::ref(fifo_in), std::ref(fifo_out));
+                D, U, std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<float>>,
                     std::ref(fifo_out), i);
         // call receive function
         recv_to_file<std::complex<float>>(
-            rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
+            rx_usrp, "fc32", otw, file,
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, fifo_in);
     } else if (type == "short") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<short>>> fifo_in;
         tsFIFO<Block<std::complex<short>>> fifo_out;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<short>>,
-                std::ref(fifo_in), std::ref(fifo_out));
+                D, U, std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_proc_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<short>>,
                     std::ref(fifo_out), i);
         // call receive function
         recv_to_file<std::complex<short>>(
-            rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
+            rx_usrp, "sc16", otw, file,
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, fifo_in);
     } else {
         // clean up transmit worker
         stop_signal_called = true;

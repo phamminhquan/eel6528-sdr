@@ -18,7 +18,6 @@
 #include <thread>
 #include "../include/logger.h"
 #include "../include/fifo.h"
-#include "../include/filters.hpp"
 
 namespace po = boost::program_options;
 
@@ -268,6 +267,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // create logger
     Logger main_logger("Main", "./main.log");
     
+#ifdef USE_VOLK
+    main_logger.log("Using VOLK");
+#endif
+
     // receive variables to be set by po
     std::string ref, otw;
     std::string rx_args, file, type, rx_ant, rx_subdev, rx_channels;
@@ -288,9 +291,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("type", po::value<std::string>(&type)->default_value("float"), "sample type in file: double, float, or short")
         ("nsamps", po::value<size_t>(&total_num_samps)->default_value(0), "total number of samples to receive")
         ("settling", po::value<double>(&settling)->default_value(double(0.2)), "settling time (seconds) before receiving")
-        ("rx-spb", po::value<size_t>(&rx_spb)->default_value(0), "samples per buffer")
-        ("rx-rate", po::value<double>(&rx_rate), "rate of receive incoming samples")
-        ("rx-freq", po::value<double>(&rx_freq), "receive RF center frequency in Hz")
+        ("rx-spb", po::value<size_t>(&rx_spb)->default_value(10000), "samples per buffer")
+        ("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
+        ("rx-freq", po::value<double>(&rx_freq)->default_value(2437000000), "receive RF center frequency in Hz")
         ("rx-gain", po::value<double>(&rx_gain), "gain for the receive RF chain")
         ("rx-ant", po::value<std::string>(&rx_ant), "receive antenna selection")
         ("rx-subdev", po::value<std::string>(&rx_subdev), "receive subdevice specification")
