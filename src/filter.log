@@ -1,13 +1,25 @@
-[1612985791723878] [Filter] Status: Started new logger at ./filter.log
-[1612985791723956] [Filter] Down-sampling factor D: 1
-[1612985791723973] [Filter] Up-sampling factor U: 1
-[1612985791724023] [Filter] Filter length: 2
-[1612985791724108] [Filter] Tap: 0.006765 + i * 0.000000
-[1612985791724134] [Filter] Tap: 0.016752 + i * 0.000000
-[1612985791823385] [Filter] Out: -0.000000 + i * -0.000000
-[1612985791823400] [Filter] Out: 0.006765 + i * -0.000000
-[1612985791823405] [Filter] Out: 0.023517 + i * 0.000000
-[1612985791823411] [Filter] Out: 0.023517 + i * -0.000000
-[1612985791823417] [Filter] Out: 0.023517 + i * 0.000000
-[1612985791823423] [Filter] Filtering thread is done and closing
-[1612985791823435] [Filter] Status: Closing the logger
+[1612990211194406] [Filter] Status: Started new logger at ./filter.log
+[1612990211194469] [Filter] Down-sampling factor D: 1
+[1612990211194485] [Filter] Up-sampling factor U: 1
+[1612990211194501] [Filter] Filter length: 2
+[1612990211194526] [Filter] Tap: 0.006765 + i * 0.000000
+[1612990211194545] [Filter] Tap: 0.016752 + i * 0.000000
+[1612990211298254] [Filter] Filter output length: 100000
+[1612990211502971] [Filter] Block: 0 Out: 0.000606 + i * -0.000475
+[1612990211599482] [Filter] Block: 1 Out: 0.000050 + i * -0.000032
+[1612990211699651] [Filter] Block: 2 Out: 0.000105 + i * 0.000075
+[1612990211799510] [Filter] Block: 3 Out: 0.000006 + i * -0.000024
+[1612990211899649] [Filter] Block: 4 Out: 0.000054 + i * 0.000017
+[1612990211999517] [Filter] Block: 5 Out: 0.000035 + i * 0.000073
+[1612990212099638] [Filter] Block: 6 Out: 0.000031 + i * -0.000047
+[1612990212199494] [Filter] Block: 7 Out: -0.000013 + i * -0.000003
+[1612990212299675] [Filter] Block: 8 Out: 0.000002 + i * -0.000023
+[1612990212399554] [Filter] Block: 9 Out: -0.000048 + i * 0.000019
+[1612990212499704] [Filter] Block: 10 Out: -0.000043 + i * -0.000119
+[1612990212599585] [Filter] Block: 11 Out: -0.000062 + i * 0.000054
+[1612990212699709] [Filter] Block: 12 Out: 0.000126 + i * 0.000143
+[1612990212799459] [Filter] Block: 13 Out: 0.000013 + i * -0.000083
+[1612990212899692] [Filter] Block: 14 Out: -0.000035 + i * -0.000001
+[1612990212999550] [Filter] Block: 15 Out: -0.000012 + i * -0.000037
+[1612990213074267] [Filter] Filtering thread is done and closing
+[1612990213074556] [Filter] Status: Closing the logger

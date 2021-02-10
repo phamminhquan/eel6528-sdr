@@ -1,12 +1,12 @@
-[1612985791723885] [Recv] Status: Started new logger at ./recv.log
-[1612985791724010] [Recv] Create receive streamer
-[1612985791724549] [Recv] Prepare buffers for received samples and metadata
-[1612985791724608] [Recv] Number of receive channels: 1
-[1612985791724635] [Recv] Number of samples per buffer: 10000
-[1612985791725484] [Recv] Create ofstream object
-[1612985791725518] [Recv] Setup streaming
-[1612985791725561] [Recv] Number of requested samples: 0
-[1612985791725571] [Recv] While loop
-[1612985794507949] [Recv] Shut down receiver
-[1612985794507987] [Recv] Close files
-[1612985794508018] [Recv] Status: Closing the logger
+[1612990211194376] [Recv] Status: Started new logger at ./recv.log
+[1612990211194430] [Recv] Create receive streamer
+[1612990211194787] [Recv] Prepare buffers for received samples and metadata
+[1612990211194835] [Recv] Number of receive channels: 1
+[1612990211194913] [Recv] Number of samples per buffer: 100000
+[1612990211200205] [Recv] Create ofstream object
+[1612990211200244] [Recv] Setup streaming
+[1612990211200271] [Recv] Number of requested samples: 0
+[1612990211200284] [Recv] While loop
+[1612990213077766] [Recv] Shut down receiver
+[1612990213077796] [Recv] Close files
+[1612990213077875] [Recv] Status: Closing the logger

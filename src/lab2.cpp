@@ -86,62 +86,58 @@ void power_average(tsFIFO<Block<samp_type>>& fifo_out, const int thread_number) 
  * Filtering thread function
  **********************************************************************/
 template <typename samp_type>
-void filter(int D, int U, FilterTaps& filter_taps,
+void filter(int D, int U, size_t in_len,
+        FilterTaps& filter_taps,
         size_t num_filt_threads,
         tsFIFO<Block<samp_type>>& fifo_in,
         tsFIFO<Block<samp_type>>& fifo_out) {
     // create logger
-    Logger proc_logger("Filter", "./filter.log");
+    Logger logger("Filter", "./filter.log");
     
     // print out down sampling and up sampling factors for debug
-    proc_logger.log("Down-sampling factor D: " + std::to_string(D));
-    proc_logger.log("Up-sampling factor U: " + std::to_string(U));
+    logger.log("Down-sampling factor D: " + std::to_string(D));
+    logger.log("Up-sampling factor U: " + std::to_string(U));
     
     // set up filter impulse response
     int h_len = filter_taps.len();
-    proc_logger.log("Filter length: " + std::to_string(h_len));
+    logger.log("Filter length: " + std::to_string(h_len));
     std::complex<float> h[h_len];
     for (int i=0; i<h_len; i++) {
         h[i] = filter_taps.taps[i];
-        proc_logger.log("Tap: " + std::to_string(h[i].real()) +
+        logger.log("Tap: " + std::to_string(h[i].real()) +
                 " + i * " + std::to_string(h[i].imag()));
-    }
-
-    // set up test input
-    int in_len = 5;
-    std::complex<float>* in = new std::complex<float>[in_len]();
-    for (int i=0; i<in_len; i++) {
-        in[i] = 1;
-    }
+    } 
 
     // test filter
     FilterPolyphase filt (U, D, in_len, h_len, h, num_filt_threads);
     int out_len = filt.out_len();
+    logger.log("Filter output length: " + std::to_string(out_len));
     std::complex<float>* out = new std::complex<float>[out_len]();
-    filt.set_head(1);
-    filt.filter(in, out);
+    std::complex<float>* in = new std::complex<float>[in_len](); 
 
-    // print output to debug
-    for (int i=0; i<out_len; i++) {
-        proc_logger.log("Out: " + std::to_string(out[i].real()) +
-                " + i * " + std::to_string(out[i].imag()));
-    }
-
-    /* create dummy block and average variables
+    // create dummy block and average variables
     Block<samp_type> block;
-    int block_size = 0;
 
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop block from fifo
             fifo_in.pop(block);
-            block_size = block.second.size();
-        } 
+            // get input array
+            for (int i=0; i<in_len; i++)
+                in[i] = block.second[i];
+            // filter
+            filt.set_head(1);
+            filt.filter(in, out);
+            // print out
+            logger.log("Block: " + std::to_string(block.first) +
+                  " Out: " + std::to_string(out[500].real()) +
+                  " + i * " + std::to_string(out[500].imag()));
+        }
     }
-    */
+    
     // notify user that processing thread is done
-    proc_logger.log("Filtering thread is done and closing");
+    logger.log("Filtering thread is done and closing");
 }
 
 
@@ -489,7 +485,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<double>>> fifo_out;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<double>>,
-                D, U, std::ref(filter_taps), num_filt_threads,
+                D, U, rx_spb,
+                std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the power averaging function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
@@ -506,7 +503,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> fifo_out;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<float>>,
-                D, U, std::ref(filter_taps), num_filt_threads,
+                D, U, rx_spb,
+                std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
@@ -523,7 +521,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<short>>> fifo_out;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<short>>,
-                D, U, std::ref(filter_taps), num_filt_threads,
+                D, U, rx_spb,
+                std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
