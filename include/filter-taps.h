@@ -11,12 +11,13 @@
 // template for type of data in FIFO
 class FilterTaps {
     private:        
+        // mutex to ensure thread sage
+        std::mutex mtx;
+
+    public:
         // vector of taps
         std::vector<std::complex<float>> taps;
 
-        // mutex to ensure thread sage
-        std::mutex mtx;
-    public:
         // constructor
         FilterTaps(std::string filename) {
             // lock mutex so no other thread can use this FIFO

@@ -1,5 +1,13 @@
-[1612902035148832] [Filter] Status: Started new logger at ./filter.log
-[1612902035148912] [Filter] Down-sampling factor D: 1
-[1612902035148935] [Filter] Up-sampling factor U: 1
-[1612902037121513] [Filter] Filtering thread is done and closing
-[1612902037121560] [Filter] Status: Closing the logger
+[1612985791723878] [Filter] Status: Started new logger at ./filter.log
+[1612985791723956] [Filter] Down-sampling factor D: 1
+[1612985791723973] [Filter] Up-sampling factor U: 1
+[1612985791724023] [Filter] Filter length: 2
+[1612985791724108] [Filter] Tap: 0.006765 + i * 0.000000
+[1612985791724134] [Filter] Tap: 0.016752 + i * 0.000000
+[1612985791823385] [Filter] Out: -0.000000 + i * -0.000000
+[1612985791823400] [Filter] Out: 0.006765 + i * -0.000000
+[1612985791823405] [Filter] Out: 0.023517 + i * 0.000000
+[1612985791823411] [Filter] Out: 0.023517 + i * -0.000000
+[1612985791823417] [Filter] Out: 0.023517 + i * 0.000000
+[1612985791823423] [Filter] Filtering thread is done and closing
+[1612985791823435] [Filter] Status: Closing the logger

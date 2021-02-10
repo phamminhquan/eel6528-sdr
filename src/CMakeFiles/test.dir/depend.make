@@ -5,8 +5,10 @@ CMakeFiles/test.dir/include/filters.cpp.o: ../include/fft.hpp
 CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.cpp
 CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.hpp
 
+CMakeFiles/test.dir/lab2.cpp.o: ../include/fft.hpp
 CMakeFiles/test.dir/lab2.cpp.o: ../include/fifo.h
 CMakeFiles/test.dir/lab2.cpp.o: ../include/filter-taps.h
+CMakeFiles/test.dir/lab2.cpp.o: ../include/filters.hpp
 CMakeFiles/test.dir/lab2.cpp.o: ../include/logger.h
 CMakeFiles/test.dir/lab2.cpp.o: lab2.cpp
 

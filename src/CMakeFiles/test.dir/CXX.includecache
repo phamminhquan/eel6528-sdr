@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+../include/fft.hpp
+complex
+-
+fftw3.h
+-
+volk/volk.h
+-
+
 ../include/fifo.h
 mutex
 -
@@ -23,6 +31,10 @@ csignal
 -
 logger.h
 ../include/logger.h
+
+../include/filters.hpp
+fft.hpp
+../include/fft.hpp
 
 ../include/logger.h
 iostream
@@ -77,4 +89,6 @@ fifo.h
 /home/quanpham/eel6528-sdr/src/fifo.h
 filter-taps.h
 /home/quanpham/eel6528-sdr/src/filter-taps.h
+filters.hpp
+/home/quanpham/eel6528-sdr/src/filters.hpp
 
