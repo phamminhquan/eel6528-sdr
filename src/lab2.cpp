@@ -38,6 +38,24 @@ void sig_int_handler(int) {
 }
 
 
+/***********************************************************************
+ * Utilities
+ **********************************************************************/
+//! Change to filename, e.g. from usrp_samples.dat to usrp_samples.00.dat,
+//  but only if multiple names are to be generated.
+std::string generate_out_filename(
+    const std::string& base_fn, size_t n_names, size_t this_name)
+{
+    if (n_names == 1) {
+        return base_fn;
+    }
+
+    boost::filesystem::path base_fn_fp(base_fn);
+    base_fn_fp.replace_extension(boost::filesystem::path(
+        str(boost::format("%02d%s") % this_name % base_fn_fp.extension().string())));
+    return base_fn_fp.string();
+}
+
 
 /***********************************************************************
  * Power averaging thread function
@@ -93,6 +111,10 @@ void filter(int D, int U, size_t in_len,
         tsFIFO<Block<samp_type>>& fifo_out) {
     // create logger
     Logger logger("Filter", "./filter.log");
+
+    // create output filestream
+    std::ofstream in_file ("in_raw.dat", std::ofstream::binary);
+    std::ofstream out_file ("out_raw.dat", std::ofstream::binary); 
     
     // print out down sampling and up sampling factors for debug
     logger.log("Down-sampling factor D: " + std::to_string(D));
@@ -124,41 +146,33 @@ void filter(int D, int U, size_t in_len,
             // pop block from fifo
             fifo_in.pop(block);
             // get input array
-            for (int i=0; i<in_len; i++)
+            for (int i=0; i<in_len; i++) {
                 in[i] = block.second[i];
+                logger.log("Sample: " + std::to_string(in[i].real()) +
+                       " + i * " + std::to_string(in[i].imag()));
+            }
+
+            // put value in file
+            in_file.write((const char*) in, in_len*sizeof(samp_type));
+
             // filter
             filt.set_head(1);
             filt.filter(in, out);
-            // print out
-            logger.log("Block: " + std::to_string(block.first) +
-                  " Out: " + std::to_string(out[500].real()) +
-                  " + i * " + std::to_string(out[500].imag()));
+
+            // store filter output to file to check with jupyter
+            out_file.write((const char*) out, out_len*sizeof(samp_type));
         }
     }
+
+    // close ofstream
+    logger.log("Closing ofstream");
+    in_file.close();
+    out_file.close();
     
     // notify user that processing thread is done
     logger.log("Filtering thread is done and closing");
 }
 
-
-
-/***********************************************************************
- * Utilities
- **********************************************************************/
-//! Change to filename, e.g. from usrp_samples.dat to usrp_samples.00.dat,
-//  but only if multiple names are to be generated.
-std::string generate_out_filename(
-    const std::string& base_fn, size_t n_names, size_t this_name)
-{
-    if (n_names == 1) {
-        return base_fn;
-    }
-
-    boost::filesystem::path base_fn_fp(base_fn);
-    base_fn_fp.replace_extension(boost::filesystem::path(
-        str(boost::format("%02d%s") % this_name % base_fn_fp.extension().string())));
-    return base_fn_fp.string();
-}
 
 
 /***********************************************************************
@@ -266,7 +280,8 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
         //recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
         for (size_t i = 0; i < outfiles.size(); i++) {
             //outfiles[i]->write(
-            //    (const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
+                //(const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
+            //outfiles[i]->write((const char*)buff_ptrs[i], 3*sizeof(samp_type));
             // update block before pushing to fifo 
             block.second = buffs[i];
             // push current samples to fifo
