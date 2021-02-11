@@ -1,3 +1,21 @@
-[1613068156997204] [PowerAverage 0] Status: Started new logger at ./power_average0.log
-[1613068157217454] [PowerAverage 0] Power averaging thread is done and closing
-[1613068157217480] [PowerAverage 0] Status: Closing the logger
+[1613072000647421] [PowerAverage 0] Status: Started new logger at ./power_average0.log
+[1613072000910713] [PowerAverage 0] Thread: 0	Block #: 0	IIR out: -43.668140
+[1613072000960804] [PowerAverage 0] Thread: 0	Block #: 1	IIR out: -49.941936
+[1613072001011314] [PowerAverage 0] Thread: 0	Block #: 2	IIR out: -55.370529
+[1613072001061911] [PowerAverage 0] Thread: 0	Block #: 3	IIR out: -56.923500
+[1613072001115287] [PowerAverage 0] Thread: 0	Block #: 4	IIR out: -64.049446
+[1613072001168484] [PowerAverage 0] Thread: 0	Block #: 5	IIR out: -63.081429
+[1613072001220848] [PowerAverage 0] Thread: 0	Block #: 6	IIR out: -55.114532
+[1613072001273737] [PowerAverage 0] Thread: 0	Block #: 7	IIR out: -56.109055
+[1613072001324459] [PowerAverage 0] Thread: 0	Block #: 8	IIR out: -56.175819
+[1613072001375177] [PowerAverage 0] Thread: 0	Block #: 9	IIR out: -59.879475
+[1613072001427151] [PowerAverage 0] Thread: 0	Block #: 10	IIR out: -56.820427
+[1613072001479362] [PowerAverage 0] Thread: 0	Block #: 11	IIR out: -60.647488
+[1613072001532120] [PowerAverage 0] Thread: 0	Block #: 12	IIR out: -63.792095
+[1613072001582544] [PowerAverage 0] Thread: 0	Block #: 13	IIR out: -56.447899
+[1613072001633853] [PowerAverage 0] Thread: 0	Block #: 14	IIR out: -62.381779
+[1613072001686927] [PowerAverage 0] Thread: 0	Block #: 15	IIR out: -49.643303
+[1613072001739126] [PowerAverage 0] Thread: 0	Block #: 16	IIR out: -60.907524
+[1613072001790429] [PowerAverage 0] Thread: 0	Block #: 17	IIR out: -63.012142
+[1613072001832066] [PowerAverage 0] Power averaging thread is done and closing
+[1613072001832088] [PowerAverage 0] Status: Closing the logger

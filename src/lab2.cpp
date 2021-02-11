@@ -61,41 +61,44 @@ std::string generate_out_filename(
  * Power averaging thread function
  **********************************************************************/
 template <typename samp_type>
-void power_average(tsFIFO<Block<samp_type>>& fifo_out, const int thread_number) {
+void power_average(tsFIFO<Block<samp_type>>& fifo_out,
+        size_t block_size,
+        const int thread_number) {
     // create logger
-    Logger proc_logger("PowerAverage " + std::to_string(thread_number) , "./power_average" + std::to_string(thread_number) + ".log");
+    Logger logger("PowerAverage " + std::to_string(thread_number) , "./power_average" + std::to_string(thread_number) + ".log");
 
-    // create dummy block and average variables
+    // create dummy block
     Block<samp_type> block;
-    int block_size = 0;
-    float average_power = 0;
-    float average_power_db = 0;
 
-    // check ctrl-c and fifo empty
+    // IIR filter
+    float alpha = 0.3;
+    float current_out = 0;
+    float previous_out = 0;
+    float current_out_db = 0;
+    samp_type sample;
+    
     while (not stop_signal_called) {
         if (fifo_out.size() != 0) {
             // pop block from fifo
             fifo_out.pop(block);
-            block_size = block.second.size();
             // compute average power
             for (int i=0; i<block_size; i++) {
-                average_power += std::pow(std::abs(block.second[i]), 2);
-                //proc_logger.log("Sample: " + std::to_string(i) +
-                //        "\tAmp: " + std::to_string(std::abs(block.second[i])) +
-                //        "\tAve: " + std::to_string(average_power));
-
+                sample = block.second[i];
+                current_out = alpha*previous_out +
+                    (1-alpha)*std::pow(std::abs(sample), 2);
+                current_out_db = 10*log10(current_out);
+                previous_out = current_out;
             }
-            average_power /= block_size;
-            average_power_db = 10*std::log10(average_power);
             // print out average
-            proc_logger.log("Thread: " + std::to_string(thread_number) +
+            logger.log("Thread: " + std::to_string(thread_number) +
                             "\tBlock #: " + std::to_string(block.first) +
-                            "\tAverage power: " + std::to_string(average_power_db) + "dB");
+                            "\tIIR out: " + std::to_string(current_out_db));
         }
     }
 
+
     // notify user that processing thread is done
-    proc_logger.log("Power averaging thread is done and closing");
+    logger.log("Power averaging thread is done and closing");
 }
 
 
@@ -126,7 +129,7 @@ void filter(int D, int U, size_t in_len,
     std::complex<float> h[h_len];
     for (int i=0; i<h_len; i++) {
         h[i] = filter_taps.taps[i];
-        logger.log("Tap: " + std::to_string(h[i].real()));
+        logger.logf("Tap: " + std::to_string(h[i].real()));
     } 
 
     // test filter
@@ -137,16 +140,17 @@ void filter(int D, int U, size_t in_len,
     std::complex<float>* in = new std::complex<float>[in_len](); 
 
     // create dummy block and average variables
-    Block<samp_type> block;
+    Block<samp_type> in_block;
+    Block<samp_type> out_block;
 
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop block from fifo
-            fifo_in.pop(block);
+            fifo_in.pop(in_block);
             // get input array
             for (int i=0; i<in_len; i++) {
-                in[i] = block.second[i];
+                in[i] = in_block.second[i];
                 logger.logf("Sample: " + std::to_string(in[i].real()) +
                        " + i * " + std::to_string(in[i].imag()));
             }
@@ -157,6 +161,11 @@ void filter(int D, int U, size_t in_len,
             // filter
             filt.set_head(1);
             filt.filter(in, out);
+            
+            // push filter output to fifo out
+            out_block.first = in_block.first;
+            out_block.second = std::vector<samp_type>(out, out + out_len);
+            fifo_out.push(out_block);
 
             // store filter output to file to check with jupyter
             out_file.write((const char*) out, out_len*sizeof(samp_type));
@@ -275,8 +284,6 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
         }
 
         num_total_samps += num_rx_samps;
-        //recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
-        //recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
         for (size_t i = 0; i < outfiles.size(); i++) {
             //outfiles[i]->write(
                 //(const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
@@ -288,13 +295,7 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
             // increment block counter
             block.first++;
         }
-        //recv_logger.log("Check fifo size: " + std::to_string(process_fifo.size()));
-    }
-
-    // Check fifo entry size
-    //process_fifo.pop(block);
-    //recv_logger.log("Check fifo block number: " + std::to_string(block.first));
-    //recv_logger.log("Check fifo block size: " + std::to_string(block.second.size()));
+    } 
 
     // Shut down receiver
     recv_logger.log("Shut down receiver");
@@ -505,7 +506,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for the power averaging function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<double>>,
-                    std::ref(fifo_out), i);
+                    std::ref(fifo_out), rx_spb*U/D, i);
         // call receive function
         recv_to_file<std::complex<double>>(
             rx_usrp, "fc64", otw, file,
@@ -523,7 +524,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<float>>,
-                    std::ref(fifo_out), i);
+                    std::ref(fifo_out), rx_spb*U/D, i);
         // call receive function
         recv_to_file<std::complex<float>>(
             rx_usrp, "fc32", otw, file,
@@ -541,7 +542,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<short>>,
-                    std::ref(fifo_out), i);
+                    std::ref(fifo_out), rx_spb*U/D, i);
         // call receive function
         recv_to_file<std::complex<short>>(
             rx_usrp, "sc16", otw, file,
