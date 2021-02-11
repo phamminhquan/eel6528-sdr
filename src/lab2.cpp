@@ -126,8 +126,7 @@ void filter(int D, int U, size_t in_len,
     std::complex<float> h[h_len];
     for (int i=0; i<h_len; i++) {
         h[i] = filter_taps.taps[i];
-        logger.log("Tap: " + std::to_string(h[i].real()) +
-                " + i * " + std::to_string(h[i].imag()));
+        logger.log("Tap: " + std::to_string(h[i].real()));
     } 
 
     // test filter
@@ -148,7 +147,7 @@ void filter(int D, int U, size_t in_len,
             // get input array
             for (int i=0; i<in_len; i++) {
                 in[i] = block.second[i];
-                logger.log("Sample: " + std::to_string(in[i].real()) +
+                logger.logf("Sample: " + std::to_string(in[i].real()) +
                        " + i * " + std::to_string(in[i].imag()));
             }
 
@@ -355,8 +354,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("otw", po::value<std::string>(&otw)->default_value("sc16"), "specify the over-the-wire sample mode")
         ("rx-channels", po::value<std::string>(&rx_channels)->default_value("0"), "which RX channel(s) to use (specify \"0\", \"1\", \"0,1\", etc)")
         ("rx-int-n", "tune USRP RX with integer-N tuning")
-        ("D,d", po::value<int>(&D)->default_value(1), "Down-sampling factor")
-        ("U,u", po::value<int>(&U)->default_value(1), "Up-sampling factor")
+        ("D,d", po::value<int>(&D)->default_value(5), "Down-sampling factor")
+        ("U,u", po::value<int>(&U)->default_value(4), "Up-sampling factor")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
