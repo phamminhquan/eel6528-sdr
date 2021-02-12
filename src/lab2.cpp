@@ -90,7 +90,7 @@ void power_average(tsFIFO<Block<samp_type>>& fifo_out,
                 previous_out = current_out;
             }
             // print out average
-            logger.log("Thread: " + std::to_string(thread_number) +
+            logger.logf("Thread: " + std::to_string(thread_number) +
                             "\tBlock #: " + std::to_string(block.first) +
                             "\tIIR out: " + std::to_string(current_out_db));
         }
@@ -151,8 +151,9 @@ void filter(int D, int U, size_t in_len,
             // get input array
             for (int i=0; i<in_len; i++) {
                 in[i] = in_block.second[i];
-                logger.logf("Sample: " + std::to_string(in[i].real()) +
-                       " + i * " + std::to_string(in[i].imag()));
+                logger.logf("Block: " + std::to_string(in_block.first) +
+                        " Sample: " + std::to_string(in[i].real()) +
+                        " + i * " + std::to_string(in[i].imag()));
             }
 
             // put value in file
