@@ -60,15 +60,56 @@ std::string generate_out_filename(
 
 
 /***********************************************************************
+ * Power averager thread function
+ **********************************************************************/
+template <typename samp_type>
+void power_average(tsFIFO<Block<samp_type>>& fifo_in, const int thread_number) {
+    // create logger
+    Logger logger("Power averager " + std::to_string(thread_number) , "./pow_ave" + std::to_string(thread_number) + ".log");
+    
+    // create dummy block
+    Block<samp_type> block;
+
+    // parameters
+    float pow_ave_lin = 0;
+    float pow_ave_db = 0;
+    int block_size = 0;
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // reset param
+            pow_ave_lin = 0;
+            pow_ave_db = 0;
+            // pop block from fifo
+            fifo_in.pop(block);
+            block_size = block.second.size();
+            for (int i=0; i<block_size; i++) {
+                pow_ave_lin += std::pow(std::abs(block.second[i]), 2);
+            }
+            pow_ave_lin /= block_size;
+            pow_ave_db = 10*log10(pow_ave_lin);
+            
+            // print out average power
+            logger.log("Block: " + std::to_string(block.first) +
+                    "\tAverage Power: " + std::to_string(pow_ave_db) + " dB");
+        }
+    }
+
+
+    // notify user that processing thread is done
+    logger.log("Power averager thread is done and closing");
+}
+
+
+/***********************************************************************
  * IIR filter thread function
  **********************************************************************/
 template <typename samp_type>
 void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
         tsFIFO<Block<samp_type>>& fifo_out,
-        size_t block_size,
-        const int thread_number) {
+        size_t block_size) {
     // create logger
-    Logger logger("IIR Filter " + std::to_string(thread_number) , "./iir_filter" + std::to_string(thread_number) + ".log");
+    Logger logger("IIR Filter", "./iir_filter.log");
 
     // create output filestream
     std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
@@ -93,11 +134,6 @@ void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-
-            // print len of fifo out to check
-            //logger.log("IN FIFO size: " + std::to_string(fifo_in.size()));
-            //logger.log("OUT FIFO size: " + std::to_string(fifo_out.size()));
-
             // iir
             // create dummy output block
             Block<float> out_block;
@@ -108,16 +144,11 @@ void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
             for (int i=0; i<block_size; i++) {
                 sample = in_block.second[i];
                 current_out = alpha*previous_out +
-                    (1-alpha)*std::abs(sample)*std::abs(sample);
+                    (1-alpha)*std::pow(std::abs(sample), 2);
                 //current_out_db = 10*log10(current_out);
                 previous_out = current_out;
                 out_block.second.push_back(current_out);
             }
-
-            // put value in file
-            //iir_out_file.write((const char*) out_block.second.data(), out_block.second.size()*sizeof(float));
-            //float max = *max_element(out_block.second.begin(), out_block.second.end());
-            //logger.log("Max of iir output: " + std::to_string(max));
 
             // threshold_checker 
             for (int i=0; i<block_size; i++) {
@@ -129,7 +160,6 @@ void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
                     i = i+cap_len-edge_mid_ind; // increment index by number of samples captured
                 } else {
                     if (out_block.second[i] > threshold) {  // check threshold
-                        //logger.log("Threshold passed at index: " + std::to_string(i));
                         if (i > block_size-cap_len) {       // if capture range cross boundary
                             edge_f = true;                  // set boundary flag
                             edge_mid_ind = block_size-i;    // find mid point of capture range
@@ -146,9 +176,7 @@ void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
                         }
                     }
                 }
-            }
-
-            logger.log("FIFO size: " + std::to_string(fifo_out.size())); 
+            } 
         }
     }
 
@@ -207,13 +235,13 @@ void filter(int D, int U, size_t in_len,
             // get input array
             for (int i=0; i<in_len; i++) {
                 in[i] = in_block.second[i];
-                logger.logf("Block: " + std::to_string(in_block.first) +
-                        " Sample: " + std::to_string(in[i].real()) +
-                        " + i * " + std::to_string(in[i].imag()));
+                //logger.logf("Block: " + std::to_string(in_block.first) +
+                //        " Sample: " + std::to_string(in[i].real()) +
+                //        " + i * " + std::to_string(in[i].imag()));
             }
 
             // put value in file
-            in_file.write((const char*) in, in_len*sizeof(samp_type));
+            //in_file.write((const char*) in, in_len*sizeof(samp_type));
 
             // filter
             filt.set_head(1);
@@ -225,7 +253,7 @@ void filter(int D, int U, size_t in_len,
             fifo_out.push(out_block);
 
             // store filter output to file to check with jupyter
-            out_file.write((const char*) out, out_len*sizeof(samp_type));
+            //out_file.write((const char*) out, out_len*sizeof(samp_type));
         }
     }
 
@@ -544,7 +572,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     // set up threads worker
     std::thread filter_worker;
-    std::thread iir_filter_worker[num_pa_threads];
+    std::thread iir_filter_worker;
+    std::thread power_average_worker[num_pa_threads];
 
     // reset usrp time to prepare for transmit/receive
     main_logger.log("Setting device timestamp to 0");
@@ -555,16 +584,19 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<double>>> fifo_in;
         tsFIFO<Block<std::complex<double>>> fifo_out;
-        tsFIFO<Block<std::complex<double>>> iir_fifo_out;
+        tsFIFO<Block<std::complex<double>>> iir_captured_fifo;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<double>>,
                 D, U, rx_spb,
                 std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for iir filter and threshold checking
+        iir_filter_worker = std::thread(&iir_filter<std::complex<double>>,
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D);
         // create thread for the power averaging function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
-            iir_filter_worker[i] = std::thread(&iir_filter<std::complex<double>>,
-                    std::ref(fifo_out), std::ref(iir_fifo_out), rx_spb*U/D, i);
+            power_average_worker[i] = std::thread(&power_average<std::complex<double>>,
+                    std::ref(iir_captured_fifo), i);
         // call receive function
         recv_to_file<std::complex<double>>(
             rx_usrp, "fc64", otw, file,
@@ -574,16 +606,19 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<float>>> fifo_in;
         tsFIFO<Block<std::complex<float>>> fifo_out;
-        tsFIFO<Block<std::complex<float>>> iir_fifo_out;
+        tsFIFO<Block<std::complex<float>>> iir_captured_fifo;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<float>>,
                 D, U, rx_spb,
                 std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for power averager
+        iir_filter_worker = std::thread(&iir_filter<std::complex<float>>,
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D);
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
-            iir_filter_worker[i] = std::thread(&iir_filter<std::complex<float>>,
-                    std::ref(fifo_out), std::ref(iir_fifo_out), rx_spb*U/D, i);
+            power_average_worker[i] = std::thread(&power_average<std::complex<float>>,
+                    std::ref(iir_captured_fifo), i);
         // call receive function
         recv_to_file<std::complex<float>>(
             rx_usrp, "fc32", otw, file,
@@ -593,16 +628,19 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<short>>> fifo_in;
         tsFIFO<Block<std::complex<short>>> fifo_out;
-        tsFIFO<Block<std::complex<short>>> iir_fifo_out;
+        tsFIFO<Block<std::complex<short>>> iir_captured_fifo;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<short>>,
                 D, U, rx_spb,
                 std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for power averaging
+        iir_filter_worker = std::thread(&iir_filter<std::complex<short>>,
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D);
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
-            iir_filter_worker[i] = std::thread(&iir_filter<std::complex<short>>,
-                    std::ref(fifo_out), std::ref(iir_fifo_out), rx_spb*U/D, i);
+            power_average_worker[i] = std::thread(&power_average<std::complex<short>>,
+                    std::ref(iir_captured_fifo), i);
         // call receive function
         recv_to_file<std::complex<short>>(
             rx_usrp, "sc16", otw, file,
@@ -623,9 +661,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // join all processing thread
     if (filter_worker.joinable())
         filter_worker.join();
+    if (iir_filter_worker.joinable())
+        iir_filter_worker.join();
     for (int i=0; i<num_pa_threads; i++) {
-        if (iir_filter_worker[i].joinable())
-            iir_filter_worker[i].join();
+        if (power_average_worker[i].joinable())
+            power_average_worker[i].join();
     }
 
     // finished
