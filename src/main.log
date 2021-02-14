@@ -1,8 +1,8 @@
-[1613172641183901] [Main] Status: Started new logger at ./main.log
-[1613172641183952] [Main] Using VOLK
-[1613172641184218] [Main] Filter length L: 200
-[1613172641184233] [Main] Createing the receive usrp device with: 
-[1613172642643065] [Main] Using RX Device: Single USRP:
+[1613271540008898] [Main] Status: Started new logger at ./main.log
+[1613271540008938] [Main] Using VOLK
+[1613271540009153] [Main] Filter length L: 200
+[1613271540009165] [Main] Createing the receive usrp device with: 
+[1613271541498121] [Main] Using RX Device: Single USRP:
   Device: USRP2 / N-Series Device
   Mboard 0: N210r4
   RX Channel: 0
@@ -14,13 +14,13 @@
     TX Dboard: A
     TX Subdev: SBXv3 TX
 
-[1613172642643107] [Main] Setting RX Rate: 1.000000Msps
-[1613172642643201] [Main] Actual RX Rate: 1.000000Msps
-[1613172642643238] [Main] Setting RX Freq: 2437.000000MHz
-[1613172642643482] [Main] Actual RX Freq: 2437.000000
-[1613172642643514] [Main] Setting RX Gain: 38.000000dB
-[1613172642643833] [Main] Actual RX Gain: 38.000000dB
-[1613172642644040] [Main] Checking RX: LO: locked
-[1613172642644119] [Main] Press Ctrl+C to stop streaming
-[1613172642644136] [Main] Setting device timestamp to 0
-[1613172648391449] [Main] Status: Closing the logger
+[1613271541498177] [Main] Setting RX Rate: 1.000000Msps
+[1613271541498345] [Main] Actual RX Rate: 1.000000Msps
+[1613271541498373] [Main] Setting RX Freq: 2437.000000MHz
+[1613271541498760] [Main] Actual RX Freq: 2437.000000
+[1613271541498789] [Main] Setting RX Gain: 38.000000dB
+[1613271541499264] [Main] Actual RX Gain: 38.000000dB
+[1613271541499557] [Main] Checking RX: LO: locked
+[1613271541499620] [Main] Press Ctrl+C to stop streaming
+[1613271541499634] [Main] Setting device timestamp to 0
+[1613271544230979] [Main] Status: Closing the logger
