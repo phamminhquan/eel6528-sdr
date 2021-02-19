@@ -70,6 +70,9 @@ void power_average(tsFIFO<Block<samp_type>>& fifo_in, const int thread_number) {
     // create dummy block
     Block<samp_type> block;
 
+    // create output filestream
+    std::ofstream cap_file ("capture.dat", std::ofstream::binary);
+
     // parameters
     float pow_ave_lin = 0;
     float pow_ave_db = 0;
@@ -83,6 +86,7 @@ void power_average(tsFIFO<Block<samp_type>>& fifo_in, const int thread_number) {
             // pop block from fifo
             fifo_in.pop(block);
             block_size = block.second.size();
+            cap_file.write((const char*) block.second.data(), block_size*sizeof(samp_type));
             for (int i=0; i<block_size; i++) {
                 pow_ave_lin += std::pow(std::abs(block.second[i]), 2);
             }
@@ -107,7 +111,9 @@ void power_average(tsFIFO<Block<samp_type>>& fifo_in, const int thread_number) {
 template <typename samp_type>
 void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
         tsFIFO<Block<samp_type>>& fifo_out,
-        size_t block_size) {
+        size_t block_size,
+        float alpha,
+        float threshold) {
     // create logger
     Logger logger("IIR Filter", "./iir_filter.log");
 
@@ -118,13 +124,11 @@ void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
     Block<samp_type> in_block;
 
     // IIR filter param
-    float alpha = 0.3;
     float current_out = 0;
     float previous_out = 0;
     float current_out_db = 0;
     samp_type sample;
     // threshold checker param
-    float threshold = 2e-3;
     int cap_len = 1e3;
     int edge_mid_ind = 0;
     bool edge_f = false;
@@ -241,10 +245,10 @@ void filter(int D, int U, size_t in_len,
             }
 
             // put value in file
-            //in_file.write((const char*) in, in_len*sizeof(samp_type));
+            in_file.write((const char*) in, in_len*sizeof(samp_type));
 
             // filter
-            filt.set_head(1);
+            filt.set_head(in_block.first == 0);
             filt.filter(in, out);
             
             // push filter output to fifo out
@@ -253,7 +257,7 @@ void filter(int D, int U, size_t in_len,
             fifo_out.push(out_block);
 
             // store filter output to file to check with jupyter
-            //out_file.write((const char*) out, out_len*sizeof(samp_type));
+            out_file.write((const char*) out, out_len*sizeof(samp_type));
         }
     }
 
@@ -414,6 +418,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
     int D, U;
+    float alpha, threshold;
     std::string taps_filename;
 
     // program specific variables
@@ -442,6 +447,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-int-n", "tune USRP RX with integer-N tuning")
         ("D,d", po::value<int>(&D)->default_value(5), "Down-sampling factor")
         ("U,u", po::value<int>(&U)->default_value(4), "Up-sampling factor")
+        ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
+        ("thresh,threshold", po::value<float>(&threshold)->default_value(2e-3), "Threshold for sample capture")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -592,7 +599,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for iir filter and threshold checking
         iir_filter_worker = std::thread(&iir_filter<std::complex<double>>,
-                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D);
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D,
+                    alpha, threshold);
         // create thread for the power averaging function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<double>>,
@@ -614,7 +622,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for power averager
         iir_filter_worker = std::thread(&iir_filter<std::complex<float>>,
-                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D);
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D,
+                    alpha, threshold);
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<float>>,
@@ -636,7 +645,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for power averaging
         iir_filter_worker = std::thread(&iir_filter<std::complex<short>>,
-                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D);
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D,
+                    alpha, threshold);
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<short>>,
