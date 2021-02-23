@@ -1,11 +1,23 @@
-[1614054782873062] [Tx Worker] Status: Started new logger at ./tx-worker.log
-[1614054782873119] [Tx Worker] Number of channels: 1
-[1614054782873133] [Tx Worker] Max num samps: 363
-[1614054782873144] [Tx Worker] Number of segments: 3
-[1614054782873155] [Tx Worker] Remaining segment size: 161
-[1614054782873164] [Tx Worker] Create dummy block
-[1614054782911079] [Tx Worker] Sending block: 0
-[1614054783889132] [Tx Worker] Sending block: 1
-[1614054784890577] [Tx Worker] Sending block: 2
-[1614054785894073] [Tx Worker] Sending block: 3
-[1614054786897060] [Tx Worker] Sending block: 4
+[1614101960259514] [Tx Worker] Status: Started new logger at ./tx-worker.log
+[1614101960259581] [Tx Worker] Number of channels: 1
+[1614101960259598] [Tx Worker] Max num samps: 363
+[1614101960259610] [Tx Worker] Number of segments: 3
+[1614101960259622] [Tx Worker] Remaining segment size: 161
+[1614101960259633] [Tx Worker] Create dummy block
+[1614101960298162] [Tx Worker] Sending block: 0
+[1614101961274775] [Tx Worker] Sending block: 1
+[1614101962278214] [Tx Worker] Sending block: 2
+[1614101963281436] [Tx Worker] Sending block: 3
+[1614101964284778] [Tx Worker] Sending block: 4
+[1614101965287750] [Tx Worker] Sending block: 5
+[1614101966290893] [Tx Worker] Sending block: 6
+[1614101967294036] [Tx Worker] Sending block: 7
+[1614101968297477] [Tx Worker] Sending block: 8
+[1614101969300419] [Tx Worker] Sending block: 9
+[1614101970303673] [Tx Worker] Sending block: 10
+[1614101971306798] [Tx Worker] Sending block: 11
+[1614101972309991] [Tx Worker] Sending block: 12
+[1614101973313488] [Tx Worker] Sending block: 13
+[1614101974316620] [Tx Worker] Sending block: 14
+[1614101975319765] [Tx Worker] Sending block: 15
+[1614101976322908] [Tx Worker] Sending block: 16
