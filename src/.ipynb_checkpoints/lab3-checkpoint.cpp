@@ -301,7 +301,7 @@ void filter(int D, int U, size_t in_len,
                 //        " + i * " + std::to_string(in[i].imag()));
             }
             // put value in file
-            in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
+            //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
             filt.set_head(in_block.first == 0);
             filt.filter(in, out);
@@ -310,7 +310,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
