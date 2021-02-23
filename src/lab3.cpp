@@ -182,7 +182,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
         tsFIFO<Block<std::complex<float>>>& fifo_out,
         size_t block_size,
         float alpha,
-        float threshold
+        float threshold,
         int cap_len)
 {
     // create logger
@@ -582,7 +582,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-U,rx-u", po::value<int>(&rx_U)->default_value(4), "Rx side up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
         ("thresh,threshold", po::value<float>(&threshold)->default_value(2e-3), "Threshold for sample capture")
-        ("rx-cap-len", po::value<size_t>(&rx_cap_len)->default_value(1200), "Tx side down-sampling factor")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1200), "Tx side down-sampling factor")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
