@@ -150,32 +150,59 @@ include/filters.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/filters.cpp.s
 .PHONY : include/filters.cpp.s
 
-lab2.o: lab2.cpp.o
+include/pulse.o: include/pulse.cpp.o
 
-.PHONY : lab2.o
+.PHONY : include/pulse.o
 
 # target to build an object file
-lab2.cpp.o:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab2.cpp.o
-.PHONY : lab2.cpp.o
+include/pulse.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/pulse.cpp.o
+.PHONY : include/pulse.cpp.o
 
-lab2.i: lab2.cpp.i
+include/pulse.i: include/pulse.cpp.i
 
-.PHONY : lab2.i
+.PHONY : include/pulse.i
 
 # target to preprocess a source file
-lab2.cpp.i:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab2.cpp.i
-.PHONY : lab2.cpp.i
+include/pulse.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/pulse.cpp.i
+.PHONY : include/pulse.cpp.i
 
-lab2.s: lab2.cpp.s
+include/pulse.s: include/pulse.cpp.s
 
-.PHONY : lab2.s
+.PHONY : include/pulse.s
 
 # target to generate assembly for a file
-lab2.cpp.s:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab2.cpp.s
-.PHONY : lab2.cpp.s
+include/pulse.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/pulse.cpp.s
+.PHONY : include/pulse.cpp.s
+
+lab3.o: lab3.cpp.o
+
+.PHONY : lab3.o
+
+# target to build an object file
+lab3.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab3.cpp.o
+.PHONY : lab3.cpp.o
+
+lab3.i: lab3.cpp.i
+
+.PHONY : lab3.i
+
+# target to preprocess a source file
+lab3.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab3.cpp.i
+.PHONY : lab3.cpp.i
+
+lab3.s: lab3.cpp.s
+
+.PHONY : lab3.s
+
+# target to generate assembly for a file
+lab3.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab3.cpp.s
+.PHONY : lab3.cpp.s
 
 # Help Target
 help:
@@ -189,9 +216,12 @@ help:
 	@echo "... include/filters.o"
 	@echo "... include/filters.i"
 	@echo "... include/filters.s"
-	@echo "... lab2.o"
-	@echo "... lab2.i"
-	@echo "... lab2.s"
+	@echo "... include/pulse.o"
+	@echo "... include/pulse.i"
+	@echo "... include/pulse.s"
+	@echo "... lab3.o"
+	@echo "... lab3.i"
+	@echo "... lab3.s"
 .PHONY : help
 
 

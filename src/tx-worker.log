@@ -1,0 +1,11 @@
+[1614054782873062] [Tx Worker] Status: Started new logger at ./tx-worker.log
+[1614054782873119] [Tx Worker] Number of channels: 1
+[1614054782873133] [Tx Worker] Max num samps: 363
+[1614054782873144] [Tx Worker] Number of segments: 3
+[1614054782873155] [Tx Worker] Remaining segment size: 161
+[1614054782873164] [Tx Worker] Create dummy block
+[1614054782911079] [Tx Worker] Sending block: 0
+[1614054783889132] [Tx Worker] Sending block: 1
+[1614054784890577] [Tx Worker] Sending block: 2
+[1614054785894073] [Tx Worker] Sending block: 3
+[1614054786897060] [Tx Worker] Sending block: 4

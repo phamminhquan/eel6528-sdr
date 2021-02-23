@@ -1,8 +1,8 @@
-[1613757401579890] [Main] Status: Started new logger at ./main.log
-[1613757401579936] [Main] Using VOLK
-[1613757401580200] [Main] Filter length L: 200
-[1613757401580212] [Main] Createing the receive usrp device with: 
-[1613757403046759] [Main] Using RX Device: Single USRP:
+[1614054780169262] [Main] Status: Started new logger at ./main.log
+[1614054780169358] [Main] Using VOLK
+[1614054780170046] [Main] Creating the transmit usrp device with: 
+[1614054781726563] [Main] Creating the receive usrp device with: 
+[1614054782859366] [Main] Using TX Device: Single USRP:
   Device: USRP2 / N-Series Device
   Mboard 0: N210r4
   RX Channel: 0
@@ -14,13 +14,24 @@
     TX Dboard: A
     TX Subdev: SBXv3 TX
 
-[1613757403046817] [Main] Setting RX Rate: 1.000000Msps
-[1613757403046992] [Main] Actual RX Rate: 1.000000Msps
-[1613757403047022] [Main] Setting RX Freq: 2437.000000MHz
-[1613757403047471] [Main] Actual RX Freq: 2437.000000
-[1613757403047496] [Main] Setting RX Gain: 38.000000dB
-[1613757403047957] [Main] Actual RX Gain: 38.000000dB
-[1613757403048272] [Main] Checking RX: LO: locked
-[1613757403048348] [Main] Press Ctrl+C to stop streaming
-[1613757403048368] [Main] Setting device timestamp to 0
-[1613757404282229] [Main] Status: Closing the logger
+[1614054782859669] [Main] Using RX Device: Single USRP:
+  Device: USRP2 / N-Series Device
+  Mboard 0: N210r4
+  RX Channel: 0
+    RX DSP: 0
+    RX Dboard: A
+    RX Subdev: SBXv3 RX
+  TX Channel: 0
+    TX DSP: 0
+    TX Dboard: A
+    TX Subdev: SBXv3 TX
+
+[1614054782859862] [Main] Setting TX Rate: 1.000000Msps
+[1614054782860155] [Main] Actual TX Rate: 1.000000Msps
+[1614054782860174] [Main] Setting RX Rate: 1.000000Msps
+[1614054782860250] [Main] Actual RX Rate: 1.000000Msps
+[1614054782860663] [Main] Setting RX Freq: 2437.000000MHz
+[1614054782860900] [Main] Actual RX Freq: 2437.000000
+[1614054782860931] [Main] Setting RX Gain: 38.000000dB
+[1614054782861264] [Main] Actual RX Gain: 38.000000dB
+[1614054782872538] [Main] Setting device timestamp to 0

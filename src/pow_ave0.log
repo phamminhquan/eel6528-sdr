@@ -1,13 +1,20 @@
-[1613757403048978] [Power averager 0] Status: Started new logger at ./pow_ave0.log
-[1613757403330642] [Power averager 0] Block: 0	Average Power: -33.453568 dB
-[1613757403330745] [Power averager 0] Block: 1	Average Power: -35.888283 dB
-[1613757403430337] [Power averager 0] Block: 2	Average Power: -33.237030 dB
-[1613757403430455] [Power averager 0] Block: 3	Average Power: -49.574276 dB
-[1613757403530613] [Power averager 0] Block: 4	Average Power: -33.166046 dB
-[1613757403530724] [Power averager 0] Block: 5	Average Power: -37.945076 dB
-[1613757403630337] [Power averager 0] Block: 6	Average Power: -33.087608 dB
-[1613757403630445] [Power averager 0] Block: 7	Average Power: -35.448078 dB
-[1613757403730540] [Power averager 0] Block: 8	Average Power: -33.493984 dB
-[1613757403740326] [Power averager 0] Block: 9	Average Power: -36.326328 dB
-[1613757403787252] [Power averager 0] Power averager thread is done and closing
-[1613757403787346] [Power averager 0] Status: Closing the logger
+[1613851084468771] [Power averager 0] Status: Started new logger at ./pow_ave0.log
+[1613851084770950] [Power averager 0] Block: 0	Average Power: -33.104580 dB
+[1613851084771062] [Power averager 0] Block: 1	Average Power: -36.136513 dB
+[1613851084870498] [Power averager 0] Block: 2	Average Power: -33.316048 dB
+[1613851084870611] [Power averager 0] Block: 3	Average Power: -38.136753 dB
+[1613851084920569] [Power averager 0] Block: 4	Average Power: -50.504955 dB
+[1613851084940473] [Power averager 0] Block: 5	Average Power: -51.135525 dB
+[1613851084970816] [Power averager 0] Block: 6	Average Power: -33.003571 dB
+[1613851084970918] [Power averager 0] Block: 7	Average Power: -35.796047 dB
+[1613851085070424] [Power averager 0] Block: 8	Average Power: -33.013412 dB
+[1613851085070514] [Power averager 0] Block: 9	Average Power: -35.957352 dB
+[1613851085171054] [Power averager 0] Block: 10	Average Power: -33.048443 dB
+[1613851085180987] [Power averager 0] Block: 11	Average Power: -36.558510 dB
+[1613851085281294] [Power averager 0] Block: 12	Average Power: -32.959080 dB
+[1613851085281386] [Power averager 0] Block: 13	Average Power: -35.372974 dB
+[1613851085331243] [Power averager 0] Block: 14	Average Power: -37.833916 dB
+[1613851085380603] [Power averager 0] Block: 15	Average Power: -33.023609 dB
+[1613851085380714] [Power averager 0] Block: 16	Average Power: -36.570477 dB
+[1613851085481059] [Power averager 0] Block: 17	Average Power: -33.184692 dB
+[1613851085481158] [Power averager 0] Block: 18	Average Power: -35.923401 dB

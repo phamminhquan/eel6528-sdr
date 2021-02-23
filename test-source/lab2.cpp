@@ -14,10 +14,15 @@
 #include <csignal>
 #include <fstream>
 #include <iostream>
-
 #include <thread>
-#include "../include/logger.h"
-#include "../include/fifo.h"
+#include <algorithm>
+
+
+#include "logger.h"
+#include "fifo.h"
+#include "filter-taps.h"
+#include "filters.hpp"
+
 
 namespace po = boost::program_options;
 
@@ -33,77 +38,6 @@ static bool stop_signal_called = false;
 void sig_int_handler(int) {
     stop_signal_called = true;
 }
-
-
-
-/***********************************************************************
- * Power averaging thread function
- **********************************************************************/
-template <typename samp_type>
-void power_average(tsFIFO<Block<samp_type>>& fifo_out, const int thread_number) {
-    // create logger
-    Logger proc_logger("PowerAverage " + std::to_string(thread_number) , "./power_average" + std::to_string(thread_number) + ".log");
-
-    // create dummy block and average variables
-    Block<samp_type> block;
-    int block_size = 0;
-    float average_power = 0;
-    float average_power_db = 0;
-
-    // check ctrl-c and fifo empty
-    while (not stop_signal_called) {
-        if (fifo_out.size() != 0) {
-            // pop block from fifo
-            fifo_out.pop(block);
-            block_size = block.second.size();
-            // compute average power
-            for (int i=0; i<block_size; i++) {
-                average_power += std::pow(std::abs(block.second[i]), 2);
-                //proc_logger.log("Sample: " + std::to_string(i) +
-                //        "\tAmp: " + std::to_string(std::abs(block.second[i])) +
-                //        "\tAve: " + std::to_string(average_power));
-
-            }
-            average_power /= block_size;
-            average_power_db = 10*std::log10(average_power);
-            // print out average
-            proc_logger.log("Thread: " + std::to_string(thread_number) +
-                            "\tBlock #: " + std::to_string(block.first) +
-                            "\tAverage power: " + std::to_string(average_power_db) + "dB");
-        }
-    }
-
-    // notify user that processing thread is done
-    proc_logger.log("Power averaging thread is done and closing");
-}
-
-
-
-/***********************************************************************
- * Filtering thread function
- **********************************************************************/
-template <typename samp_type>
-void filter(tsFIFO<Block<samp_type>>& fifo_in,
-        tsFIFO<Block<samp_type>>& fifo_out) {
-    // create logger
-    Logger proc_logger("Filter", "./filter.log");
-    
-    // create dummy block and average variables
-    Block<samp_type> block;
-    int block_size = 0;
-
-    // check ctrl-c and fifo empty
-    while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
-            // pop block from fifo
-            fifo_in.pop(block);
-            block_size = block.second.size();
-        } 
-    }
-    // notify user that processing thread is done
-    proc_logger.log("Filtering thread is done and closing");
-}
-
 
 
 /***********************************************************************
@@ -123,6 +57,219 @@ std::string generate_out_filename(
         str(boost::format("%02d%s") % this_name % base_fn_fp.extension().string())));
     return base_fn_fp.string();
 }
+
+
+/***********************************************************************
+ * Power averager thread function
+ **********************************************************************/
+template <typename samp_type>
+void power_average(tsFIFO<Block<samp_type>>& fifo_in, const int thread_number) {
+    // create logger
+    Logger logger("Power averager " + std::to_string(thread_number) , "./pow_ave" + std::to_string(thread_number) + ".log");
+    
+    // create dummy block
+    Block<samp_type> block;
+
+    // create output filestream
+    std::ofstream cap_file ("capture.dat", std::ofstream::binary);
+
+    // parameters
+    float pow_ave_lin = 0;
+    float pow_ave_db = 0;
+    int block_size = 0;
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // reset param
+            pow_ave_lin = 0;
+            pow_ave_db = 0;
+            // pop block from fifo
+            fifo_in.pop(block);
+            block_size = block.second.size();
+            cap_file.write((const char*) block.second.data(), block_size*sizeof(samp_type));
+            for (int i=0; i<block_size; i++) {
+                pow_ave_lin += std::pow(std::abs(block.second[i]), 2);
+            }
+            pow_ave_lin /= block_size;
+            pow_ave_db = 10*log10(pow_ave_lin);
+            
+            // print out average power
+            logger.log("Block: " + std::to_string(block.first) +
+                    "\tAverage Power: " + std::to_string(pow_ave_db) + " dB");
+        }
+    }
+
+
+    // notify user that processing thread is done
+    logger.log("Power averager thread is done and closing");
+}
+
+
+/***********************************************************************
+ * IIR filter thread function
+ **********************************************************************/
+template <typename samp_type>
+void iir_filter(tsFIFO<Block<samp_type>>& fifo_in,
+        tsFIFO<Block<samp_type>>& fifo_out,
+        size_t block_size,
+        float alpha,
+        float threshold) {
+    // create logger
+    Logger logger("IIR Filter", "./iir_filter.log");
+
+    // create output filestream
+    std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
+
+    // create dummy block
+    Block<samp_type> in_block;
+
+    // IIR filter param
+    float current_out = 0;
+    float previous_out = 0;
+    float current_out_db = 0;
+    samp_type sample;
+    // threshold checker param
+    int cap_len = 1e3;
+    int edge_mid_ind = 0;
+    bool edge_f = false;
+    int cap_block_num = 0;
+    Block<samp_type> cap_block;
+    cap_block.second.resize(cap_len);
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // iir
+            // create dummy output block
+            Block<float> out_block;
+            // pop block from fifo
+            fifo_in.pop(in_block);
+            out_block.first = in_block.first;
+            // compute average power
+            for (int i=0; i<block_size; i++) {
+                sample = in_block.second[i];
+                current_out = alpha*previous_out +
+                    (1-alpha)*std::pow(std::abs(sample), 2);
+                //current_out_db = 10*log10(current_out);
+                previous_out = current_out;
+                out_block.second.push_back(current_out);
+            }
+
+            // threshold_checker 
+            for (int i=0; i<block_size; i++) {
+                if (edge_f) {
+                    for (int j=0; j<cap_len-edge_mid_ind; j++)  // capture the remaining samples
+                        cap_block.second[edge_mid_ind+j] = in_block.second[j];
+                    fifo_out.push(cap_block);   // push captured block to fifo out
+                    edge_f = false;     // reset boundary case flag
+                    i = i+cap_len-edge_mid_ind; // increment index by number of samples captured
+                } else {
+                    if (out_block.second[i] > threshold) {  // check threshold
+                        if (i > block_size-cap_len) {       // if capture range cross boundary
+                            edge_f = true;                  // set boundary flag
+                            edge_mid_ind = block_size-i;    // find mid point of capture range
+                            for (int j=0; j<edge_mid_ind; j++)  // take the first few samples
+                                cap_block.second[j] = in_block.second[i+j];
+                            cap_block.first = cap_block_num++;  // assign, increment capture counter
+                            break;
+                        } else {    // if capture range in middle
+                            for (int j=0; j<cap_len; j++)   // capture 1k samples
+                                cap_block.second[j] = in_block.second[i+j];
+                            cap_block.first = cap_block_num++; // assign, increment capture counter
+                            fifo_out.push(cap_block);   // push captured block to fifo out
+                            i = i+cap_len;  // increment block index by 1k
+                        }
+                    }
+                }
+            } 
+        }
+    }
+
+
+    // notify user that processing thread is done
+    logger.log("IIR filter thread is done and closing");
+}
+
+
+
+/***********************************************************************
+ * Filtering thread function
+ **********************************************************************/
+template <typename samp_type>
+void filter(int D, int U, size_t in_len,
+        FilterTaps& filter_taps,
+        size_t num_filt_threads,
+        tsFIFO<Block<samp_type>>& fifo_in,
+        tsFIFO<Block<samp_type>>& fifo_out) {
+    // create logger
+    Logger logger("Filter", "./filter.log");
+
+    // create output filestream
+    std::ofstream in_file ("in_raw.dat", std::ofstream::binary);
+    std::ofstream out_file ("out_raw.dat", std::ofstream::binary); 
+    
+    // print out down sampling and up sampling factors for debug
+    logger.log("Down-sampling factor D: " + std::to_string(D));
+    logger.log("Up-sampling factor U: " + std::to_string(U));
+    
+    // set up filter impulse response
+    int h_len = filter_taps.len();
+    logger.log("Filter length: " + std::to_string(h_len));
+    std::complex<float> h[h_len];
+    for (int i=0; i<h_len; i++) {
+        h[i] = filter_taps.taps[i];
+        logger.logf("Tap: " + std::to_string(h[i].real()));
+    } 
+
+    // test filter
+    FilterPolyphase filt (U, D, in_len, h_len, h, num_filt_threads);
+    int out_len = filt.out_len();
+    logger.log("Filter output length: " + std::to_string(out_len));
+    std::complex<float>* out = new std::complex<float>[out_len]();
+    std::complex<float>* in = new std::complex<float>[in_len](); 
+
+    // create dummy block and average variables
+    Block<samp_type> in_block;
+    Block<samp_type> out_block;
+
+    // check ctrl-c and fifo empty
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop block from fifo
+            fifo_in.pop(in_block);
+            // get input array
+            for (int i=0; i<in_len; i++) {
+                in[i] = in_block.second[i];
+                //logger.logf("Block: " + std::to_string(in_block.first) +
+                //        " Sample: " + std::to_string(in[i].real()) +
+                //        " + i * " + std::to_string(in[i].imag()));
+            }
+
+            // put value in file
+            in_file.write((const char*) in, in_len*sizeof(samp_type));
+
+            // filter
+            filt.set_head(in_block.first == 0);
+            filt.filter(in, out);
+            
+            // push filter output to fifo out
+            out_block.first = in_block.first;
+            out_block.second = std::vector<samp_type>(out, out + out_len);
+            fifo_out.push(out_block);
+
+            // store filter output to file to check with jupyter
+            out_file.write((const char*) out, out_len*sizeof(samp_type));
+        }
+    }
+
+    // close ofstream
+    logger.log("Closing ofstream");
+    in_file.close();
+    out_file.close();
+    
+    // notify user that processing thread is done
+    logger.log("Filtering thread is done and closing");
+}
+
 
 
 /***********************************************************************
@@ -226,11 +373,10 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
         }
 
         num_total_samps += num_rx_samps;
-        //recv_logger.log("Total number of samles: " + std::to_string(num_total_samps)); 
-        //recv_logger.log("Number of rx samples: " + std::to_string(num_rx_samps));
         for (size_t i = 0; i < outfiles.size(); i++) {
             //outfiles[i]->write(
-            //    (const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
+                //(const char*)buff_ptrs[i], num_rx_samps * sizeof(samp_type));
+            //outfiles[i]->write((const char*)buff_ptrs[i], 3*sizeof(samp_type));
             // update block before pushing to fifo 
             block.second = buffs[i];
             // push current samples to fifo
@@ -238,13 +384,7 @@ void recv_to_file(uhd::usrp::multi_usrp::sptr usrp,
             // increment block counter
             block.first++;
         }
-        //recv_logger.log("Check fifo size: " + std::to_string(process_fifo.size()));
-    }
-
-    // Check fifo entry size
-    //process_fifo.pop(block);
-    //recv_logger.log("Check fifo block number: " + std::to_string(block.first));
-    //recv_logger.log("Check fifo block size: " + std::to_string(block.second.size()));
+    } 
 
     // Shut down receiver
     recv_logger.log("Shut down receiver");
@@ -277,9 +417,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     size_t total_num_samps, rx_spb;
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
+    int D, U;
+    float alpha, threshold;
+    std::string taps_filename;
 
     // program specific variables
-    size_t num_proc_threads;
+    size_t num_pa_threads, num_filt_threads;
 
     // setup the program options
     po::options_description desc("Allowed options");
@@ -294,7 +437,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-spb", po::value<size_t>(&rx_spb)->default_value(10000), "samples per buffer")
         ("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
         ("rx-freq", po::value<double>(&rx_freq)->default_value(2437000000), "receive RF center frequency in Hz")
-        ("rx-gain", po::value<double>(&rx_gain), "gain for the receive RF chain")
+        ("rx-gain", po::value<double>(&rx_gain)->default_value(38), "gain for the receive RF chain")
         ("rx-ant", po::value<std::string>(&rx_ant), "receive antenna selection")
         ("rx-subdev", po::value<std::string>(&rx_subdev), "receive subdevice specification")
         ("rx-bw", po::value<double>(&rx_bw), "analog receive filter bandwidth in Hz")
@@ -302,8 +445,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("otw", po::value<std::string>(&otw)->default_value("sc16"), "specify the over-the-wire sample mode")
         ("rx-channels", po::value<std::string>(&rx_channels)->default_value("0"), "which RX channel(s) to use (specify \"0\", \"1\", \"0,1\", etc)")
         ("rx-int-n", "tune USRP RX with integer-N tuning")
-        ("num-proc-threads", po::value<size_t>(&num_proc_threads)->default_value(1), "number of processing threads")
+        ("D,d", po::value<int>(&D)->default_value(5), "Down-sampling factor")
+        ("U,u", po::value<int>(&U)->default_value(4), "Up-sampling factor")
+        ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
+        ("thresh,threshold", po::value<float>(&threshold)->default_value(2e-3), "Threshold for sample capture")
+        ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
+        ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
+        ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
     ;
+
     // clang-format on
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -314,6 +464,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         std::cout << boost::format("UHD RX Average Sample Power %s") % desc << std::endl;
         return ~0;
     }
+
+    // setup the filter taps object
+    if (not vm.count("taps-file")) {
+            std::cerr << "Please specify the filter taps file with --taps-file"
+                      << std::endl;
+            return ~0;
+    }
+    FilterTaps filter_taps (taps_filename);   
+    main_logger.log("Filter length L: " + std::to_string(filter_taps.len()));
 
     // create a usrp device
     main_logger.log("Createing the receive usrp device with: " + rx_args);
@@ -420,7 +579,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     // set up threads worker
     std::thread filter_worker;
-    std::thread power_average_worker[num_proc_threads];
+    std::thread iir_filter_worker;
+    std::thread power_average_worker[num_pa_threads];
 
     // reset usrp time to prepare for transmit/receive
     main_logger.log("Setting device timestamp to 0");
@@ -431,44 +591,71 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<double>>> fifo_in;
         tsFIFO<Block<std::complex<double>>> fifo_out;
+        tsFIFO<Block<std::complex<double>>> iir_captured_fifo;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<double>>,
+                D, U, rx_spb,
+                std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for iir filter and threshold checking
+        iir_filter_worker = std::thread(&iir_filter<std::complex<double>>,
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D,
+                    alpha, threshold);
         // create thread for the power averaging function before receiving samples
-        for (int i=0; i<num_proc_threads; i++)
+        for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<double>>,
-                    std::ref(fifo_out), i);
+                    std::ref(iir_captured_fifo), i);
         // call receive function
         recv_to_file<std::complex<double>>(
-            rx_usrp, "fc64", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
+            rx_usrp, "fc64", otw, file,
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, fifo_in);
     } else if (type == "float") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<float>>> fifo_in;
         tsFIFO<Block<std::complex<float>>> fifo_out;
+        tsFIFO<Block<std::complex<float>>> iir_captured_fifo;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<float>>,
+                D, U, rx_spb,
+                std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for power averager
+        iir_filter_worker = std::thread(&iir_filter<std::complex<float>>,
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D,
+                    alpha, threshold);
         // create thread for the processing function before receiving samples
-        for (int i=0; i<num_proc_threads; i++)
+        for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<float>>,
-                    std::ref(fifo_out), i);
+                    std::ref(iir_captured_fifo), i);
         // call receive function
         recv_to_file<std::complex<float>>(
-            rx_usrp, "fc32", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
+            rx_usrp, "fc32", otw, file,
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, fifo_in);
     } else if (type == "short") {
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<short>>> fifo_in;
         tsFIFO<Block<std::complex<short>>> fifo_out;
+        tsFIFO<Block<std::complex<short>>> iir_captured_fifo;
         // create thread for multirate filtering
         filter_worker = std::thread(&filter<std::complex<short>>,
+                D, U, rx_spb,
+                std::ref(filter_taps), num_filt_threads,
                 std::ref(fifo_in), std::ref(fifo_out));
+        // create thread for power averaging
+        iir_filter_worker = std::thread(&iir_filter<std::complex<short>>,
+                    std::ref(fifo_out), std::ref(iir_captured_fifo), rx_spb*U/D,
+                    alpha, threshold);
         // create thread for the processing function before receiving samples
-        for (int i=0; i<num_proc_threads; i++)
+        for (int i=0; i<num_pa_threads; i++)
             power_average_worker[i] = std::thread(&power_average<std::complex<short>>,
-                    std::ref(fifo_out), i);
+                    std::ref(iir_captured_fifo), i);
         // call receive function
         recv_to_file<std::complex<short>>(
-            rx_usrp, "sc16", otw, file, rx_spb, total_num_samps, settling, rx_channel_nums, fifo_in);
+            rx_usrp, "sc16", otw, file,
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, fifo_in);
     } else {
         // clean up transmit worker
         stop_signal_called = true;
@@ -484,7 +671,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // join all processing thread
     if (filter_worker.joinable())
         filter_worker.join();
-    for (int i=0; i<num_proc_threads; i++) {
+    if (iir_filter_worker.joinable())
+        iir_filter_worker.join();
+    for (int i=0; i<num_pa_threads; i++) {
         if (power_average_worker[i].joinable())
             power_average_worker[i].join();
     }
