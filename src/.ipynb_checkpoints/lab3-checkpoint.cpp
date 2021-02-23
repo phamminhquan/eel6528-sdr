@@ -92,7 +92,7 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo, float p, size_t bits_per_s
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
-        logger.log("Bit generator FIFO size: " + std::to_string(fifo.size()));
+        logger.logf("Bit generator FIFO size: " + std::to_string(fifo.size()));
         // wait 1 second
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -128,7 +128,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in, tsFIFO<Block<std::complex<float>>>&
             // push block to fifo
             fifo_out.push(out_block);
             // print out fifo size to check
-            logger.log("Modulated FIFO size: " + std::to_string(fifo_out.size()));
+            logger.logf("Modulated FIFO size: " + std::to_string(fifo_out.size()));
         }
     }
     // notify user that processing thread is done

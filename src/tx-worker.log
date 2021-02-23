@@ -1,23 +1,34 @@
-[1614101960259514] [Tx Worker] Status: Started new logger at ./tx-worker.log
-[1614101960259581] [Tx Worker] Number of channels: 1
-[1614101960259598] [Tx Worker] Max num samps: 363
-[1614101960259610] [Tx Worker] Number of segments: 3
-[1614101960259622] [Tx Worker] Remaining segment size: 161
-[1614101960259633] [Tx Worker] Create dummy block
-[1614101960298162] [Tx Worker] Sending block: 0
-[1614101961274775] [Tx Worker] Sending block: 1
-[1614101962278214] [Tx Worker] Sending block: 2
-[1614101963281436] [Tx Worker] Sending block: 3
-[1614101964284778] [Tx Worker] Sending block: 4
-[1614101965287750] [Tx Worker] Sending block: 5
-[1614101966290893] [Tx Worker] Sending block: 6
-[1614101967294036] [Tx Worker] Sending block: 7
-[1614101968297477] [Tx Worker] Sending block: 8
-[1614101969300419] [Tx Worker] Sending block: 9
-[1614101970303673] [Tx Worker] Sending block: 10
-[1614101971306798] [Tx Worker] Sending block: 11
-[1614101972309991] [Tx Worker] Sending block: 12
-[1614101973313488] [Tx Worker] Sending block: 13
-[1614101974316620] [Tx Worker] Sending block: 14
-[1614101975319765] [Tx Worker] Sending block: 15
-[1614101976322908] [Tx Worker] Sending block: 16
+[1614102444804215] [Tx Worker] Status: Started new logger at ./tx-worker.log
+[1614102444804275] [Tx Worker] Number of channels: 1
+[1614102444804290] [Tx Worker] Max num samps: 363
+[1614102444804302] [Tx Worker] Number of segments: 3
+[1614102444804313] [Tx Worker] Remaining segment size: 161
+[1614102444804320] [Tx Worker] Create dummy block
+[1614102444847382] [Tx Worker] Sending block: 0
+[1614102445818502] [Tx Worker] Sending block: 1
+[1614102446823659] [Tx Worker] Sending block: 2
+[1614102447828483] [Tx Worker] Sending block: 3
+[1614102448833486] [Tx Worker] Sending block: 4
+[1614102449838287] [Tx Worker] Sending block: 5
+[1614102450843082] [Tx Worker] Sending block: 6
+[1614102451847899] [Tx Worker] Sending block: 7
+[1614102452853039] [Tx Worker] Sending block: 8
+[1614102453857648] [Tx Worker] Sending block: 9
+[1614102454862471] [Tx Worker] Sending block: 10
+[1614102455867338] [Tx Worker] Sending block: 11
+[1614102456872156] [Tx Worker] Sending block: 12
+[1614102457876968] [Tx Worker] Sending block: 13
+[1614102458881815] [Tx Worker] Sending block: 14
+[1614102459886693] [Tx Worker] Sending block: 15
+[1614102460892034] [Tx Worker] Sending block: 16
+[1614102461896426] [Tx Worker] Sending block: 17
+[1614102462901332] [Tx Worker] Sending block: 18
+[1614102463906193] [Tx Worker] Sending block: 19
+[1614102464911035] [Tx Worker] Sending block: 20
+[1614102465914371] [Tx Worker] Sending block: 21
+[1614102466917590] [Tx Worker] Sending block: 22
+[1614102467920762] [Tx Worker] Sending block: 23
+[1614102468924272] [Tx Worker] Sending block: 24
+[1614102469927222] [Tx Worker] Sending block: 25
+[1614102470932838] [Tx Worker] Sending block: 26
+[1614102471937299] [Tx Worker] Sending block: 27

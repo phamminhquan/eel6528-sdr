@@ -1,8 +1,8 @@
-[1614101957636540] [Main] Status: Started new logger at ./main.log
-[1614101957636582] [Main] Using VOLK
-[1614101957636856] [Main] Creating the transmit usrp device with: 
-[1614101959109767] [Main] Creating the receive usrp device with: 
-[1614101960245814] [Main] Using TX Device: Single USRP:
+[1614102442166389] [Main] Status: Started new logger at ./main.log
+[1614102442166432] [Main] Using VOLK
+[1614102442166649] [Main] Creating the transmit usrp device with: 
+[1614102443661057] [Main] Creating the receive usrp device with: 
+[1614102444789654] [Main] Using TX Device: Single USRP:
   Device: USRP2 / N-Series Device
   Mboard 0: N210r4
   RX Channel: 0
@@ -14,7 +14,7 @@
     TX Dboard: A
     TX Subdev: SBXv3 TX
 
-[1614101960246010] [Main] Using RX Device: Single USRP:
+[1614102444789936] [Main] Using RX Device: Single USRP:
   Device: USRP2 / N-Series Device
   Mboard 0: N210r4
   RX Channel: 0
@@ -26,12 +26,12 @@
     TX Dboard: A
     TX Subdev: SBXv3 TX
 
-[1614101960246047] [Main] Setting TX Rate: 1.000000Msps
-[1614101960246184] [Main] Actual TX Rate: 1.000000Msps
-[1614101960246206] [Main] Setting RX Rate: 1.000000Msps
-[1614101960246319] [Main] Actual RX Rate: 1.000000Msps
-[1614101960246823] [Main] Setting RX Freq: 2437.000000MHz
-[1614101960247142] [Main] Actual RX Freq: 2437.000000
-[1614101960247173] [Main] Setting RX Gain: 38.000000dB
-[1614101960247613] [Main] Actual RX Gain: 38.000000dB
-[1614101960258946] [Main] Setting device timestamp to 0
+[1614102444790134] [Main] Setting TX Rate: 1.000000Msps
+[1614102444790340] [Main] Actual TX Rate: 1.000000Msps
+[1614102444790374] [Main] Setting RX Rate: 1.000000Msps
+[1614102444790532] [Main] Actual RX Rate: 1.000000Msps
+[1614102444791264] [Main] Setting RX Freq: 2437.000000MHz
+[1614102444791720] [Main] Actual RX Freq: 2437.000000
+[1614102444791761] [Main] Setting RX Gain: 38.000000dB
+[1614102444792249] [Main] Actual RX Gain: 38.000000dB
+[1614102444803564] [Main] Setting device timestamp to 0
