@@ -1,26 +1,17 @@
-[1614102777067917] [Tx Worker] Status: Started new logger at ./tx-worker.log
-[1614102777067967] [Tx Worker] Number of channels: 1
-[1614102777067980] [Tx Worker] Max num samps: 363
-[1614102777067989] [Tx Worker] Number of segments: 3
-[1614102777067999] [Tx Worker] Remaining segment size: 161
-[1614102777068007] [Tx Worker] Create dummy block
-[1614102777105603] [Tx Worker] Sending block: 0
-[1614102778085079] [Tx Worker] Sending block: 1
-[1614102779090192] [Tx Worker] Sending block: 2
-[1614102780094910] [Tx Worker] Sending block: 3
-[1614102781099880] [Tx Worker] Sending block: 4
-[1614102782104595] [Tx Worker] Sending block: 5
-[1614102783109610] [Tx Worker] Sending block: 6
-[1614102784112856] [Tx Worker] Sending block: 7
-[1614102785117850] [Tx Worker] Sending block: 8
-[1614102786120994] [Tx Worker] Sending block: 9
-[1614102787124232] [Tx Worker] Sending block: 10
-[1614102788129080] [Tx Worker] Sending block: 11
-[1614102789132419] [Tx Worker] Sending block: 12
-[1614102790135482] [Tx Worker] Sending block: 13
-[1614102791138851] [Tx Worker] Sending block: 14
-[1614102792141992] [Tx Worker] Sending block: 15
-[1614102793145669] [Tx Worker] Sending block: 16
-[1614102794148102] [Tx Worker] Sending block: 17
-[1614102795151458] [Tx Worker] Sending block: 18
-[1614102796154789] [Tx Worker] Sending block: 19
+[1614103318184575] [Tx Worker] Status: Started new logger at ./tx-worker.log
+[1614103318184631] [Tx Worker] Number of channels: 1
+[1614103318184644] [Tx Worker] Max num samps: 363
+[1614103318184652] [Tx Worker] Number of segments: 3
+[1614103318184662] [Tx Worker] Remaining segment size: 161
+[1614103318184673] [Tx Worker] Create dummy block
+[1614103318222249] [Tx Worker] Sending block: 0
+[1614103319199472] [Tx Worker] Sending block: 1
+[1614103320204528] [Tx Worker] Sending block: 2
+[1614103321209180] [Tx Worker] Sending block: 3
+[1614103322214053] [Tx Worker] Sending block: 4
+[1614103323218731] [Tx Worker] Sending block: 5
+[1614103324221791] [Tx Worker] Sending block: 6
+[1614103325226468] [Tx Worker] Sending block: 7
+[1614103326231394] [Tx Worker] Sending block: 8
+[1614103327234312] [Tx Worker] Sending block: 9
+[1614103328237341] [Tx Worker] Sending block: 10
