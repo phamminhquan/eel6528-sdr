@@ -182,7 +182,8 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
         tsFIFO<Block<std::complex<float>>>& fifo_out,
         size_t block_size,
         float alpha,
-        float threshold)
+        float threshold
+        int cap_len)
 {
     // create logger
     Logger logger("IIR Filter", "./iir_filter.log");
@@ -196,7 +197,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     float current_out_db = 0;
     std::complex<float> sample;
     // threshold checker param
-    int cap_len = 1e3;
+    //int cap_len = 1e3;
     int edge_mid_ind = 0;
     bool edge_f = false;
     int cap_block_num = 0;
@@ -534,7 +535,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     size_t total_num_samps, rx_spb;
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
-    int rx_D, rx_U;
+    int rx_D, rx_U, rx_cap_len;
     float alpha, threshold;
     std::string taps_filename;
 
@@ -581,6 +582,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-U,rx-u", po::value<int>(&rx_U)->default_value(4), "Rx side up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
         ("thresh,threshold", po::value<float>(&threshold)->default_value(2e-3), "Threshold for sample capture")
+        ("rx-cap-len", po::value<size_t>(&rx_cap_len)->default_value(1200), "Tx side down-sampling factor")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -860,7 +862,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_out),
                     std::ref(iir_captured_fifo), rx_spb*rx_U/rx_D,
-                    alpha, threshold);
+                    alpha, threshold, rx_cap_len);
         // create thread for the processing function before receiving samples
         for (int i=0; i<num_pa_threads; i++)
             power_average_worker_t[i] = std::thread(&power_average,
