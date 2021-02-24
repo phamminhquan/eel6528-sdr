@@ -190,6 +190,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("IIR Filter", "./iir_filter.log");
     // create output filestream
+    std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
     //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
@@ -248,7 +249,9 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         }
                     }
                 }
-            } 
+            }
+            // put value in file
+            iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // notify user that processing thread is done
@@ -300,7 +303,7 @@ void filter(int D, int U, size_t in_len,
                 in[i] = in_block.second[i];
             }
             // put value in file
-            //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
+            in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
             filt.set_head(in_block.first == 0);
             filt.filter(in, out);
@@ -567,11 +570,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-int-n", "tune USRP RX with integer-N tuning")
         ("tx-D,tx-d", po::value<int>(&tx_D)->default_value(4), "Tx side down-sampling factor")
         ("tx-U,tx-u", po::value<int>(&tx_U)->default_value(5), "Tx side up-sampling factor")
-        ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(5), "Rx side down-sampling factor")
-        ("rx-U,rx-u", po::value<int>(&rx_U)->default_value(4), "Rx side up-sampling factor")
+        ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
+        ("rx-U,rx-u", po::value<int>(&rx_U)->default_value(1), "Rx side up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("thresh,threshold", po::value<float>(&threshold)->default_value(0.0005), "Threshold for sample capture")
-        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1200), "Tx side down-sampling factor")
+        ("thresh,threshold", po::value<float>(&threshold)->default_value(0.01), "Threshold for sample capture")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(2000), "Tx side down-sampling factor")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")

@@ -1,9 +1,0 @@
-[1614136482662548] [Recv] Status: Started new logger at ./recv.log
-[1614136482662611] [Recv] Create receive streamer
-[1614136482663097] [Recv] Prepare buffers for received samples and metadata
-[1614136482663135] [Recv] Number of receive channels: 1
-[1614136482663155] [Recv] Number of samples per buffer: 10000
-[1614136482664387] [Recv] Create ofstream object
-[1614136482664457] [Recv] Setup streaming
-[1614136482664505] [Recv] Number of requested samples: 0
-[1614136482664526] [Recv] While loop
