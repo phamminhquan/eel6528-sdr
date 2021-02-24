@@ -1,4 +1,3 @@
-//#include "wavetable.hpp"
 #include <uhd/exception.hpp>
 #include <uhd/types/tune_request.hpp>
 #include <uhd/usrp/multi_usrp.hpp>
@@ -6,8 +5,6 @@
 #include <uhd/utils/static.hpp>
 #include <uhd/utils/thread.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/format.hpp>
 #include <boost/math/special_functions/round.hpp>
 #include <boost/program_options.hpp>
 #include <boost/thread/thread.hpp>
@@ -20,53 +17,100 @@
 #include <random>
 
 
+#include "utilities.h"
 #include "logger.h"
 #include "fifo.h"
 #include "filter-taps.h"
 #include "filters.hpp"
 #include "pulse.h"
+#include "block.h"
+#include "power-average.h"
+#include "stop-signal.h"
 
 
 namespace po = boost::program_options;
 
-// create a block type which is a pair of block number and vector of samples
-template <typename samp_type>
-using Block = typename std::pair<int, std::vector<samp_type>>;
-
 
 /***********************************************************************
- * Signal handlers
+ * Automatic gain control by normalizing RMS value
  **********************************************************************/
-static bool stop_signal_called = false;
-void sig_int_handler(int)
+void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
 {
-    stop_signal_called = true;
+    // create logger
+    Logger logger("CapturedBlockCount", "./captured-block-count.log");
+    // create dummy block
+    Block<std::complex<float>> in_block;
+    size_t block_count = 0;
+    while (not stop_signal_called) {
+        // checking fifo size
+        block_count = fifo_in.size();
+        logger.log("Block count: " + std::to_string(block_count));
+        // pop all the packets in fifo
+        for (int i=0; i<block_count; i++)
+            fifo_in.pop(in_block);
+        //logger.log("FIFO size: " + std::to_string(fifo_in.size()));
+        // wait 10 second
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+    }
+    // notify user that processing thread is done
+    logger.log("Bit generator thread is done and closing");
 }
 
 
 /***********************************************************************
- * Utilities
+ * Automatic gain control by normalizing RMS value
  **********************************************************************/
-//! Change to filename, e.g. from usrp_samples.dat to usrp_samples.00.dat,
-//  but only if multiple names are to be generated.
-std::string generate_out_filename(
-    const std::string& base_fn, size_t n_names, size_t this_name)
+void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
+          tsFIFO<Block<std::complex<float>>>& fifo_out)
 {
-    if (n_names == 1) {
-        return base_fn;
+    // create logger
+    Logger logger("AGC", "./agc.log");
+    // create output filestream
+    std::ofstream agc_out_file ("agc_out.dat", std::ofstream::binary);
+    // create dummy block
+    Block<std::complex<float>> in_block;
+    size_t block_size;
+    float rms = 0;
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // create dummy block
+            Block<std::complex<float>> out_block;
+            // pop input block from fifo
+            fifo_in.pop(in_block);
+            // set block counter
+            out_block.first = in_block.first;
+            // calculate RMS value of block
+            rms = 0;
+            block_size = in_block.second.size();
+            for (int i=0; i<block_size; i++) {
+                rms += std::norm(in_block.second[i]);
+            }
+            rms /= block_size;
+            rms = std::sqrt(rms);
+            logger.log("Block: " + std::to_string(in_block.first) +
+                      " RMS: " + std::to_string(rms));
+            // normalize by dividing each sample by rms value
+            for (int i=0; i<block_size; i++) {
+                out_block.second.push_back(in_block.second[i]/rms);
+            }
+            // push block to fifo
+            fifo_out.push(out_block);
+            // store filter output to file to check with jupyter
+            agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+        }
     }
-
-    boost::filesystem::path base_fn_fp(base_fn);
-    base_fn_fp.replace_extension(boost::filesystem::path(
-        str(boost::format("%02d%s") % this_name % base_fn_fp.extension().string())));
-    return base_fn_fp.string();
+    // close output file
+    agc_out_file.close();
+    // notify user that processing thread is done
+    logger.log("Bit generator thread is done and closing");
 }
 
 
 /***********************************************************************
  * Generate random bits as packets
  **********************************************************************/
-void generate_random_bits (tsFIFO<Block<bool>>& fifo, float p, size_t bits_per_sec)
+void generate_random_bits (tsFIFO<Block<bool>>& fifo,
+                           float p, size_t bits_per_sec)
 {
     // create logger
     Logger logger("BitGenerator", "./bit_gen.log");
@@ -92,7 +136,7 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo, float p, size_t bits_per_s
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
-        logger.logf("Bit generator FIFO size: " + std::to_string(fifo.size()));
+        //logger.logf("Bit generator FIFO size: " + std::to_string(fifo.size()));
         // wait 1 second
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -104,7 +148,8 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo, float p, size_t bits_per_s
 /***********************************************************************
  * Modulation (BPSK)
  **********************************************************************/
-void modulate (tsFIFO<Block<bool>>& fifo_in, tsFIFO<Block<std::complex<float>>>& fifo_out)
+void modulate (tsFIFO<Block<bool>>& fifo_in,
+               tsFIFO<Block<std::complex<float>>>& fifo_out)
 {
     // create logger
     Logger logger("Modulator", "./mod.log");
@@ -118,8 +163,6 @@ void modulate (tsFIFO<Block<bool>>& fifo_in, tsFIFO<Block<std::complex<float>>>&
             out_block.first = in_block.first;
             // BPSK modulation (0 -> 1, 1 -> -1)
             for (int i=1; i<in_block.second.size(); i++) {
-                //std::complex<float> sample = -2.0 * (float)in_block.second[i] + 1.0;
-                //out_block.second.push_back(sample);
                 out_block.second.push_back(-2.0 * (float)in_block.second[i] + 1.0);
                 // log for debug
                 logger.logf("Bit: " + std::to_string(in_block.second[i]) +
@@ -128,7 +171,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in, tsFIFO<Block<std::complex<float>>>&
             // push block to fifo
             fifo_out.push(out_block);
             // print out fifo size to check
-            logger.logf("Modulated FIFO size: " + std::to_string(fifo_out.size()));
+            //logger.logf("Modulated FIFO size: " + std::to_string(fifo_out.size()));
         }
     }
     // notify user that processing thread is done
@@ -137,58 +180,17 @@ void modulate (tsFIFO<Block<bool>>& fifo_in, tsFIFO<Block<std::complex<float>>>&
 
 
 /***********************************************************************
- * Power averager thread function
- **********************************************************************/
-void power_average (tsFIFO<Block<std::complex<float>>>& fifo_in, const int thread_number)
-{
-    // create logger
-    Logger logger("Power averager " + std::to_string(thread_number) , "./pow_ave" + std::to_string(thread_number) + ".log");
-    // create dummy block
-    Block<std::complex<float>> block;
-    // create output filestream
-    std::ofstream cap_file ("capture.dat", std::ofstream::binary);
-    // parameters
-    float pow_ave_lin = 0;
-    float pow_ave_db = 0;
-    int block_size = 0;
-    while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
-            // reset param
-            pow_ave_lin = 0;
-            pow_ave_db = 0;
-            // pop block from fifo
-            fifo_in.pop(block);
-            block_size = block.second.size();
-            cap_file.write((const char*) block.second.data(), block_size*sizeof(std::complex<float>));
-            for (int i=0; i<block_size; i++) {
-                pow_ave_lin += std::pow(std::abs(block.second[i]), 2);
-            }
-            pow_ave_lin /= block_size;
-            pow_ave_db = 10*log10(pow_ave_lin);
-            // print out average power
-            logger.log("Block: " + std::to_string(block.first) +
-                    "\tAverage Power: " + std::to_string(pow_ave_db) + " dB");
-        }
-    }
-    // notify user that processing thread is done
-    logger.log("Power averager thread is done and closing");
-}
-
-
-/***********************************************************************
  * IIR filter thread function
  **********************************************************************/
 void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
-        tsFIFO<Block<std::complex<float>>>& fifo_out,
-        size_t block_size,
-        float alpha,
-        float threshold,
-        int cap_len)
+                 tsFIFO<Block<std::complex<float>>>& fifo_out,
+                 size_t block_size, float alpha, float threshold,
+                 int cap_len)
 {
     // create logger
     Logger logger("IIR Filter", "./iir_filter.log");
     // create output filestream
-    std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
+    //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
     // IIR filter param
@@ -258,11 +260,10 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
  * Filtering thread function
  **********************************************************************/
 void filter(int D, int U, size_t in_len,
-        std::vector<std::complex<float>>& filter_taps,
-        //std::complex<float>* filter_taps,
-        size_t num_filt_threads,
-        tsFIFO<Block<std::complex<float>>>& fifo_in,
-        tsFIFO<Block<std::complex<float>>>& fifo_out)
+            std::vector<std::complex<float>>& filter_taps,
+            size_t num_filt_threads,
+            tsFIFO<Block<std::complex<float>>>& fifo_in,
+            tsFIFO<Block<std::complex<float>>>& fifo_out)
 {
     // create logger
     Logger logger("Filter", "./filter.log");
@@ -297,9 +298,6 @@ void filter(int D, int U, size_t in_len,
             // get input array
             for (int i=0; i<in_len; i++) {
                 in[i] = in_block.second[i];
-                //logger.logf("Block: " + std::to_string(in_block.first) +
-                //        " Sample: " + std::to_string(in[i].real()) +
-                //        " + i * " + std::to_string(in[i].imag()));
             }
             // put value in file
             //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
@@ -328,9 +326,9 @@ void filter(int D, int U, size_t in_len,
  * A function to be used as a boost::thread_group thread for transmitting
  **********************************************************************/
 void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
-    uhd::tx_streamer::sptr tx_streamer,
-    uhd::tx_metadata_t metadata,
-    tsFIFO<Block<std::complex<float>>>& fifo_in)
+                      uhd::tx_streamer::sptr tx_streamer,
+                      uhd::tx_metadata_t metadata,
+                      tsFIFO<Block<std::complex<float>>>& fifo_in)
 {
     // create a logger
     Logger logger("Tx Worker", "./tx-worker.log");
@@ -342,14 +340,11 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
     int rem_seg_size = fifo_block_size - num_seg*samp_per_buff;
     logger.logf("Remaining segment size: " + std::to_string(rem_seg_size));
     // create dummy block
-    logger.logf("Create dummy block");
     Block<std::complex<float>> block;
     // send data until the signal handler gets called
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            //logger.log("Check input fifo size: " + std::to_string(fifo_in.size()));
             // pop packet block
-            //logger.log("Popping block");
             fifo_in.pop(block);
             logger.log("Sending block: " + std::to_string(block.first));
             // segment the block
@@ -358,13 +353,10 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
                 std::vector<std::complex<float>*> segment_ptr;
                 std::complex<float> segment[samp_per_buff];
                 for (int j=0; j<samp_per_buff; j++) {
-                    //logger.log("Seg: " + std::to_string(i) + 
-                    //           " Index: " + std::to_string(i * samp_per_buff + j));
                     segment[j] = block.second[i * samp_per_buff + j];
                 }
                 segment_ptr.push_back(segment);
                 // transmit segment
-                //logger.log("Transmit segment");
                 tx_streamer->send(segment_ptr, samp_per_buff, metadata);
                 metadata.start_of_burst = false;
                 metadata.has_time_spec  = false;
@@ -375,19 +367,16 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
                 std::vector<std::complex<float>*> segment_ptr;
                 std::complex<float> segment[samp_per_buff];
                 for (int i=0; i<rem_seg_size; i++) {
-                    //logger.log("Remaining Seg Index: " + std::to_string(i));
                     segment[i] = block.second[fifo_block_size - rem_seg_size + i];
                 }
                 segment_ptr.push_back(segment);
                 // transmit segment
-                //logger.log("Transmit segment");
                 tx_streamer->send(segment, rem_seg_size, metadata);
                 metadata.start_of_burst = false;
                 metadata.has_time_spec  = false;
             }
         }
     }
-
     // send a mini EOB packet
     logger.log("Sending block to tx streamer");
     metadata.end_of_burst = true;
@@ -399,14 +388,14 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
  * recv_to_fifo function
  **********************************************************************/
 void recv_to_fifo(uhd::usrp::multi_usrp::sptr usrp,
-    const std::string& cpu_format,
-    const std::string& wire_format,
-    const std::string& file,
-    size_t samps_per_buff,
-    int num_requested_samples,
-    double settling_time,
-    std::vector<size_t> rx_channel_nums,
-    tsFIFO<Block<std::complex<float>>>& fifo_in)
+                  const std::string& cpu_format,
+                  const std::string& wire_format,
+                  const std::string& file,
+                  size_t samps_per_buff,
+                  int num_requested_samples,
+                  double settling_time,
+                  std::vector<size_t> rx_channel_nums,
+                  tsFIFO<Block<std::complex<float>>>& fifo_in)
 {
     // create logger
     Logger recv_logger("Recv", "./recv.log");
@@ -848,6 +837,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread filter_worker_t;
     std::thread iir_filter_worker_t;
     std::thread power_average_worker_t[num_pa_threads];
+    std::thread agc_t;
+    std::thread captured_block_count_t;
 
     // recv to file as function
     if (!tx_rx) {      // RX SIDE
@@ -855,6 +846,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> fifo_in;
         tsFIFO<Block<std::complex<float>>> fifo_out;
         tsFIFO<Block<std::complex<float>>> iir_captured_fifo;
+        tsFIFO<Block<std::complex<float>>> agc_out_fifo;
         // create thread for multirate filtering
         filter_worker_t = std::thread(&filter, rx_D, rx_U, rx_spb,
                 std::ref(filter_taps.taps), num_filt_threads,
@@ -864,22 +856,21 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                     std::ref(iir_captured_fifo), rx_spb*rx_U/rx_D,
                     alpha, threshold, rx_cap_len);
         // create thread for the processing function before receiving samples
-        for (int i=0; i<num_pa_threads; i++)
-            power_average_worker_t[i] = std::thread(&power_average,
-                    std::ref(iir_captured_fifo), i);
+        //for (int i=0; i<num_pa_threads; i++)
+        //    power_average_worker_t[i] = std::thread(&power_average,
+        //            std::ref(iir_captured_fifo), i);
+        // create thread for agc
+        agc_t = std::thread(&agc, std::ref(iir_captured_fifo),
+                    std::ref(agc_out_fifo));
+        // create thread for counting receiving blocks every 10 seconds
+        captured_block_count_t = std::thread(&captured_block_count,
+                    std::ref(agc_out_fifo));
+        
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
             rx_channel_nums, fifo_in);
-        // join all processing thread
-        if (filter_worker_t.joinable())
-            filter_worker_t.join();
-        if (iir_filter_worker_t.joinable())
-            iir_filter_worker_t.join();
-        for (int i=0; i<num_pa_threads; i++) {
-            if (power_average_worker_t[i].joinable())
-                power_average_worker_t[i].join();
-        }
+        
     } else {      // TX SIDE
         // make an array pointer to hold pulse shape filter
         size_t rrc_len = 2*rrc_half_len+1;
@@ -911,19 +902,29 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         size_t tx_max_num_samps = tx_stream->get_max_num_samps();
         transmit_worker(tx_max_num_samps, tx_packet_len*tx_U/tx_D,
                 tx_stream, md, pulse_shape_out_fifo);
-        
-        // join threads
-        if (bit_generator_t.joinable())
-            bit_generator_t.join();
-        if (modulator_t.joinable())
-            modulator_t.join();
-        if (pulse_shaper_t.joinable())
-            pulse_shaper_t.join();
     }
     
     // clean up transmit worker
-    //stop_signal_called = true;
-    //transmit_thread.join_all();
+    stop_signal_called = true;
+    if (filter_worker_t.joinable())
+        filter_worker_t.join();
+    if (iir_filter_worker_t.joinable())
+        iir_filter_worker_t.join();
+    if (agc_t.joinable())
+        agc_t.join();
+    if (captured_block_count_t.joinable())
+        captured_block_count_t.join();
+    for (int i=0; i<num_pa_threads; i++) {
+        if (power_average_worker_t[i].joinable())
+            power_average_worker_t[i].join();
+    }
+    if (bit_generator_t.joinable())
+            bit_generator_t.join();
+    if (modulator_t.joinable())
+        modulator_t.join();
+    if (pulse_shaper_t.joinable())
+        pulse_shaper_t.join();
+    
 
     // finished
     std::cout << std::endl << "Done!" << std::endl << std::endl;

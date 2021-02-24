@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+../include/block.h
+vector
+-
+
 ../include/fft.hpp
 complex
 -
@@ -50,8 +54,32 @@ cstdarg
 mutex
 -
 
+../include/power-average.h
+complex
+-
+fstream
+-
+fifo.h
+../include/fifo.h
+block.h
+../include/block.h
+logger.h
+../include/logger.h
+stop-signal.h
+../include/stop-signal.h
+
 ../include/pulse.h
 complex
+-
+
+../include/stop-signal.h
+
+../include/utilities.h
+boost/filesystem.hpp
+-
+boost/format.hpp
+-
+string
 -
 
 /home/quanpham/eel6528-sdr/src/lab3.cpp
@@ -68,10 +96,6 @@ uhd/utils/static.hpp
 uhd/utils/thread.hpp
 -
 boost/algorithm/string.hpp
--
-boost/filesystem.hpp
--
-boost/format.hpp
 -
 boost/math/special_functions/round.hpp
 -
@@ -93,6 +117,8 @@ map
 -
 random
 -
+utilities.h
+/home/quanpham/eel6528-sdr/src/utilities.h
 logger.h
 /home/quanpham/eel6528-sdr/src/logger.h
 fifo.h
@@ -103,4 +129,10 @@ filters.hpp
 /home/quanpham/eel6528-sdr/src/filters.hpp
 pulse.h
 /home/quanpham/eel6528-sdr/src/pulse.h
+block.h
+/home/quanpham/eel6528-sdr/src/block.h
+power-average.h
+/home/quanpham/eel6528-sdr/src/power-average.h
+stop-signal.h
+/home/quanpham/eel6528-sdr/src/stop-signal.h
 

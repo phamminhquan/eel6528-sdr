@@ -150,6 +150,33 @@ include/filters.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/filters.cpp.s
 .PHONY : include/filters.cpp.s
 
+include/power-average.o: include/power-average.cpp.o
+
+.PHONY : include/power-average.o
+
+# target to build an object file
+include/power-average.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/power-average.cpp.o
+.PHONY : include/power-average.cpp.o
+
+include/power-average.i: include/power-average.cpp.i
+
+.PHONY : include/power-average.i
+
+# target to preprocess a source file
+include/power-average.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/power-average.cpp.i
+.PHONY : include/power-average.cpp.i
+
+include/power-average.s: include/power-average.cpp.s
+
+.PHONY : include/power-average.s
+
+# target to generate assembly for a file
+include/power-average.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/power-average.cpp.s
+.PHONY : include/power-average.cpp.s
+
 include/pulse.o: include/pulse.cpp.o
 
 .PHONY : include/pulse.o
@@ -176,6 +203,60 @@ include/pulse.s: include/pulse.cpp.s
 include/pulse.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/pulse.cpp.s
 .PHONY : include/pulse.cpp.s
+
+include/stop-signal.o: include/stop-signal.cpp.o
+
+.PHONY : include/stop-signal.o
+
+# target to build an object file
+include/stop-signal.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/stop-signal.cpp.o
+.PHONY : include/stop-signal.cpp.o
+
+include/stop-signal.i: include/stop-signal.cpp.i
+
+.PHONY : include/stop-signal.i
+
+# target to preprocess a source file
+include/stop-signal.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/stop-signal.cpp.i
+.PHONY : include/stop-signal.cpp.i
+
+include/stop-signal.s: include/stop-signal.cpp.s
+
+.PHONY : include/stop-signal.s
+
+# target to generate assembly for a file
+include/stop-signal.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/stop-signal.cpp.s
+.PHONY : include/stop-signal.cpp.s
+
+include/utilities.o: include/utilities.cpp.o
+
+.PHONY : include/utilities.o
+
+# target to build an object file
+include/utilities.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/utilities.cpp.o
+.PHONY : include/utilities.cpp.o
+
+include/utilities.i: include/utilities.cpp.i
+
+.PHONY : include/utilities.i
+
+# target to preprocess a source file
+include/utilities.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/utilities.cpp.i
+.PHONY : include/utilities.cpp.i
+
+include/utilities.s: include/utilities.cpp.s
+
+.PHONY : include/utilities.s
+
+# target to generate assembly for a file
+include/utilities.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/utilities.cpp.s
+.PHONY : include/utilities.cpp.s
 
 lab3.o: lab3.cpp.o
 
@@ -216,9 +297,18 @@ help:
 	@echo "... include/filters.o"
 	@echo "... include/filters.i"
 	@echo "... include/filters.s"
+	@echo "... include/power-average.o"
+	@echo "... include/power-average.i"
+	@echo "... include/power-average.s"
 	@echo "... include/pulse.o"
 	@echo "... include/pulse.i"
 	@echo "... include/pulse.s"
+	@echo "... include/stop-signal.o"
+	@echo "... include/stop-signal.i"
+	@echo "... include/stop-signal.s"
+	@echo "... include/utilities.o"
+	@echo "... include/utilities.i"
+	@echo "... include/utilities.s"
 	@echo "... lab3.o"
 	@echo "... lab3.i"
 	@echo "... lab3.s"

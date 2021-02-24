@@ -5,14 +5,31 @@ CMakeFiles/test.dir/include/filters.cpp.o: ../include/fft.hpp
 CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.cpp
 CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.hpp
 
+CMakeFiles/test.dir/include/power-average.cpp.o: ../include/block.h
+CMakeFiles/test.dir/include/power-average.cpp.o: ../include/fifo.h
+CMakeFiles/test.dir/include/power-average.cpp.o: ../include/logger.h
+CMakeFiles/test.dir/include/power-average.cpp.o: ../include/power-average.cpp
+CMakeFiles/test.dir/include/power-average.cpp.o: ../include/power-average.h
+CMakeFiles/test.dir/include/power-average.cpp.o: ../include/stop-signal.h
+
 CMakeFiles/test.dir/include/pulse.cpp.o: ../include/pulse.cpp
 CMakeFiles/test.dir/include/pulse.cpp.o: ../include/pulse.h
 
+CMakeFiles/test.dir/include/stop-signal.cpp.o: ../include/stop-signal.cpp
+CMakeFiles/test.dir/include/stop-signal.cpp.o: ../include/stop-signal.h
+
+CMakeFiles/test.dir/include/utilities.cpp.o: ../include/utilities.cpp
+CMakeFiles/test.dir/include/utilities.cpp.o: ../include/utilities.h
+
+CMakeFiles/test.dir/lab3.cpp.o: ../include/block.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/fft.hpp
 CMakeFiles/test.dir/lab3.cpp.o: ../include/fifo.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/filter-taps.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/filters.hpp
 CMakeFiles/test.dir/lab3.cpp.o: ../include/logger.h
+CMakeFiles/test.dir/lab3.cpp.o: ../include/power-average.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/pulse.h
+CMakeFiles/test.dir/lab3.cpp.o: ../include/stop-signal.h
+CMakeFiles/test.dir/lab3.cpp.o: ../include/utilities.h
 CMakeFiles/test.dir/lab3.cpp.o: lab3.cpp
 

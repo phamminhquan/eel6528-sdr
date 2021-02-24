@@ -5,14 +5,31 @@ CMakeFiles/test.dir/include/filters.cpp.o
  /home/quanpham/eel6528-sdr/include/fft.hpp
  /home/quanpham/eel6528-sdr/include/filters.cpp
  /home/quanpham/eel6528-sdr/include/filters.hpp
+CMakeFiles/test.dir/include/power-average.cpp.o
+ /home/quanpham/eel6528-sdr/include/block.h
+ /home/quanpham/eel6528-sdr/include/fifo.h
+ /home/quanpham/eel6528-sdr/include/logger.h
+ /home/quanpham/eel6528-sdr/include/power-average.cpp
+ /home/quanpham/eel6528-sdr/include/power-average.h
+ /home/quanpham/eel6528-sdr/include/stop-signal.h
 CMakeFiles/test.dir/include/pulse.cpp.o
  /home/quanpham/eel6528-sdr/include/pulse.cpp
  /home/quanpham/eel6528-sdr/include/pulse.h
+CMakeFiles/test.dir/include/stop-signal.cpp.o
+ /home/quanpham/eel6528-sdr/include/stop-signal.cpp
+ /home/quanpham/eel6528-sdr/include/stop-signal.h
+CMakeFiles/test.dir/include/utilities.cpp.o
+ /home/quanpham/eel6528-sdr/include/utilities.cpp
+ /home/quanpham/eel6528-sdr/include/utilities.h
 CMakeFiles/test.dir/lab3.cpp.o
+ ../include/block.h
  ../include/fft.hpp
  ../include/fifo.h
  ../include/filter-taps.h
  ../include/filters.hpp
  ../include/logger.h
+ ../include/power-average.h
  ../include/pulse.h
+ ../include/stop-signal.h
+ ../include/utilities.h
  /home/quanpham/eel6528-sdr/src/lab3.cpp
