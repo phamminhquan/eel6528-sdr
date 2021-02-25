@@ -110,10 +110,13 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
  * Generate random bits as packets
  **********************************************************************/
 void generate_random_bits (tsFIFO<Block<bool>>& fifo,
-                           float p, size_t bits_per_sec)
+                           float p, size_t bits_per_sec,
+                           size_t packet_rate)
 {
     // create logger
     Logger logger("BitGenerator", "./bit_gen.log");
+    int idle_time_us = (int)(1/(float)packet_rate * 1e6);
+    logger.log("Idle time: " + std::to_string(idle_time_us));
     // instantiate a random device and a random number generator
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -137,8 +140,8 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
         fifo.push(block);
         // print out fifo size to check
         //logger.logf("Bit generator FIFO size: " + std::to_string(fifo.size()));
-        // wait 1 second
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        // wait
+        std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
     // notify user that processing thread is done
     logger.log("Bit generator thread is done and closing");
@@ -251,7 +254,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 }
             }
             // put value in file
-            iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
+            //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // notify user that processing thread is done
@@ -303,7 +306,7 @@ void filter(int D, int U, size_t in_len,
                 in[i] = in_block.second[i];
             }
             // put value in file
-            in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
+            //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
             filt.set_head(in_block.first == 0);
             filt.filter(in, out);
@@ -312,7 +315,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
@@ -519,7 +522,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::string tx_args, tx_ant, tx_subdev, tx_channels;
     double tx_rate, tx_freq, tx_gain, tx_bw;
     int tx_D, tx_U;
-    size_t rrc_half_len, tx_packet_len;
+    size_t rrc_half_len, tx_packet_len, packets_per_sec;
     
     // rx variables to be set by po
     std::string ref, otw;
@@ -580,6 +583,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         ("tx-packet-len", po::value<size_t>(&tx_packet_len)->default_value(1000), "Tx side down-sampling factor")
+        ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
     ;
 
     // clang-format on
@@ -607,6 +611,13 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         return ~0;
     }
     FilterTaps filter_taps (taps_filename);
+    
+    // check packets per sec
+    if (packets_per_sec > 800) {
+        std::cerr << "Invalid packets per second, please retry with a different value"
+                  << std::endl;
+        return ~0;
+    }
     
     // create a usrp device
     main_logger.log("Creating the transmit usrp device with: " + tx_args);
@@ -890,7 +901,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<bool>> bit_fifo;
         // spawn bit generation thread
         bit_generator_t = std::thread(&generate_random_bits,
-                std::ref(bit_fifo), 0.5, tx_packet_len);
+                std::ref(bit_fifo), 0.5, tx_packet_len, packets_per_sec);
         // instantiate a fifo for modulation
         tsFIFO<Block<std::complex<float>>> mod_fifo;
         // spawn modulation thread
