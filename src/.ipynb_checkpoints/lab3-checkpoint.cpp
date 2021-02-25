@@ -139,7 +139,7 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
-        //logger.logf("Bit generator FIFO size: " + std::to_string(fifo.size()));
+        logger.log("Bit generator output FIFO size: " + std::to_string(fifo.size()));
         // wait
         std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
@@ -174,7 +174,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             // push block to fifo
             fifo_out.push(out_block);
             // print out fifo size to check
-            //logger.logf("Modulated FIFO size: " + std::to_string(fifo_out.size()));
+            logger.log("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
         }
     }
     // notify user that processing thread is done
@@ -352,7 +352,7 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
         if (fifo_in.size() != 0) {
             // pop packet block
             fifo_in.pop(block);
-            logger.log("Sending block: " + std::to_string(block.first));
+            //logger.log("Sending block: " + std::to_string(block.first));
             // segment the block
             for (int i=0; i<num_seg; i++) {
                 // set up segment as vector
@@ -381,6 +381,8 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
                 metadata.start_of_burst = false;
                 metadata.has_time_spec  = false;
             }
+            // print out tx fifo size
+            logger.log("TX fifo size: " + std::to_string(fifo_in.size()));
         }
     }
     // send a mini EOB packet
