@@ -110,7 +110,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
  * Generate random bits as packets
  **********************************************************************/
 void generate_random_bits (tsFIFO<Block<bool>>& fifo,
-                           float p, size_t bits_per_sec,
+                           float p, size_t packet_size,
                            size_t packet_rate)
 {
     // create logger
@@ -131,10 +131,10 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
         block.first = block_counter++;
         // pulling samples from bernoulli distribution
         std::map<bool, int> hist;
-        for (int n=0; n<bits_per_sec; n++) {
+        for (int n=0; n<packet_size; n++) {
             bool sample = d(gen);
             block.second.push_back(sample);
-            logger.logf("Sample: " + std::to_string(sample));
+            //logger.logf("Sample: " + std::to_string(sample));
         }
         // push block to fifo
         fifo.push(block);
@@ -152,28 +152,31 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
  * Modulation (BPSK)
  **********************************************************************/
 void modulate (tsFIFO<Block<bool>>& fifo_in,
-               tsFIFO<Block<std::complex<float>>>& fifo_out)
+               tsFIFO<Block<std::complex<float>>>& fifo_out,
+               size_t block_size)
 {
     // create logger
     Logger logger("Modulator", "./mod.log");
     // create dummy block
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
+    bool bit;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop bit sequence from input fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
             // BPSK modulation (0 -> 1, 1 -> -1)
-            for (int i=1; i<in_block.second.size(); i++) {
+            for (int i=1; i<block_size; i++) {
                 out_block.second.push_back(-2.0 * (float)in_block.second[i] + 1.0);
                 // log for debug
-                logger.logf("Bit: " + std::to_string(in_block.second[i]) +
-                          " Symbol: " + std::to_string(out_block.second[i].real()));
+                //logger.logf("Bit: " + std::to_string(in_block.second[i]) +
+                //          " Symbol: " + std::to_string(out_block.second[i].real()));
             }
             // push block to fifo
             fifo_out.push(out_block);
             // print out fifo size to check
+            //logger.log("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
             logger.log("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
         }
     }
@@ -908,7 +911,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> mod_fifo;
         // spawn modulation thread
         modulator_t = std::thread(&modulate, std::ref(bit_fifo),
-                std::ref(mod_fifo));
+                std::ref(mod_fifo), tx_packet_len);
         // instantiate pulse shaping filter as multirate filter
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
         pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
