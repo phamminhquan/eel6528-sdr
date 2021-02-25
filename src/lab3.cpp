@@ -34,7 +34,8 @@ namespace po = boost::program_options;
 /***********************************************************************
  * Automatic gain control by normalizing RMS value
  **********************************************************************/
-void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
+void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in,
+                           size_t block_size)
 {
     // create logger
     Logger logger("CapturedBlockCount", "./captured-block-count.log");
@@ -43,7 +44,6 @@ void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
     size_t block_count = 0;
     while (not stop_signal_called) {
         // checking fifo size
-        block_count = fifo_in.size();
         logger.log("Block count: " + std::to_string(block_count));
         // pop all the packets in fifo
         for (int i=0; i<block_count; i++)
@@ -61,7 +61,8 @@ void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
  * Automatic gain control by normalizing RMS value
  **********************************************************************/
 void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
-          tsFIFO<Block<std::complex<float>>>& fifo_out)
+          tsFIFO<Block<std::complex<float>>>& fifo_out,
+          size_t block_size)
 {
     // create logger
     Logger logger("AGC", "./agc.log");
@@ -69,19 +70,17 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     std::ofstream agc_out_file ("agc_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
-    size_t block_size;
+    Block<std::complex<float>> out_block;
+    out_block.second.resize(block_size);
     float rms = 0;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            // create dummy block
-            Block<std::complex<float>> out_block;
             // pop input block from fifo
             fifo_in.pop(in_block);
             // set block counter
             out_block.first = in_block.first;
             // calculate RMS value of block
             rms = 0;
-            block_size = in_block.second.size();
             for (int i=0; i<block_size; i++) {
                 rms += std::norm(in_block.second[i]);
             }
@@ -91,7 +90,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
                       " RMS: " + std::to_string(rms));
             // normalize by dividing each sample by rms value
             for (int i=0; i<block_size; i++) {
-                out_block.second.push_back(in_block.second[i]/rms);
+                out_block.second[i] = in_block.second[i]/rms;
             }
             // push block to fifo
             fifo_out.push(out_block);
@@ -124,16 +123,17 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
     std::bernoulli_distribution d(p);
     // create block counter
     int block_counter = 0;
+    // create dummy block
+    Block<bool> block;
+    block.second.resize(packet_size);
     while (not stop_signal_called) {
-        // create dummy block
-        Block<bool> block;
         // set block counter
         block.first = block_counter++;
         // pulling samples from bernoulli distribution
         std::map<bool, int> hist;
         for (int n=0; n<packet_size; n++) {
             bool sample = d(gen);
-            block.second.push_back(sample);
+            block.second[n] = sample;
             //logger.logf("Sample: " + std::to_string(sample));
         }
         // push block to fifo
@@ -160,6 +160,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // create dummy block
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
+    out_block.second.resize(block_size);
     bool bit;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -168,7 +169,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             out_block.first = in_block.first;
             // BPSK modulation (0 -> 1, 1 -> -1)
             for (int i=1; i<block_size; i++) {
-                out_block.second.push_back(-2.0 * (float)in_block.second[i] + 1.0);
+                out_block.second[i] = -2.0 * (float)in_block.second[i] + 1.0;
                 // log for debug
                 //logger.logf("Bit: " + std::to_string(in_block.second[i]) +
                 //          " Symbol: " + std::to_string(out_block.second[i].real()));
@@ -880,10 +881,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //            std::ref(iir_captured_fifo), i);
         // create thread for agc
         agc_t = std::thread(&agc, std::ref(iir_captured_fifo),
-                    std::ref(agc_out_fifo));
+                    std::ref(agc_out_fifo), rx_cap_len);
         // create thread for counting receiving blocks every 10 seconds
         captured_block_count_t = std::thread(&captured_block_count,
-                    std::ref(agc_out_fifo));
+                    std::ref(agc_out_fifo), rx_cap_len);
         
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
