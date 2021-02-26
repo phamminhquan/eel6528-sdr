@@ -26,6 +26,7 @@
 #include "block.h"
 #include "power-average.h"
 #include "stop-signal.h"
+//#include "fixed-queue.h"
 
 
 namespace po = boost::program_options;
@@ -34,8 +35,7 @@ namespace po = boost::program_options;
 /***********************************************************************
  * Automatic gain control by normalizing RMS value
  **********************************************************************/
-void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in,
-                           size_t block_size)
+void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
 {
     // create logger
     Logger logger("CapturedBlockCount", "./captured-block-count.log");
@@ -44,6 +44,7 @@ void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in,
     size_t block_count = 0;
     while (not stop_signal_called) {
         // checking fifo size
+        block_count = fifo_in.size();
         logger.log("Block count: " + std::to_string(block_count));
         // pop all the packets in fifo
         for (int i=0; i<block_count; i++)
@@ -86,8 +87,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
             rms /= block_size;
             rms = std::sqrt(rms);
-            logger.log("Block: " + std::to_string(in_block.first) +
-                      " RMS: " + std::to_string(rms));
+            //logger.log("Block: " + std::to_string(in_block.first) +
+            //          " RMS: " + std::to_string(rms));
             // normalize by dividing each sample by rms value
             for (int i=0; i<block_size; i++) {
                 out_block.second[i] = in_block.second[i]/rms;
@@ -207,17 +208,16 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     float current_out_db = 0;
     std::complex<float> sample;
     // threshold checker param
-    //int cap_len = 1e3;
     int edge_mid_ind = 0;
     bool edge_f = false;
     int cap_block_num = 0;
+    Block<float> out_block;
+    out_block.second.resize(block_size);
     Block<std::complex<float>> cap_block;
     cap_block.second.resize(cap_len);
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // iir
-            // create dummy output block
-            Block<float> out_block;
             // pop block from fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -228,7 +228,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     (1-alpha)*std::pow(std::abs(sample), 2);
                 //current_out_db = 10*log10(current_out);
                 previous_out = current_out;
-                out_block.second.push_back(current_out);
+                out_block.second[i] = current_out;
             }
             // threshold_checker 
             for (int i=0; i<block_size; i++) {
@@ -583,12 +583,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-U,rx-u", po::value<int>(&rx_U)->default_value(1), "Rx side up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
         ("thresh,threshold", po::value<float>(&threshold)->default_value(0.01), "Threshold for sample capture")
-        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1500), "Tx side down-sampling factor")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         ("tx-packet-len", po::value<size_t>(&tx_packet_len)->default_value(1000), "Tx side down-sampling factor")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1500), "Rx capture length without front and back extension")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
     ;
 
@@ -884,7 +884,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                     std::ref(agc_out_fifo), rx_cap_len);
         // create thread for counting receiving blocks every 10 seconds
         captured_block_count_t = std::thread(&captured_block_count,
-                    std::ref(agc_out_fifo), rx_cap_len);
+                    std::ref(agc_out_fifo));
         
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,

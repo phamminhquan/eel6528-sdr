@@ -1,5 +1,5 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef FIFO_H
+#define FIFO_H
 
 
 #include <mutex>
