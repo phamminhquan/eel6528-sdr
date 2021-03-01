@@ -140,7 +140,8 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
-        logger.log("Bit generator output FIFO size: " + std::to_string(fifo.size()));
+        if (fifo.size() != 1)
+            logger.log("Bit generator output FIFO size: " + std::to_string(fifo.size()));
         // wait
         std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
@@ -165,6 +166,11 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     bool bit;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // print out fifo size to check
+            if (fifo_in.size() != 1)
+                logger.log("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.log("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
             // pop bit sequence from input fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -177,9 +183,6 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             }
             // push block to fifo
             fifo_out.push(out_block);
-            // print out fifo size to check
-            //logger.log("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
-            logger.log("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
         }
     }
     // notify user that processing thread is done
@@ -217,6 +220,11 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     cap_block.second.resize(cap_len);
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // check fifo sizes
+            if (fifo_in.size() != 1)
+                logger.log("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.log("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
             // iir
             // pop block from fifo
             fifo_in.pop(in_block);
@@ -285,12 +293,12 @@ void filter(int D, int U, size_t in_len,
     logger.log("Up-sampling factor U: " + std::to_string(U));
     // set up filter impulse response
     int h_len = filter_taps.size();
-    std::complex<float> h[h_len];
+    std::complex<float>* h = &filter_taps[0];
     logger.log("Filter length: " + std::to_string(h_len));
-    for (int i=0; i<h_len; i++) {
-        h[i] = filter_taps[i];
-        logger.logf("Tap: " + std::to_string(filter_taps[i].real()));
-    } 
+    // print out taps for debug
+    //for (int i=0; i<h_len; i++) {
+    //    logger.logf("Tap: " + std::to_string(h[i].real()));
+    //} 
     // test filter
     FilterPolyphase filt (U, D, in_len, h_len, h, num_filt_threads);
     int out_len = filt.out_len();
@@ -303,6 +311,11 @@ void filter(int D, int U, size_t in_len,
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // check fifo sizes
+            if (fifo_in.size() != 1)
+                logger.log("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.log("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
             // pop block from fifo
             fifo_in.pop(in_block);
             // get input array
@@ -354,6 +367,9 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
     // send data until the signal handler gets called
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // print out tx fifo size
+            if (fifo_in.size() != 1)
+                logger.log("TX fifo size: " + std::to_string(fifo_in.size()));
             // pop packet block
             fifo_in.pop(block);
             //logger.log("Sending block: " + std::to_string(block.first));
@@ -386,7 +402,7 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
                 metadata.has_time_spec  = false;
             }
             // print out tx fifo size
-            logger.log("TX fifo size: " + std::to_string(fifo_in.size()));
+            //logger.log("After TX fifo size: " + std::to_string(fifo_in.size()));
         }
     }
     // send a mini EOB packet
@@ -902,22 +918,20 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         std::ofstream rrc_file ("rrc.dat", std::ofstream::binary);
         rrc_file.write((const char*) rrc_h, rrc_len*sizeof(std::complex<float>));
         rrc_file.close();
-        
-        // instantiate a fifo for bit generation
+        // instantiate fifo for data transfers
         tsFIFO<Block<bool>> bit_fifo;
-        // spawn bit generation thread
-        bit_generator_t = std::thread(&generate_random_bits,
-                std::ref(bit_fifo), 0.5, tx_packet_len, packets_per_sec);
-        // instantiate a fifo for modulation
         tsFIFO<Block<std::complex<float>>> mod_fifo;
-        // spawn modulation thread
-        modulator_t = std::thread(&modulate, std::ref(bit_fifo),
-                std::ref(mod_fifo), tx_packet_len);
-        // instantiate pulse shaping filter as multirate filter
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
+        // instantiate pulse shaping filter as multirate filter
         pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
                 std::ref(rrc_vec), num_filt_threads, std::ref(mod_fifo),
                 std::ref(pulse_shape_out_fifo));
+        // spawn modulation thread
+        modulator_t = std::thread(&modulate, std::ref(bit_fifo),
+                std::ref(mod_fifo), tx_packet_len);
+        // spawn bit generation thread
+        bit_generator_t = std::thread(&generate_random_bits,
+                std::ref(bit_fifo), 0.5, tx_packet_len, packets_per_sec);
         // call tx worker function as main thread
         size_t tx_max_num_samps = tx_stream->get_max_num_samps();
         transmit_worker(tx_max_num_samps, tx_packet_len*tx_U/tx_D,
