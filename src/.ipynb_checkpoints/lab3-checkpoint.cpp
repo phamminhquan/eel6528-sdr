@@ -76,6 +76,11 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     float rms = 0;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // print out fifo size to check
+            if (fifo_in.size() != 1)
+                logger.log("AGC input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.log("AGC output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             // set block counter
@@ -891,17 +896,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_out),
                     std::ref(iir_captured_fifo), rx_spb*rx_U/rx_D,
                     alpha, threshold, rx_cap_len);
-        // create thread for the processing function before receiving samples
-        //for (int i=0; i<num_pa_threads; i++)
-        //    power_average_worker_t[i] = std::thread(&power_average,
-        //            std::ref(iir_captured_fifo), i);
         // create thread for agc
         agc_t = std::thread(&agc, std::ref(iir_captured_fifo),
                     std::ref(agc_out_fifo), rx_cap_len);
         // create thread for counting receiving blocks every 10 seconds
         captured_block_count_t = std::thread(&captured_block_count,
                     std::ref(agc_out_fifo));
-        
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
