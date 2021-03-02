@@ -26,6 +26,7 @@ CMakeFiles/test.dir/lab3.cpp.o: ../include/fft.hpp
 CMakeFiles/test.dir/lab3.cpp.o: ../include/fifo.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/filter-taps.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/filters.hpp
+CMakeFiles/test.dir/lab3.cpp.o: ../include/fixed-queue.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/logger.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/power-average.h
 CMakeFiles/test.dir/lab3.cpp.o: ../include/pulse.h

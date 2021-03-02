@@ -40,6 +40,14 @@ logger.h
 fft.hpp
 ../include/fft.hpp
 
+../include/fixed-queue.h
+mutex
+-
+deque
+-
+iostream
+-
+
 ../include/logger.h
 iostream
 -
@@ -135,4 +143,6 @@ power-average.h
 /home/quanpham/eel6528-sdr/src/power-average.h
 stop-signal.h
 /home/quanpham/eel6528-sdr/src/stop-signal.h
+fixed-queue.h
+/home/quanpham/eel6528-sdr/src/fixed-queue.h
 
