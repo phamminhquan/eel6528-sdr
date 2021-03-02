@@ -196,26 +196,16 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
 
 
 /***********************************************************************
- * IIR filter thread function
+ * Energy detector thread function
  **********************************************************************/
-void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
-                 tsFIFO<Block<std::complex<float>>>& fifo_out,
-                 size_t block_size, float alpha, float threshold,
-                 int cap_len, int pre_cap_len)
+void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>>& fifo_in,
+                      tsFIFO<Block<std::complex<float>>>& fifo_out,
+                      size_t block_size, float threshold,
+                      int cap_len, int pre_cap_len)
 {
     // create logger
-    Logger logger("IIR Filter", "./iir_filter.log");
-    // create output filestream
-    std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
-    //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
-    // create dummy block
-    Block<std::complex<float>> in_block;
-    // IIR filter param
-    float current_out = 0;
-    float previous_out = 0;
-    float current_out_db = 0;
-    std::complex<float> sample;
-    // threshold checker param
+    Logger logger("EnergyDetector", "./energy_detector.log");
+    // set up threshold checker param
     int total_len = cap_len+pre_cap_len;
     bool skip_f = false;
     int skip_len = cap_len;
@@ -223,50 +213,40 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     int edge_mid_ind = 0;
     bool edge_f = false;
     int cap_block_num = 0;
-    Block<float> out_block;
+    // create dummy blocks
+    std::pair<Block<std::complex<float>>, Block<float>> in_pair;
+    Block<std::complex<float>> in_block;   // block of raw samples
+    Block<float> out_block;                // block of iir output samples
     out_block.second.resize(block_size);
-    Block<std::complex<float>> cap_block;
+    Block<std::complex<float>> cap_block;  // block of captured samples
     cap_block.second.resize(total_len);
+    
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // check fifo sizes
-            //if (fifo_in.size() != 1)
-            //    logger.log("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
-            //if (fifo_out.size() != 0)
-            //    logger.log("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
-            // iir
-            // pop block from fifo
-            fifo_in.pop(in_block);
-            out_block.first = in_block.first;
-            // compute average power
-            for (int i=0; i<block_size; i++) {
-                sample = in_block.second[i];
-                current_out = alpha*previous_out +
-                    (1-alpha)*std::pow(std::abs(sample), 2);
-                //current_out_db = 10*log10(current_out);
-                previous_out = current_out;
-                out_block.second[i] = current_out;
-            }
+            if (fifo_in.size() != 1)
+                logger.log("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.log("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
+            // pop fifo in
+            fifo_in.pop(in_pair);
+            in_block = in_pair.first;
+            out_block = in_pair.second;
             // threshold_checker
             if (edge_f) {
                     for (int j=0; j<cap_len-edge_mid_ind; j++)  // capture the remaining samples
                         cap_block.second[pre_cap_len+edge_mid_ind+j] = in_block.second[j];
                     fifo_out.push(cap_block);   // push captured block to fifo out
                     edge_f = false;     // reset boundary case flag
-                    //skip_f = true;
                     skip_len = cap_len-edge_mid_ind;
-                    //i = i+cap_len-edge_mid_ind; // increment index by number of samples captured
             }
             for (int i=0; i<block_size; i++) {
                 if (skip_f == false) {
                     if (out_block.second[i] > threshold) {  // check threshold
                         skip_f = true;
-                        //skip_len = cap_len;     // reset skip length
                         if (i > block_size-cap_len) {       // if capture range cross boundary
                             edge_f = true;                  // set boundary flag
                             edge_mid_ind = block_size-i;    // find mid point of capture range
-                            //logger.logf("Block: " + std::to_string(in_block.first) +
-                            //           " Edge start skip at: " + std::to_string(i));
                             for (int j=0; j<pre_cap_len; j++) // capture samples before packet
                                 cap_block.second[j] = pre_cap.q[j];
                             for (int j=0; j<edge_mid_ind; j++)  // take the first few samples
@@ -274,22 +254,17 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
                             cap_block.first = cap_block_num++;  // assign, increment capture counter
                             break;
                         } else {    // if capture range in middle
-                            //logger.log("Block: " + std::to_string(in_block.first) +
-                            //           " Middle start skip at: " + std::to_string(i));
                             for (int j=0; j<pre_cap_len; j++) // capture samples before packet
                                 cap_block.second[j] = pre_cap.q[j];
                             for (int j=0; j<cap_len; j++)   // capture 1k samples
                                 cap_block.second[pre_cap_len+j] = in_block.second[i+j];
                             cap_block.first = cap_block_num++; // assign, increment capture counter
                             fifo_out.push(cap_block);   // push captured block to fifo out
-                            //i = i+cap_len;  // increment block index by 1k
                         }
                     }
                 } else {
                     skip_len = skip_len - 1;
                     if (skip_len == 0) {
-                        //logger.log("Block: " + std::to_string(in_block.first) +
-                        //           " End skip at: " + std::to_string(i));
                         skip_f = false;         // not skipping anymore
                         skip_len = cap_len;     // reset skip length
                     }
@@ -297,25 +272,23 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 // keep pre-capture queue updated
                 pre_cap.push(out_block.second[i]);
             }
-            // put value in file
-            //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // notify user that processing thread is done
-    logger.log("IIR filter thread is done and closing");
+    logger.log("Energy detector thread is done and closing");
 }
+
 
 
 /***********************************************************************
  * IIR filter thread function
- **********************************************************************
+ **********************************************************************/
 void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
-                 tsFIFO<Block<std::complex<float>>>& fifo_out,
-                 size_t block_size, float alpha, float threshold,
-                 int cap_len)
+                 tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>>& fifo_out,
+                 size_t block_size, float alpha)
 {
     // create logger
-    Logger logger("IIR Filter", "./iir_filter.log");
+    Logger logger("IIRFilter", "./iir_filter.log");
     // create output filestream
     std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
     //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
@@ -326,61 +299,32 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     float previous_out = 0;
     float current_out_db = 0;
     std::complex<float> sample;
-    // threshold checker param
-    int edge_mid_ind = 0;
-    bool edge_f = false;
-    int cap_block_num = 0;
-    Block<float> out_block;
-    out_block.second.resize(block_size);
-    Block<std::complex<float>> cap_block;
-    cap_block.second.resize(cap_len);
+    std::pair<Block<std::complex<float>>, Block<float>> out_pair;
+    Block<float> iir_out_block;
+    iir_out_block.second.resize(block_size);
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.log("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.log("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.log("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
             // iir
             // pop block from fifo
             fifo_in.pop(in_block);
-            out_block.first = in_block.first;
-            // compute average power
+            iir_out_block.first = in_block.first;
+            // iir algorithm
             for (int i=0; i<block_size; i++) {
                 sample = in_block.second[i];
                 current_out = alpha*previous_out +
                     (1-alpha)*std::pow(std::abs(sample), 2);
                 //current_out_db = 10*log10(current_out);
                 previous_out = current_out;
-                out_block.second[i] = current_out;
+                iir_out_block.second[i] = current_out;
             }
-            // threshold_checker 
-            for (int i=0; i<block_size; i++) {
-                if (edge_f) {
-                    for (int j=0; j<cap_len-edge_mid_ind; j++)  // capture the remaining samples
-                        cap_block.second[edge_mid_ind+j] = in_block.second[j];
-                    fifo_out.push(cap_block);   // push captured block to fifo out
-                    edge_f = false;     // reset boundary case flag
-                    i = i+cap_len-edge_mid_ind; // increment index by number of samples captured
-                } else {
-                    if (out_block.second[i] > threshold) {  // check threshold
-                        if (i > block_size-cap_len) {       // if capture range cross boundary
-                            edge_f = true;                  // set boundary flag
-                            edge_mid_ind = block_size-i;    // find mid point of capture range
-                            for (int j=0; j<edge_mid_ind; j++)  // take the first few samples
-                                cap_block.second[j] = in_block.second[i+j];
-                            cap_block.first = cap_block_num++;  // assign, increment capture counter
-                            break;
-                        } else {    // if capture range in middle
-                            for (int j=0; j<cap_len; j++)   // capture 1k samples
-                                cap_block.second[j] = in_block.second[i+j];
-                            cap_block.first = cap_block_num++; // assign, increment capture counter
-                            fifo_out.push(cap_block);   // push captured block to fifo out
-                            i = i+cap_len;  // increment block index by 1k
-                        }
-                    }
-                }
-            }
+            out_pair.first = in_block;
+            out_pair.second = iir_out_block;
+            fifo_out.push(out_pair);
             // put value in file
             //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
         }
@@ -989,6 +933,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // set up rx threads worker
     std::thread filter_worker_t;
     std::thread iir_filter_worker_t;
+    std::thread energy_detector_t;
     std::thread power_average_worker_t[num_pa_threads];
     std::thread agc_t;
     std::thread captured_block_count_t;
@@ -1011,7 +956,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<float>>> fifo_in;
         tsFIFO<Block<std::complex<float>>> fifo_out;
-        tsFIFO<Block<std::complex<float>>> iir_captured_fifo;
+        tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>> iir_out_fifo;
+        tsFIFO<Block<std::complex<float>>> energy_detector_out_fifo;
         tsFIFO<Block<std::complex<float>>> agc_out_fifo;
         // create thread for multirate filtering
         filter_worker_t = std::thread(&filter, rx_D, rx_U, rx_spb,
@@ -1019,10 +965,13 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_out),
-                    std::ref(iir_captured_fifo), rx_spb*rx_U/rx_D,
-                    alpha, threshold, rx_cap_len, rx_pre_cap_len);
+                    std::ref(iir_out_fifo), rx_spb*rx_U/rx_D, alpha);
+        // create thread for energy detector
+        energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
+                    std::ref(energy_detector_out_fifo), rx_spb*rx_U/rx_D,
+                    threshold, rx_cap_len, rx_pre_cap_len);
         // create thread for agc
-        agc_t = std::thread(&agc, std::ref(iir_captured_fifo),
+        agc_t = std::thread(&agc, std::ref(energy_detector_out_fifo),
                     std::ref(agc_out_fifo), rx_cap_len+rx_pre_cap_len);
         // create thread for counting receiving blocks every 10 seconds
         captured_block_count_t = std::thread(&captured_block_count,
