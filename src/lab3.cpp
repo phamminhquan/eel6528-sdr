@@ -68,6 +68,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("AGC", "./agc.log");
     // create output filestream
+    std::ofstream agc_in_file ("agc_in.dat", std::ofstream::binary);
     std::ofstream agc_out_file ("agc_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
@@ -101,6 +102,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // push block to fifo
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
+            agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
             agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
@@ -339,7 +341,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
  **********************************************************************/
 void filter(int D, int U, size_t in_len,
             std::vector<std::complex<float>>& filter_taps,
-            size_t num_filt_threads,
+            size_t num_filt_threads, bool continuous,
             tsFIFO<Block<std::complex<float>>>& fifo_in,
             tsFIFO<Block<std::complex<float>>>& fifo_out)
 {
@@ -385,7 +387,12 @@ void filter(int D, int U, size_t in_len,
             // put value in file
             //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
-            filt.set_head(in_block.first == 0);
+            if (continuous) {
+                filt.set_head(in_block.first == 0);
+            } else {
+                filt.set_head(true);
+            }
+            //filt.set_head(in_block.first == 0);
             filt.filter(in, out);
             // push filter output to fifo out
             out_block.first = in_block.first;
@@ -961,7 +968,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> agc_out_fifo;
         // create thread for multirate filtering
         filter_worker_t = std::thread(&filter, rx_D, rx_U, rx_spb,
-                std::ref(filter_taps.taps), num_filt_threads,
+                std::ref(filter_taps.taps), num_filt_threads, true,
                 std::ref(fifo_in), std::ref(fifo_out));
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_out),
@@ -998,8 +1005,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
         // instantiate pulse shaping filter as multirate filter
         pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, std::ref(mod_fifo),
-                std::ref(pulse_shape_out_fifo));
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
         // spawn modulation thread
         modulator_t = std::thread(&modulate, std::ref(bit_fifo),
                 std::ref(mod_fifo), tx_packet_len);
