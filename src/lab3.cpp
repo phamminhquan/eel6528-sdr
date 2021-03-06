@@ -389,10 +389,10 @@ void filter(int D, int U, size_t in_len,
             // filter
             if (continuous) {
                 filt.set_head(in_block.first == 0);
-                logger.log("Continuous filtering: " + std::to_string(in_block.first==0));
+                //logger.log("Continuous filtering: " + std::to_string(in_block.first==0));
             } else {
                 filt.set_head(true);
-                logger.log("Burst filtering");
+                //logger.log("Burst filtering");
             }
             //filt.set_head(in_block.first == 0);
             filt.filter(in, out);
