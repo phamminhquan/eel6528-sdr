@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <map>
 #include <random>
+#include <string>
 
 
 #include "utilities.h"
@@ -124,6 +125,8 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
     Logger logger("BitGenerator", "./bit_gen.log");
     int idle_time_us = (int)(1/(float)packet_rate * 1e6);
     logger.log("Idle time: " + std::to_string(idle_time_us));
+    // create file stream
+    //std::ofstream out_file ("gen_out.dat", std::ofstream::binary);
     // instantiate a random device and a random number generator
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -149,6 +152,8 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
         // print out fifo size to check
         if (fifo.size() != 1)
             logger.log("Bit generator output FIFO size: " + std::to_string(fifo.size()));
+        // record samples to file
+        //out_file.write((const char*)& block.second[0], packet_size*sizeof(bool));
         // wait
         std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
@@ -166,6 +171,9 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
 {
     // create logger
     Logger logger("Modulator", "./mod.log");
+    // create filestream
+    std::ofstream in_file ("mod_in.dat", std::ofstream::binary);
+    std::ofstream out_file ("mod_out.dat", std::ofstream::binary);
     // create dummy block
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
@@ -190,8 +198,14 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             }
             // push block to fifo
             fifo_out.push(out_block);
+            // record samples to file
+            out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
+    // close ofstream
+    logger.log("Closing ofstream");
+    in_file.close();
+    out_file.close();
     // notify user that processing thread is done
     logger.log("Bit generator thread is done and closing");
 }
@@ -292,7 +306,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("IIRFilter", "./iir_filter.log");
     // create output filestream
-    std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
+    std::ofstream in_file ("iir_in.dat", std::ofstream::binary);
     //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
@@ -331,6 +345,10 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
+    // close ofstream
+    logger.log("Closing ofstream");
+    in_file.close();
+    //out_file.close();
     // notify user that processing thread is done
     logger.log("IIR filter thread is done and closing");
 }
@@ -401,7 +419,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
@@ -434,6 +452,8 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
     // create dummy block
     Block<std::complex<float>> block;
     // send data until the signal handler gets called
+    metadata.start_of_burst = false;
+    metadata.has_time_spec  = false;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out tx fifo size
@@ -445,30 +465,26 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
             // segment the block
             for (int i=0; i<num_seg; i++) {
                 // set up segment as vector
-                std::vector<std::complex<float>*> segment_ptr;
-                std::complex<float> segment[samp_per_buff];
+                std::vector<std::complex<float>> segment;
+                segment.resize(samp_per_buff);
+                std::fill(segment.begin(), segment.end(), 0);
                 for (int j=0; j<samp_per_buff; j++) {
                     segment[j] = block.second[i * samp_per_buff + j];
                 }
-                segment_ptr.push_back(segment);
                 // transmit segment
-                tx_streamer->send(segment_ptr, samp_per_buff, metadata);
-                metadata.start_of_burst = false;
-                metadata.has_time_spec  = false;
+                tx_streamer->send(&segment.front(), samp_per_buff, metadata);
             }
             // check remaining segment
             if (rem_seg_size > 0) {
                 // set up remaining segment
-                std::vector<std::complex<float>*> segment_ptr;
-                std::complex<float> segment[samp_per_buff];
+                std::vector<std::complex<float>> segment;
+                segment.resize(samp_per_buff);
+                std::fill(segment.begin(), segment.end(), 0);
                 for (int i=0; i<rem_seg_size; i++) {
                     segment[i] = block.second[fifo_block_size - rem_seg_size + i];
                 }
-                segment_ptr.push_back(segment);
                 // transmit segment
-                tx_streamer->send(segment, rem_seg_size, metadata);
-                metadata.start_of_burst = false;
-                metadata.has_time_spec  = false;
+                tx_streamer->send(&segment.front(), rem_seg_size, metadata);
             }
             // print out tx fifo size
             //logger.log("After TX fifo size: " + std::to_string(fifo_in.size()));
