@@ -49,10 +49,6 @@ void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
         logger.log("Block count: " + std::to_string(block_count));
         // clear the fifo
         fifo_in.clear();
-        // pop the packet
-        //for (int i=0; i<block_count; i++)
-        //    fifo_in.pop(in_block);
-        //logger.log("FIFO size: " + std::to_string(fifo_in.size()));
         // wait 10 second
         std::this_thread::sleep_for(std::chrono::seconds(10));
     }
@@ -127,8 +123,6 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
     Logger logger("BitGenerator", "./bit_gen.log");
     int idle_time_us = (int)(1/(float)packet_rate * 1e6);
     logger.log("Idle time: " + std::to_string(idle_time_us));
-    // create file stream
-    //std::ofstream out_file ("gen_out.dat", std::ofstream::binary);
     // instantiate a random device and a random number generator
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -154,8 +148,6 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
         // print out fifo size to check
         if (fifo.size() != 1)
             logger.log("Bit generator output FIFO size: " + std::to_string(fifo.size()));
-        // record samples to file
-        //out_file.write((const char*)& block.second[0], packet_size*sizeof(bool));
         // wait
         std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
