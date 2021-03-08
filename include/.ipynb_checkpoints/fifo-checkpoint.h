@@ -39,6 +39,13 @@ class tsFIFO {
             std::lock_guard<std::mutex> lock(mtx);
             return queue.size();
         }
+        
+        void clear(void) {
+            // lock mutex so no other thread can use this FIFO
+            std::lock_guard<std::mutex> lock(mtx);
+            // clear the fifo
+            queue.clear();
+        }
 };
 
 

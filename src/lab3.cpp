@@ -47,9 +47,11 @@ void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
         // checking fifo size
         block_count = fifo_in.size();
         logger.log("Block count: " + std::to_string(block_count));
-        // pop all the packets in fifo
-        for (int i=0; i<block_count; i++)
-            fifo_in.pop(in_block);
+        // clear the fifo
+        fifo_in.clear();
+        // pop the packet
+        //for (int i=0; i<block_count; i++)
+        //    fifo_in.pop(in_block);
         //logger.log("FIFO size: " + std::to_string(fifo_in.size()));
         // wait 10 second
         std::this_thread::sleep_for(std::chrono::seconds(10));
@@ -103,8 +105,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // push block to fifo
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
+            //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // close output file
@@ -172,7 +174,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // create logger
     Logger logger("Modulator", "./mod.log");
     // create filestream
-    std::ofstream in_file ("mod_in.dat", std::ofstream::binary);
+    //std::ofstream in_file ("mod_in.dat", std::ofstream::binary);
     std::ofstream out_file ("mod_out.dat", std::ofstream::binary);
     // create dummy block
     Block<bool> in_block;
@@ -199,12 +201,12 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             // push block to fifo
             fifo_out.push(out_block);
             // record samples to file
-            out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            //out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // close ofstream
     logger.log("Closing ofstream");
-    in_file.close();
+    //in_file.close();
     out_file.close();
     // notify user that processing thread is done
     logger.log("Bit generator thread is done and closing");
@@ -419,7 +421,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
