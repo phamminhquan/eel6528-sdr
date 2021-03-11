@@ -413,7 +413,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
