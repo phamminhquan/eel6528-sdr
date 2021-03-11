@@ -93,7 +93,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             rms /= block_size;
             rms = std::sqrt(rms);
             //logger.log("Block: " + std::to_string(in_block.first) +
-            //          " RMS: " + std::to_string(rms));
+            //           " RMS: " + std::to_string(rms));
             // normalize by dividing each sample by rms value
             for (int i=0; i<block_size; i++) {
                 out_block.second[i] = in_block.second[i]/rms;
@@ -101,8 +101,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // push block to fifo
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
+            agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // close output file
@@ -460,74 +460,6 @@ void transmit_worker (//size_t samp_per_buff,
 
 
 /***********************************************************************
- * transmit_worker function
- * A function to be used as a boost::thread_group thread for transmitting
- **********************************************************************/
-/*
-void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
-                      uhd::tx_streamer::sptr tx_streamer,
-                      uhd::tx_metadata_t metadata,
-                      tsFIFO<Block<std::complex<float>>>& fifo_in)
-{
-    // create a logger
-    Logger logger("Tx Worker", "./tx-worker.log");
-    // check max num samps and number of channels
-    logger.logf("Number of channels: " + std::to_string(tx_streamer->get_num_channels()));
-    logger.logf("Max num samps: " + std::to_string(samp_per_buff));
-    int num_seg = floor(fifo_block_size/samp_per_buff);
-    logger.logf("Number of segments: " + std::to_string(num_seg));
-    int rem_seg_size = fifo_block_size - num_seg*samp_per_buff;
-    logger.logf("Remaining segment size: " + std::to_string(rem_seg_size));
-    // create dummy block
-    Block<std::complex<float>> block;
-    // send data until the signal handler gets called
-    metadata.start_of_burst = false;
-    metadata.has_time_spec  = false;
-    while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
-            // print out tx fifo size
-            if (fifo_in.size() != 1)
-                logger.log("TX fifo size: " + std::to_string(fifo_in.size()));
-            // pop packet block
-            fifo_in.pop(block);
-            //logger.log("Sending block: " + std::to_string(block.first));
-            // segment the block
-            for (int i=0; i<num_seg; i++) {
-                // set up segment as vector
-                std::vector<std::complex<float>> segment;
-                segment.resize(samp_per_buff);
-                std::fill(segment.begin(), segment.end(), 0);
-                for (int j=0; j<samp_per_buff; j++) {
-                    segment[j] = block.second[i * samp_per_buff + j];
-                }
-                // transmit segment
-                tx_streamer->send(&segment.front(), samp_per_buff, metadata);
-            }
-            // check remaining segment
-            if (rem_seg_size > 0) {
-                // set up remaining segment
-                std::vector<std::complex<float>> segment;
-                segment.resize(samp_per_buff);
-                std::fill(segment.begin(), segment.end(), 0);
-                for (int i=0; i<rem_seg_size; i++) {
-                    segment[i] = block.second[fifo_block_size - rem_seg_size + i];
-                }
-                // transmit segment
-                tx_streamer->send(&segment.front(), rem_seg_size, metadata);
-            }
-            // print out tx fifo size
-            //logger.log("After TX fifo size: " + std::to_string(fifo_in.size()));
-        }
-    }
-    // send a mini EOB packet
-    logger.log("Sending block to tx streamer");
-    metadata.end_of_burst = true;
-    tx_streamer->send("", 0, metadata);
-}
-*/
-
-
-/***********************************************************************
  * recv_to_fifo function
  **********************************************************************/
 void recv_to_fifo(uhd::usrp::multi_usrp::sptr usrp,
@@ -720,7 +652,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         ("tx-packet-len", po::value<size_t>(&tx_packet_len)->default_value(1000), "Tx side down-sampling factor")
         ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1500), "Rx capture length without front extension")
-        ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(200), "Front extension length of rx capture")
+        ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(250), "Front extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
     ;
 
@@ -912,13 +844,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     uhd::stream_args_t stream_args("fc32", otw);
     stream_args.channels             = tx_channel_nums;
     uhd::tx_streamer::sptr tx_stream = tx_usrp->get_tx_stream(stream_args);
-    
-    // setup the metadata flags
-    //uhd::tx_metadata_t md;
-    //md.start_of_burst = true;
-    //md.end_of_burst   = false;
-    //md.has_time_spec  = true;
-    //md.time_spec = uhd::time_spec_t(0.5); // give us 0.5 seconds to fill the tx buffers
 
     // Check Ref and LO Lock detect
     std::vector<std::string> tx_sensor_names, rx_sensor_names;
@@ -1015,11 +940,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> energy_detector_out_fifo;
         tsFIFO<Block<std::complex<float>>> agc_out_fifo;
         // create thread for multirate filtering
-        filter_worker_t = std::thread(&filter, rx_D, rx_U, rx_spb,
-                std::ref(filter_taps.taps), num_filt_threads, true,
-                std::ref(fifo_in), std::ref(fifo_out));
+        //filter_worker_t = std::thread(&filter, rx_D, rx_U, rx_spb,
+        //        std::ref(filter_taps.taps), num_filt_threads, true,
+        //        std::ref(fifo_in), std::ref(fifo_out));
         // create thread for power averager
-        iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_out),
+        iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
                     std::ref(iir_out_fifo), rx_spb*rx_U/rx_D, alpha);
         // create thread for energy detector
         energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
