@@ -429,6 +429,41 @@ void filter(int D, int U, size_t in_len,
  * transmit_worker function
  * A function to be used as a boost::thread_group thread for transmitting
  **********************************************************************/
+void transmit_worker (//size_t samp_per_buff,
+                      size_t block_size,
+                      uhd::tx_streamer::sptr tx_streamer,
+                      //uhd::tx_metadata_t metadata,
+                      tsFIFO<Block<std::complex<float>>>& fifo_in)
+{
+    // create a logger
+    Logger logger("Tx Worker", "./tx-worker.log");
+    // create dummy block
+    Block<std::complex<float>> block;
+    // set up metadata
+    uhd::tx_metadata_t md;
+    md.start_of_burst = true;
+    md.end_of_burst = true;
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // print out tx fifo size
+            if (fifo_in.size() != 1)
+                logger.log("TX fifo size: " + std::to_string(fifo_in.size()));
+            // pop packet block
+            fifo_in.pop(block);
+            logger.log("Sending block: " + std::to_string(block.first));
+            tx_streamer->send(&block.second.front(), block_size, md);
+        }
+    }
+    // send a mini EOB packet
+    logger.log("Sending block to tx streamer");
+}
+
+
+/***********************************************************************
+ * transmit_worker function
+ * A function to be used as a boost::thread_group thread for transmitting
+ **********************************************************************/
+/*
 void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
                       uhd::tx_streamer::sptr tx_streamer,
                       uhd::tx_metadata_t metadata,
@@ -489,6 +524,7 @@ void transmit_worker (size_t samp_per_buff, size_t fifo_block_size,
     metadata.end_of_burst = true;
     tx_streamer->send("", 0, metadata);
 }
+*/
 
 
 /***********************************************************************
@@ -878,11 +914,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     uhd::tx_streamer::sptr tx_stream = tx_usrp->get_tx_stream(stream_args);
     
     // setup the metadata flags
-    uhd::tx_metadata_t md;
-    md.start_of_burst = true;
-    md.end_of_burst   = false;
-    md.has_time_spec  = true;
-    md.time_spec = uhd::time_spec_t(0.5); // give us 0.5 seconds to fill the tx buffers
+    //uhd::tx_metadata_t md;
+    //md.start_of_burst = true;
+    //md.end_of_burst   = false;
+    //md.has_time_spec  = true;
+    //md.time_spec = uhd::time_spec_t(0.5); // give us 0.5 seconds to fill the tx buffers
 
     // Check Ref and LO Lock detect
     std::vector<std::string> tx_sensor_names, rx_sensor_names;
@@ -1027,8 +1063,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(bit_fifo), 0.5, tx_packet_len, packets_per_sec);
         // call tx worker function as main thread
         size_t tx_max_num_samps = tx_stream->get_max_num_samps();
-        transmit_worker(tx_max_num_samps, tx_packet_len*tx_U/tx_D,
-                tx_stream, md, pulse_shape_out_fifo);
+        transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
+                        pulse_shape_out_fifo);
     }
     
     // clean up transmit worker
