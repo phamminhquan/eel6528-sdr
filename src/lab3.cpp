@@ -327,8 +327,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             for (int i=0; i<block_size; i++) {
                 sample = in_block.second[i];
                 current_out = alpha*previous_out +
-                    (1-alpha)*std::pow(std::abs(sample), 2);
-                //current_out_db = 10*log10(current_out);
+                       (1-alpha)*std::norm(sample);
                 previous_out = current_out;
                 iir_out_block.second[i] = current_out;
             }
