@@ -80,6 +80,8 @@ stop-signal.h
 complex
 -
 
+../include/sig-seq.h
+
 ../include/stop-signal.h
 
 ../include/utilities.h
@@ -90,7 +92,7 @@ boost/format.hpp
 string
 -
 
-/home/quanpham/eel6528-sdr/src/lab3.cpp
+/home/quanpham/eel6528-sdr/src/lab4.cpp
 uhd/exception.hpp
 -
 uhd/types/tune_request.hpp
@@ -127,6 +129,8 @@ random
 -
 string
 -
+bitset
+-
 utilities.h
 /home/quanpham/eel6528-sdr/src/utilities.h
 logger.h
@@ -147,4 +151,6 @@ stop-signal.h
 /home/quanpham/eel6528-sdr/src/stop-signal.h
 fixed-queue.h
 /home/quanpham/eel6528-sdr/src/fixed-queue.h
+sig-seq.h
+/home/quanpham/eel6528-sdr/src/sig-seq.h
 

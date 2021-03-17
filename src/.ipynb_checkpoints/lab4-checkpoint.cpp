@@ -16,6 +16,7 @@
 #include <map>
 #include <random>
 #include <string>
+#include <bitset>
 
 
 #include "utilities.h"
@@ -28,6 +29,7 @@
 #include "power-average.h"
 #include "stop-signal.h"
 #include "fixed-queue.h"
+#include "sig-seq.h"
 
 
 namespace po = boost::program_options;
@@ -115,12 +117,12 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
 /***********************************************************************
  * Generate random bits as packets
  **********************************************************************/
-void generate_random_bits (tsFIFO<Block<bool>>& fifo,
-                           float p, size_t packet_size,
-                           size_t packet_rate)
+void packet_gen (tsFIFO<Block<bool>>& fifo,
+                 float p, size_t payload_size,
+                 size_t packet_rate)
 {
     // create logger
-    Logger logger("BitGenerator", "./bit_gen.log");
+    Logger logger("PacketGen", "./packet_gen.log");
     int idle_time_us = (int)(1/(float)packet_rate * 1e6);
     logger.log("Idle time: " + std::to_string(idle_time_us));
     // instantiate a random device and a random number generator
@@ -132,27 +134,34 @@ void generate_random_bits (tsFIFO<Block<bool>>& fifo,
     int block_counter = 0;
     // create dummy block
     Block<bool> block;
-    block.second.resize(packet_size);
+    //block.second.resize(packet_size);
     while (not stop_signal_called) {
+        // push signature sequence bits to packet first
+        for (size_t i=0; i<36; i++)
+            block.second.push_back(sig_seq[i]);
+        // create 16-bit packet number bitset
+        std::bitset<16> packet_num_b(block_counter);
+        // push packet counter as 16-bit number
+        for (size_t i=0; i<16; i++)
+            block.second.push_back(packet_num_b[i]);
         // set block counter
         block.first = block_counter++;
         // pulling samples from bernoulli distribution
         std::map<bool, int> hist;
-        for (int n=0; n<packet_size; n++) {
+        for (size_t n=0; n<payload_size; n++) {
             bool sample = d(gen);
-            block.second[n] = sample;
-            //logger.logf("Sample: " + std::to_string(sample));
+            block.second.push_back(sample);
         }
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
         if (fifo.size() != 1)
-            logger.logf("Bit generator output FIFO size: " + std::to_string(fifo.size()));
+            logger.logf("Packet generator output FIFO size: " + std::to_string(fifo.size()));
         // wait
         std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
     // notify user that processing thread is done
-    logger.log("Bit generator thread is done and closing");
+    logger.log("Packet generator thread is done and closing");
 }
 
 
@@ -591,7 +600,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::string tx_args, tx_ant, tx_subdev, tx_channels;
     double tx_rate, tx_freq, tx_gain, tx_bw;
     int tx_D, tx_U;
-    size_t rrc_half_len, tx_packet_len, packets_per_sec;
+    size_t rrc_half_len, tx_payload_len, packets_per_sec;
+    size_t tx_packet_len, tx_packet_num_len;
     
     // rx variables to be set by po
     std::string ref, otw;
@@ -650,7 +660,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
-        ("tx-packet-len", po::value<size_t>(&tx_packet_len)->default_value(1000), "Tx side down-sampling factor")
+        ("tx-payload-len", po::value<size_t>(&tx_payload_len)->default_value(1000), "Tx side payload length in bits")
+        //("tx-packet-num-len", po::value<size_t>(&tx_packet_num_len)->default_value(16), "Tx side length of packet number in bits")
         ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1500), "Rx capture length without front extension")
         ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(250), "Front extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
@@ -906,7 +917,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     //rx_usrp->set_time_now(uhd::time_spec_t(0.0)); 
     
     // set up tx threads worker
-    std::thread bit_generator_t;
+    std::thread packet_gen_t;
     std::thread pulse_shaper_t;
     std::thread modulator_t;
     
@@ -930,6 +941,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     test_q.print();
     test_q.push(5);
     test_q.print();
+    
+    // init packet len
+    tx_packet_len = 36 + 16 + tx_payload_len;
 
     // recv to file as function
     if (!tx_rx) {      // RX SIDE
@@ -984,8 +998,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         modulator_t = std::thread(&modulate, std::ref(bit_fifo),
                 std::ref(mod_fifo), tx_packet_len);
         // spawn bit generation thread
-        bit_generator_t = std::thread(&generate_random_bits,
-                std::ref(bit_fifo), 0.5, tx_packet_len, packets_per_sec);
+        packet_gen_t = std::thread(&packet_gen,
+                std::ref(bit_fifo), 0.5, tx_payload_len, packets_per_sec);
         // call tx worker function as main thread
         size_t tx_max_num_samps = tx_stream->get_max_num_samps();
         transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
@@ -1006,8 +1020,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         if (power_average_worker_t[i].joinable())
             power_average_worker_t[i].join();
     }
-    if (bit_generator_t.joinable())
-            bit_generator_t.join();
+    if (packet_gen_t.joinable())
+        packet_gen_t.join();
     if (modulator_t.joinable())
         modulator_t.join();
     if (pulse_shaper_t.joinable())

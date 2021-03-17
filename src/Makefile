@@ -204,6 +204,33 @@ include/pulse.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/pulse.cpp.s
 .PHONY : include/pulse.cpp.s
 
+include/sig-seq.o: include/sig-seq.cpp.o
+
+.PHONY : include/sig-seq.o
+
+# target to build an object file
+include/sig-seq.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/sig-seq.cpp.o
+.PHONY : include/sig-seq.cpp.o
+
+include/sig-seq.i: include/sig-seq.cpp.i
+
+.PHONY : include/sig-seq.i
+
+# target to preprocess a source file
+include/sig-seq.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/sig-seq.cpp.i
+.PHONY : include/sig-seq.cpp.i
+
+include/sig-seq.s: include/sig-seq.cpp.s
+
+.PHONY : include/sig-seq.s
+
+# target to generate assembly for a file
+include/sig-seq.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/sig-seq.cpp.s
+.PHONY : include/sig-seq.cpp.s
+
 include/stop-signal.o: include/stop-signal.cpp.o
 
 .PHONY : include/stop-signal.o
@@ -258,32 +285,32 @@ include/utilities.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/utilities.cpp.s
 .PHONY : include/utilities.cpp.s
 
-lab3.o: lab3.cpp.o
+lab4.o: lab4.cpp.o
 
-.PHONY : lab3.o
+.PHONY : lab4.o
 
 # target to build an object file
-lab3.cpp.o:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab3.cpp.o
-.PHONY : lab3.cpp.o
+lab4.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab4.cpp.o
+.PHONY : lab4.cpp.o
 
-lab3.i: lab3.cpp.i
+lab4.i: lab4.cpp.i
 
-.PHONY : lab3.i
+.PHONY : lab4.i
 
 # target to preprocess a source file
-lab3.cpp.i:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab3.cpp.i
-.PHONY : lab3.cpp.i
+lab4.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab4.cpp.i
+.PHONY : lab4.cpp.i
 
-lab3.s: lab3.cpp.s
+lab4.s: lab4.cpp.s
 
-.PHONY : lab3.s
+.PHONY : lab4.s
 
 # target to generate assembly for a file
-lab3.cpp.s:
-	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab3.cpp.s
-.PHONY : lab3.cpp.s
+lab4.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/lab4.cpp.s
+.PHONY : lab4.cpp.s
 
 # Help Target
 help:
@@ -303,15 +330,18 @@ help:
 	@echo "... include/pulse.o"
 	@echo "... include/pulse.i"
 	@echo "... include/pulse.s"
+	@echo "... include/sig-seq.o"
+	@echo "... include/sig-seq.i"
+	@echo "... include/sig-seq.s"
 	@echo "... include/stop-signal.o"
 	@echo "... include/stop-signal.i"
 	@echo "... include/stop-signal.s"
 	@echo "... include/utilities.o"
 	@echo "... include/utilities.i"
 	@echo "... include/utilities.s"
-	@echo "... lab3.o"
-	@echo "... lab3.i"
-	@echo "... lab3.s"
+	@echo "... lab4.o"
+	@echo "... lab4.i"
+	@echo "... lab4.s"
 .PHONY : help
 
 

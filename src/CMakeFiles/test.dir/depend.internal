@@ -15,13 +15,16 @@ CMakeFiles/test.dir/include/power-average.cpp.o
 CMakeFiles/test.dir/include/pulse.cpp.o
  /home/quanpham/eel6528-sdr/include/pulse.cpp
  /home/quanpham/eel6528-sdr/include/pulse.h
+CMakeFiles/test.dir/include/sig-seq.cpp.o
+ /home/quanpham/eel6528-sdr/include/sig-seq.cpp
+ /home/quanpham/eel6528-sdr/include/sig-seq.h
 CMakeFiles/test.dir/include/stop-signal.cpp.o
  /home/quanpham/eel6528-sdr/include/stop-signal.cpp
  /home/quanpham/eel6528-sdr/include/stop-signal.h
 CMakeFiles/test.dir/include/utilities.cpp.o
  /home/quanpham/eel6528-sdr/include/utilities.cpp
  /home/quanpham/eel6528-sdr/include/utilities.h
-CMakeFiles/test.dir/lab3.cpp.o
+CMakeFiles/test.dir/lab4.cpp.o
  ../include/block.h
  ../include/fft.hpp
  ../include/fifo.h
@@ -31,6 +34,7 @@ CMakeFiles/test.dir/lab3.cpp.o
  ../include/logger.h
  ../include/power-average.h
  ../include/pulse.h
+ ../include/sig-seq.h
  ../include/stop-signal.h
  ../include/utilities.h
- /home/quanpham/eel6528-sdr/src/lab3.cpp
+ /home/quanpham/eel6528-sdr/src/lab4.cpp
