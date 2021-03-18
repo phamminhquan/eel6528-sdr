@@ -130,21 +130,19 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
     int block_counter = 0;
     // create dummy block
     Block<bool> block;
-    //block.second.resize(packet_size);
+    block.second.resize(payload_size+16);
     while (not stop_signal_called) {
-        // push signature sequence bits to packet first
-        for (size_t i=0; i<36; i++)
-            block.second.push_back(sig_seq[i]);
         // create 16-bit packet number bitset
         std::bitset<16> packet_num_b(block_counter);
-        // push packet counter as 16-bit number
-        for (size_t i=0; i<16; i++)
-            block.second.push_back(packet_num_b[i]);
         // set block counter
         block.first = block_counter++;
+        // push packet counter as 16-bit number
+        for (size_t i=0; i<16; i++) {
+            block.second[i] = packet_num_b[i];
+        }
         // getting payload from payload.h
         for (size_t i=0; i<payload_size; i++)
-            block.second.push_back(payload[i]);
+            block.second[16+i] = payload[i];
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
@@ -159,11 +157,11 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
 
 
 /***********************************************************************
- * Modulation (BPSK)
+ * Modulation (BDPSK)
  **********************************************************************/
 void modulate (tsFIFO<Block<bool>>& fifo_in,
                tsFIFO<Block<std::complex<float>>>& fifo_out,
-               size_t block_size)
+               size_t in_block_size, size_t out_block_size)
 {
     // create logger
     Logger logger("Modulator", "./mod.log");
@@ -173,8 +171,15 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // create dummy block
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
-    out_block.second.resize(block_size);
-    bool bit;
+    out_block.second.resize(out_block_size);
+    // prepend signature sequence
+    for (int i=0; i<36; i++)
+        out_block.second[i] = sig_seq[i];
+    // create variables
+    std::vector<std::complex<float>> temp_vec;
+    temp_vec.resize(in_block_size+1);
+    temp_vec[0] = sig_seq[35];
+    float bpsk_sample;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out fifo size to check
@@ -185,12 +190,15 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             // pop bit sequence from input fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
-            // BPSK modulation (0 -> 1, 1 -> -1)
-            for (int i=1; i<block_size; i++) {
-                out_block.second[i] = -2.0 * (float)in_block.second[i] + 1.0;
+            // BDPSK modulation
+            for (int i=0; i<in_block_size; i++) {
+                bpsk_sample = -2.0 * (float)in_block.second[i] + 1.0;
+                temp_vec[i+1] = bpsk_sample*temp_vec[i];
+                out_block.second[36+i] = temp_vec[i+1];
                 // log for debug
-                //logger.logf("Bit: " + std::to_string(in_block.second[i]) +
-                //          " Symbol: " + std::to_string(out_block.second[i].real()));
+                //logger.log("Block: " + std::to_string(out_block.first) +
+                //           " Bit: " + std::to_string(in_block.second[i]) +
+                //           " Symbol: " + std::to_string(out_block.second[36+i].real()));
             }
             // push block to fifo
             fifo_out.push(out_block);
@@ -984,12 +992,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> mod_fifo;
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
         // instantiate pulse shaping filter as multirate filter
-        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
+        //        std::ref(rrc_vec), num_filt_threads, false,
+        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
         // spawn modulation thread
         modulator_t = std::thread(&modulate, std::ref(bit_fifo),
-                std::ref(mod_fifo), tx_packet_len);
+                std::ref(mod_fifo), tx_payload_len + 16, tx_packet_len);
         // spawn bit generation thread
         packet_gen_t = std::thread(&packet_gen,
                 std::ref(bit_fifo), 0.5, tx_payload_len, packets_per_sec);

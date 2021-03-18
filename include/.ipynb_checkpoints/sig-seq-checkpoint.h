@@ -3,6 +3,6 @@
 
 // declar global ctrl-c signal
 extern const int sig_seq_len;
-extern const bool sig_seq[36];
+extern const float sig_seq[36];
 
 #endif
