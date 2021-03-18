@@ -992,9 +992,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> mod_fifo;
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
         // instantiate pulse shaping filter as multirate filter
-        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
         // spawn modulation thread
         modulator_t = std::thread(&modulate, std::ref(bit_fifo),
                 std::ref(mod_fifo), tx_payload_len + 16, tx_packet_len);
