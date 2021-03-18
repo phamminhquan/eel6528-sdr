@@ -5,6 +5,9 @@ CMakeFiles/test.dir/include/filters.cpp.o: ../include/fft.hpp
 CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.cpp
 CMakeFiles/test.dir/include/filters.cpp.o: ../include/filters.hpp
 
+CMakeFiles/test.dir/include/payload.cpp.o: ../include/payload.cpp
+CMakeFiles/test.dir/include/payload.cpp.o: ../include/payload.h
+
 CMakeFiles/test.dir/include/power-average.cpp.o: ../include/block.h
 CMakeFiles/test.dir/include/power-average.cpp.o: ../include/fifo.h
 CMakeFiles/test.dir/include/power-average.cpp.o: ../include/logger.h
@@ -31,6 +34,7 @@ CMakeFiles/test.dir/lab4.cpp.o: ../include/filter-taps.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/filters.hpp
 CMakeFiles/test.dir/lab4.cpp.o: ../include/fixed-queue.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/logger.h
+CMakeFiles/test.dir/lab4.cpp.o: ../include/payload.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/power-average.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/pulse.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/sig-seq.h

@@ -150,6 +150,33 @@ include/filters.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/filters.cpp.s
 .PHONY : include/filters.cpp.s
 
+include/payload.o: include/payload.cpp.o
+
+.PHONY : include/payload.o
+
+# target to build an object file
+include/payload.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/payload.cpp.o
+.PHONY : include/payload.cpp.o
+
+include/payload.i: include/payload.cpp.i
+
+.PHONY : include/payload.i
+
+# target to preprocess a source file
+include/payload.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/payload.cpp.i
+.PHONY : include/payload.cpp.i
+
+include/payload.s: include/payload.cpp.s
+
+.PHONY : include/payload.s
+
+# target to generate assembly for a file
+include/payload.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/payload.cpp.s
+.PHONY : include/payload.cpp.s
+
 include/power-average.o: include/power-average.cpp.o
 
 .PHONY : include/power-average.o
@@ -324,6 +351,9 @@ help:
 	@echo "... include/filters.o"
 	@echo "... include/filters.i"
 	@echo "... include/filters.s"
+	@echo "... include/payload.o"
+	@echo "... include/payload.i"
+	@echo "... include/payload.s"
 	@echo "... include/power-average.o"
 	@echo "... include/power-average.i"
 	@echo "... include/power-average.s"

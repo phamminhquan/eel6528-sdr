@@ -30,6 +30,7 @@
 #include "stop-signal.h"
 #include "fixed-queue.h"
 #include "sig-seq.h"
+#include "payload.h"
 
 
 namespace po = boost::program_options;
@@ -125,11 +126,6 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
     Logger logger("PacketGen", "./packet_gen.log");
     int idle_time_us = (int)(1/(float)packet_rate * 1e6);
     logger.log("Idle time: " + std::to_string(idle_time_us));
-    // instantiate a random device and a random number generator
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    // instantiate bernoulli distribution with 0.5 probablity of true, 0.5 probability of false
-    std::bernoulli_distribution d(p);
     // create block counter
     int block_counter = 0;
     // create dummy block
@@ -146,12 +142,9 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
             block.second.push_back(packet_num_b[i]);
         // set block counter
         block.first = block_counter++;
-        // pulling samples from bernoulli distribution
-        std::map<bool, int> hist;
-        for (size_t n=0; n<payload_size; n++) {
-            bool sample = d(gen);
-            block.second.push_back(sample);
-        }
+        // getting payload from payload.h
+        for (size_t i=0; i<payload_size; i++)
+            block.second.push_back(payload[i]);
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
