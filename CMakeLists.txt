@@ -18,9 +18,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 find_package(Threads REQUIRED)
 
 # Link jsoncpp package
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(JSONCPP jsoncpp)
-link_libraries(${JSONCPP_LIBRARIES})
+#find_package(PkgConfig REQUIRED)
+#pkg_check_modules(JSONCPP jsoncpp)
+#link_libraries(${JSONCPP_LIBRARIES})
 
 # Link uhd and boost package
 find_package(UHD 3.15.0 REQUIRED)
@@ -50,8 +50,8 @@ add_executable(test ${SOURCES})
 
 # Shared library case: All we need to do is link against the library, and
 # anything else we need (in this case, some Boost libraries):
-message(STATUS "Linking shared jsoncpp library.")
-target_link_libraries(test ${JSONCPP_LIBRARIES})
+#message(STATUS "Linking shared jsoncpp library.")
+#target_link_libraries(test ${JSONCPP_LIBRARIES})
 message(STATUS "Linking shared UHD library.")
 target_link_libraries(test ${UHD_LIBRARIES} ${Boost_LIBRARIES})
 message(STATUS "Linking shared pthread library.")
