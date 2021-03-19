@@ -447,6 +447,10 @@ void transmit_worker (//size_t samp_per_buff,
 {
     // create a logger
     Logger logger("Tx Worker", "./tx-worker.log");
+    // create zero vector to flush out buffer and create idle time at high packet rate
+    std::vector<std::complex<float>> zeros;
+    zeros.resize(300);
+    std::fill(zeros.begin(), zeros.end(), 0);
     // create dummy block
     Block<std::complex<float>> block;
     // set up metadata
@@ -462,6 +466,8 @@ void transmit_worker (//size_t samp_per_buff,
             fifo_in.pop(block);
             logger.log("Sending block: " + std::to_string(block.first));
             tx_streamer->send(&block.second.front(), block_size, md);
+            // flush buffer
+            tx_streamer->send(&zeros.front(), 300, md);
         }
     }
     // send a mini EOB packet
@@ -610,7 +616,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     size_t total_num_samps, rx_spb;
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
-    int rx_D, rx_U, rx_cap_len, rx_pre_cap_len;
+    int rx_D, rx_mf_U, rx_cap_len, rx_pre_cap_len;
     float alpha, threshold;
     std::string taps_filename;
 
@@ -654,7 +660,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("tx-D,tx-d", po::value<int>(&tx_D)->default_value(4), "Tx side down-sampling factor")
         ("tx-U,tx-u", po::value<int>(&tx_U)->default_value(5), "Tx side up-sampling factor")
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
-        ("rx-U,rx-u", po::value<int>(&rx_U)->default_value(1), "Rx side up-sampling factor")
+        ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(5), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
         ("thresh,threshold", po::value<float>(&threshold)->default_value(0.0045), "Threshold for sample capture")
         ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
@@ -663,8 +669,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         ("tx-payload-len", po::value<size_t>(&tx_payload_len)->default_value(1000), "Tx side payload length in bits")
         //("tx-packet-num-len", po::value<size_t>(&tx_packet_num_len)->default_value(16), "Tx side length of packet number in bits")
-        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value(1500), "Rx capture length without front extension")
-        ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(250), "Front extension length of rx capture")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((1000+36+16)*5/4+20), "Rx capture length without front extension")
+        ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(20), "Front extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
     ;
 
@@ -923,70 +929,58 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread modulator_t;
     
     // set up rx threads worker
-    std::thread filter_worker_t;
+    std::thread mf_worker_t;
     std::thread iir_filter_worker_t;
     std::thread energy_detector_t;
     std::thread power_average_worker_t[num_pa_threads];
     std::thread agc_t;
     std::thread captured_block_count_t;
     
-    // test fixed q
-    FixedQueue<int> test_q (3);
-    test_q.push(1);
-    test_q.print();
-    test_q.push(2);
-    test_q.print();
-    test_q.push(3);
-    test_q.print();
-    test_q.push(4);
-    test_q.print();
-    test_q.push(5);
-    test_q.print();
-    
     // init packet len
     tx_packet_len = 36 + 16 + tx_payload_len;
+    
+    // make an array pointer to hold pulse shape filter
+    size_t rrc_len = 2*rrc_half_len+1;
+    std::complex<float> rrc_h[rrc_len];
+    // call root raised cosine function
+    rrc_pulse(rrc_h, rrc_half_len, tx_U, tx_D);
+    std::vector<std::complex<float>> rrc_vec(rrc_h, rrc_h + rrc_len);
+    // store rrc impulse in file
+    std::ofstream rrc_file ("rrc.dat", std::ofstream::binary);
+    rrc_file.write((const char*) rrc_h, rrc_len*sizeof(std::complex<float>));
+    rrc_file.close();
 
     // recv to file as function
     if (!tx_rx) {      // RX SIDE
         // create a fifo buffer for processing
         tsFIFO<Block<std::complex<float>>> fifo_in;
-        tsFIFO<Block<std::complex<float>>> fifo_out;
         tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>> iir_out_fifo;
         tsFIFO<Block<std::complex<float>>> energy_detector_out_fifo;
         tsFIFO<Block<std::complex<float>>> agc_out_fifo;
-        // create thread for multirate filtering
-        //filter_worker_t = std::thread(&filter, rx_D, rx_U, rx_spb,
-        //        std::ref(filter_taps.taps), num_filt_threads, true,
-        //        std::ref(fifo_in), std::ref(fifo_out));
+        tsFIFO<Block<std::complex<float>>> mf_out_fifo;
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
-                    std::ref(iir_out_fifo), rx_spb*rx_U/rx_D, alpha);
+                    std::ref(iir_out_fifo), rx_spb, alpha);
         // create thread for energy detector
         energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
-                    std::ref(energy_detector_out_fifo), rx_spb*rx_U/rx_D,
+                    std::ref(energy_detector_out_fifo), rx_spb,
                     threshold, rx_cap_len, rx_pre_cap_len);
         // create thread for agc
-        agc_t = std::thread(&agc, std::ref(energy_detector_out_fifo),
-                    std::ref(agc_out_fifo), rx_cap_len+rx_pre_cap_len);
+        //agc_t = std::thread(&agc, std::ref(energy_detector_out_fifo),
+        //            std::ref(agc_out_fifo), rx_cap_len+rx_pre_cap_len);
+        // create thread for multirate filtering
+        mf_worker_t = std::thread(&filter, 1, rx_mf_U, rx_cap_len+rx_pre_cap_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
         // create thread for counting receiving blocks every 10 seconds
         captured_block_count_t = std::thread(&captured_block_count,
-                    std::ref(agc_out_fifo));
+                    std::ref(mf_out_fifo));
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
             rx_channel_nums, fifo_in);
         
     } else {      // TX SIDE
-        // make an array pointer to hold pulse shape filter
-        size_t rrc_len = 2*rrc_half_len+1;
-        std::complex<float> rrc_h[rrc_len];
-        // call root raised cosine function
-        rrc_pulse(rrc_h, rrc_half_len, tx_U, tx_D);
-        std::vector<std::complex<float>> rrc_vec(rrc_h, rrc_h + rrc_len);
-        // store rrc impulse in file
-        std::ofstream rrc_file ("rrc.dat", std::ofstream::binary);
-        rrc_file.write((const char*) rrc_h, rrc_len*sizeof(std::complex<float>));
-        rrc_file.close();
         // instantiate fifo for data transfers
         tsFIFO<Block<bool>> bit_fifo;
         tsFIFO<Block<std::complex<float>>> mod_fifo;
@@ -1009,8 +1003,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     
     // clean up transmit worker
     stop_signal_called = true;
-    if (filter_worker_t.joinable())
-        filter_worker_t.join();
+    if (mf_worker_t.joinable())
+        mf_worker_t.join();
     if (iir_filter_worker_t.joinable())
         iir_filter_worker_t.join();
     if (agc_t.joinable())
