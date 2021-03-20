@@ -618,7 +618,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     double settling;
     int rx_D, rx_mf_U, rx_cap_len, rx_pre_cap_len;
     float alpha, threshold;
-    std::string taps_filename;
+    //std::string taps_filename;
 
     // other variables
     bool tx_rx = false;
@@ -663,7 +663,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(5), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
         ("thresh,threshold", po::value<float>(&threshold)->default_value(0.0045), "Threshold for sample capture")
-        ("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
+        //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
@@ -693,12 +693,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     }
     
     // setup the filter taps object
-    if (not vm.count("taps-file")) {
-        std::cerr << "Please specify the filter taps file with --taps-file"
-                  << std::endl;
-        return ~0;
-    }
-    FilterTaps filter_taps (taps_filename);
+    //if (not vm.count("taps-file")) {
+    //    std::cerr << "Please specify the filter taps file with --taps-file"
+    //              << std::endl;
+    //    return ~0;
+    //}
+    //FilterTaps filter_taps (taps_filename);
     
     // check packets per sec
     if (packets_per_sec > 800) {
