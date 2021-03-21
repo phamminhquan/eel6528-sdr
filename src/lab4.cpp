@@ -41,6 +41,7 @@ namespace po = boost::program_options;
  **********************************************************************/
 void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             tsFIFO<Block<bool>>& fifo_out,
+            tsFIFO<std::pair<int, float>>& per_out,
             size_t payload_and_header_len)
 {
     // create logger
@@ -57,6 +58,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     std::bitset<16> header;
     int ham_dist = 0;
     float ber = 0;
+    std::pair<int, float> temp_per;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop input block from fifo
@@ -71,29 +73,26 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     demod_bit = 0;
                 else
                     demod_bit = 1;
-                //logger.log("Demod bit: " + std::to_string(i) +
-                //           " Value: " + std::to_string(demod_bit));
                 if (i<16)
                     header[i] = demod_bit;
                 else
                     out_block.second[i-16] = demod_bit;
             }
             out_block.first = (int)header.to_ulong();
-            //logger.log("Packet ID: " + std::to_string(out_block.first));
-            
             // calculate hamming distance for bit error rate
             ham_dist = 0;
             for (size_t i=0; i<1000; i++) {
                 if (out_block.second[i] != payload[i])
                     ham_dist++;
-                //logger.log("Demod bit: " + std::to_string(out_block.second[i]));
-                //logger.log("Payload bit: " + std::to_string(payload[i]));
-                //logger.log("Hamming Distance: " + std::to_string(ham_dist));
             }
             ber = (float)ham_dist/1000;
+            // push packet ID and BER to fifo to count PER
+            temp_per.first = out_block.first;
+            temp_per.second = ber;
+            per_out.push(temp_per);
+            // log packet BER
             logger.log("Packet ID: " + std::to_string(out_block.first) +
                        "  BER: " + std::to_string(ber));
-                
         }
     }
     // notify user that processing thread is done
@@ -106,9 +105,8 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
  **********************************************************************/
 void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
           tsFIFO<Block<std::complex<float>>>& fifo_out,
-          size_t input_block_len,
-          size_t sym_per,
-          size_t payload_and_header_len)
+          size_t input_block_len, size_t sym_per,
+          size_t payload_and_header_len, float thresh)
 {
     // create logger
     Logger logger("ACQ", "./acq.log");
@@ -146,17 +144,19 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 corr_vec[t] = correlation(sig_seq_vec, temp);
             }
             temp_pair = where_max(corr_vec);
-            tao_star = temp_pair.first;
-            logger.logf("Tao_star: " + std::to_string(tao_star));
-            
-            // get decision statistic for demod
-            packet_start = tao_star + 35*sym_per;
-            logger.logf("Packet start: " + std::to_string(packet_start));
-            for (size_t i=0; i<payload_and_header_len+1; i++)
-                out_block.second[i] = in_block.second[packet_start+i*sym_per];
-            
-            // push demod output to fifo
-            fifo_out.push(out_block);
+            if (temp_pair.second > thresh) {
+                tao_star = temp_pair.first;
+                logger.logf("Tao_star: " + std::to_string(tao_star));
+
+                // get decision statistic for demod
+                packet_start = tao_star + 35*sym_per;
+                logger.logf("Packet start: " + std::to_string(packet_start));
+                for (size_t i=0; i<payload_and_header_len+1; i++)
+                    out_block.second[i] = in_block.second[packet_start+i*sym_per];
+
+                // push demod output to fifo
+                fifo_out.push(out_block);
+            }
         }
     }
     // notify user that processing thread is done
@@ -167,17 +167,28 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
 /***********************************************************************
  * Automatic gain control by normalizing RMS value
  **********************************************************************/
-void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
+void per_count (tsFIFO<std::pair<int, float>>& fifo_in)
 {
     // create logger
-    Logger logger("CapturedBlockCount", "./captured-block-count.log");
+    Logger logger("PERCount", "./per_count.log");
     // create dummy block
-    Block<std::complex<float>> in_block;
-    size_t block_count = 0;
+    std::pair<int, float> in_block;
+    size_t running_block_count = 0;
+    size_t running_error_packet_count = 0;
+    float per=0;
     while (not stop_signal_called) {
         // checking fifo size
-        block_count = fifo_in.size();
-        logger.log("Block count: " + std::to_string(block_count));
+        running_block_count += fifo_in.size();
+        for (size_t i=0; i<fifo_in.size(); i++) {
+            fifo_in.pop(in_block);
+            if (in_block.second != 0)
+                running_error_packet_count++;
+        }
+        if (running_block_count != 0) {
+            per = running_error_packet_count/running_block_count;
+            logger.log("Running packet count: " + std::to_string(running_block_count) +
+                       "  Running PER: " + std::to_string(per));
+        }
         // clear the fifo
         fifo_in.clear();
         // wait 10 second
@@ -223,7 +234,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
             rms /= block_size;
             rms = std::sqrt(rms);
-            logger.log("Block: " + std::to_string(in_block.first) +
+            logger.logf("Block: " + std::to_string(in_block.first) +
                        " RMS: " + std::to_string(rms));
             // normalize by dividing each sample by rms value
             for (int i=0; i<block_size; i++) {
@@ -745,7 +756,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     double rx_rate, rx_freq, rx_gain, rx_bw;
     double settling;
     int rx_D, rx_mf_U, rx_cap_len, rx_pre_cap_len;
-    float alpha, threshold;
+    float alpha, iir_threshold, acq_threshold;
     //std::string taps_filename;
 
     // other variables
@@ -790,14 +801,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("thresh,threshold", po::value<float>(&threshold)->default_value(0.004), "Threshold for sample capture")
+        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.002), "Threshold for energy detector")
+        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(6), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         ("tx-payload-len", po::value<size_t>(&tx_payload_len)->default_value(1000), "Tx side payload length in bits")
         //("tx-packet-num-len", po::value<size_t>(&tx_packet_num_len)->default_value(16), "Tx side length of packet number in bits")
-        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((1000+36+16)*5/4+20), "Rx capture length without front extension")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((1000+36+16)*5/4+100), "Rx capture length without front extension")
         ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(20), "Front extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
     ;
@@ -1064,6 +1076,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread agc_t;
     std::thread acq_t;
     std::thread demod_t;
+    std::thread per_count_t;
     std::thread captured_block_count_t;
     
     // init packet len
@@ -1090,6 +1103,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> mf_out_fifo;
         tsFIFO<Block<std::complex<float>>> acq_out_fifo;
         tsFIFO<Block<bool>> demod_out_fifo;
+        tsFIFO<std::pair<int, float>> per_fifo;
         
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
@@ -1097,23 +1111,23 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for energy detector
         energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
                     std::ref(energy_detector_out_fifo), rx_spb,
-                    threshold, rx_cap_len, rx_pre_cap_len);
+                    iir_threshold, rx_cap_len, rx_pre_cap_len);
         // create thread for agc
-        //agc_t = std::thread(&agc, std::ref(energy_detector_out_fifo),
-        //            std::ref(agc_out_fifo), rx_cap_len+rx_pre_cap_len);
+        agc_t = std::thread(&agc, std::ref(energy_detector_out_fifo),
+                    std::ref(agc_out_fifo), rx_cap_len+rx_pre_cap_len);
         // create thread for multirate filtering
         mf_worker_t = std::thread(&filter, 1, rx_mf_U, rx_cap_len+rx_pre_cap_len,
                 std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
+                std::ref(agc_out_fifo), std::ref(mf_out_fifo));
         // create thread for acquistion
         acq_t = std::thread(&acq, std::ref(mf_out_fifo), std::ref(acq_out_fifo),
-                            (rx_cap_len+rx_pre_cap_len)*4, 5, 1000+16);
+                            (rx_cap_len+rx_pre_cap_len)*4, 5, 1000+16, acq_threshold);
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                             1000+16);
+                              std::ref(per_fifo), 1000+16);
         // create thread for counting receiving blocks every 10 seconds
-        //captured_block_count_t = std::thread(&captured_block_count,
-        //            std::ref(mf_out_fifo));
+        per_count_t = std::thread(&per_count,
+                    std::ref(per_fifo));
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
