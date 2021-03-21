@@ -37,6 +37,134 @@ namespace po = boost::program_options;
 
 
 /***********************************************************************
+ * demodulation
+ **********************************************************************/
+void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
+            tsFIFO<Block<bool>>& fifo_out,
+            size_t payload_and_header_len)
+{
+    // create logger
+    Logger logger("DEMOD", "./demod.log");
+    // create dummy block
+    Block<std::complex<float>> in_block;
+    Block<bool> out_block;
+    out_block.second.resize(1000);
+    bool demod_bit;
+    float angle_cur = 0;
+    float angle_pre = 0;
+    float m_hat_0 = 0;
+    float m_hat_1 = 0;
+    std::bitset<16> header;
+    int ham_dist = 0;
+    float ber = 0;
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop input block from fifo
+            fifo_in.pop(in_block);
+            // non-coherent demodulation 
+            for (size_t i=0; i<payload_and_header_len; i++) {
+                angle_cur = std::arg(in_block.second[i+1]);
+                angle_pre = std::arg(in_block.second[i]);
+                m_hat_0 = std::cos(angle_cur-angle_pre);
+                m_hat_1 = std::cos(angle_cur-angle_pre-M_PI);
+                if (m_hat_0 > m_hat_1)
+                    demod_bit = 0;
+                else
+                    demod_bit = 1;
+                //logger.log("Demod bit: " + std::to_string(i) +
+                //           " Value: " + std::to_string(demod_bit));
+                if (i<16)
+                    header[i] = demod_bit;
+                else
+                    out_block.second[i-16] = demod_bit;
+            }
+            out_block.first = (int)header.to_ulong();
+            //logger.log("Packet ID: " + std::to_string(out_block.first));
+            
+            // calculate hamming distance for bit error rate
+            ham_dist = 0;
+            for (size_t i=0; i<1000; i++) {
+                if (out_block.second[i] != payload[i])
+                    ham_dist++;
+                //logger.log("Demod bit: " + std::to_string(out_block.second[i]));
+                //logger.log("Payload bit: " + std::to_string(payload[i]));
+                //logger.log("Hamming Distance: " + std::to_string(ham_dist));
+            }
+            ber = (float)ham_dist/1000;
+            logger.log("Packet ID: " + std::to_string(out_block.first) +
+                       "  BER: " + std::to_string(ber));
+                
+        }
+    }
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
+
+/***********************************************************************
+ * acquisition
+ **********************************************************************/
+void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
+          tsFIFO<Block<std::complex<float>>>& fifo_out,
+          size_t input_block_len,
+          size_t sym_per,
+          size_t payload_and_header_len)
+{
+    // create logger
+    Logger logger("ACQ", "./acq.log");
+    // create a signature sequence vector
+    std::vector<std::complex<float>> sig_seq_vec;
+    sig_seq_vec.resize(sig_seq_len);
+    for (size_t i=0; i<sig_seq_len; i++)
+        sig_seq_vec[i] = sig_seq[i];
+    // create dummy block
+    Block<std::complex<float>> in_block;
+    Block<std::complex<float>> out_block;
+    out_block.second.resize(payload_and_header_len+1);
+    // initialize parameters and temporary vectors
+    size_t tao_end = input_block_len - payload_and_header_len * sym_per;
+    size_t tao_star = 0;
+    size_t packet_start = 0;
+    logger.logf("Tao end at: " + std::to_string(tao_end));
+    std::pair<int, float> temp_pair;
+    std::vector<std::complex<float>> temp;
+    temp.resize(sig_seq_len);
+    std::vector<float> corr_vec;
+    corr_vec.resize(tao_end);
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop input block from fifo
+            fifo_in.pop(in_block);
+            out_block.first = in_block.first;
+            
+            // fine symbol synchronization, i.e. find tao_star
+            for (size_t t=0; t<tao_end; t++) {
+                // get temp sequence r[n] = r(nT + tao)
+                for (size_t i=0; i<sig_seq_len; i++)
+                    temp[i] = in_block.second[i*sym_per+t];
+                // compute correlation
+                corr_vec[t] = correlation(sig_seq_vec, temp);
+            }
+            temp_pair = where_max(corr_vec);
+            tao_star = temp_pair.first;
+            logger.logf("Tao_star: " + std::to_string(tao_star));
+            
+            // get decision statistic for demod
+            packet_start = tao_star + 35*sym_per;
+            logger.logf("Packet start: " + std::to_string(packet_start));
+            for (size_t i=0; i<payload_and_header_len+1; i++)
+                out_block.second[i] = in_block.second[packet_start+i*sym_per];
+            
+            // push demod output to fifo
+            fifo_out.push(out_block);
+        }
+    }
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
+
+/***********************************************************************
  * Automatic gain control by normalizing RMS value
  **********************************************************************/
 void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
@@ -56,7 +184,7 @@ void captured_block_count (tsFIFO<Block<std::complex<float>>>& fifo_in)
         std::this_thread::sleep_for(std::chrono::seconds(10));
     }
     // notify user that processing thread is done
-    logger.log("Bit generator thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -111,7 +239,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // close output file
     agc_out_file.close();
     // notify user that processing thread is done
-    logger.log("Bit generator thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -152,7 +280,7 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
         std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
     }
     // notify user that processing thread is done
-    logger.log("Packet generator thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -211,7 +339,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     //in_file.close();
     out_file.close();
     // notify user that processing thread is done
-    logger.log("Bit generator thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -295,7 +423,7 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
         }
     }
     // notify user that processing thread is done
-    logger.log("Energy detector thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -354,7 +482,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     iir_in_file.close();
     iir_out_file.close();
     // notify user that processing thread is done
-    logger.log("IIR filter thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -431,7 +559,7 @@ void filter(int D, int U, size_t in_len,
     in_file.close();
     out_file.close();
     // notify user that processing thread is done
-    logger.log("Filtering thread is done and closing");
+    logger.log("Closing");
 }
 
 
@@ -467,11 +595,11 @@ void transmit_worker (//size_t samp_per_buff,
             logger.log("Sending block: " + std::to_string(block.first));
             tx_streamer->send(&block.second.front(), block_size, md);
             // flush buffer
-            tx_streamer->send(&zeros.front(), 300, md);
+            //tx_streamer->send(&zeros.front(), 300, md);
         }
     }
     // send a mini EOB packet
-    logger.log("Sending block to tx streamer");
+    logger.log("Closing");
 }
 
 
@@ -662,7 +790,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("thresh,threshold", po::value<float>(&threshold)->default_value(0.0045), "Threshold for sample capture")
+        ("thresh,threshold", po::value<float>(&threshold)->default_value(0.004), "Threshold for sample capture")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -934,6 +1062,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread energy_detector_t;
     std::thread power_average_worker_t[num_pa_threads];
     std::thread agc_t;
+    std::thread acq_t;
+    std::thread demod_t;
     std::thread captured_block_count_t;
     
     // init packet len
@@ -958,6 +1088,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> energy_detector_out_fifo;
         tsFIFO<Block<std::complex<float>>> agc_out_fifo;
         tsFIFO<Block<std::complex<float>>> mf_out_fifo;
+        tsFIFO<Block<std::complex<float>>> acq_out_fifo;
+        tsFIFO<Block<bool>> demod_out_fifo;
+        
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
                     std::ref(iir_out_fifo), rx_spb, alpha);
@@ -972,9 +1105,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         mf_worker_t = std::thread(&filter, 1, rx_mf_U, rx_cap_len+rx_pre_cap_len,
                 std::ref(rrc_vec), num_filt_threads, false,
                 std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
+        // create thread for acquistion
+        acq_t = std::thread(&acq, std::ref(mf_out_fifo), std::ref(acq_out_fifo),
+                            (rx_cap_len+rx_pre_cap_len)*4, 5, 1000+16);
+        // create thread for demodulation
+        demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
+                             1000+16);
         // create thread for counting receiving blocks every 10 seconds
-        captured_block_count_t = std::thread(&captured_block_count,
-                    std::ref(mf_out_fifo));
+        //captured_block_count_t = std::thread(&captured_block_count,
+        //            std::ref(mf_out_fifo));
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
