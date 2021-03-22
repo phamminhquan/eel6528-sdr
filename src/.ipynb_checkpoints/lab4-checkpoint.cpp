@@ -31,6 +31,7 @@
 #include "fixed-queue.h"
 #include "sig-seq.h"
 #include "payload.h"
+#include "preamble.h"
 
 
 namespace po = boost::program_options;
@@ -149,7 +150,7 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 logger.logf("Tao_star: " + std::to_string(tao_star));
 
                 // get decision statistic for demod
-                packet_start = tao_star + 35*sym_per;
+                packet_start = tao_star + 30*sym_per;
                 logger.logf("Packet start: " + std::to_string(packet_start));
                 for (size_t i=0; i<payload_and_header_len+1; i++)
                     out_block.second[i] = in_block.second[packet_start+i*sym_per];
@@ -311,9 +312,12 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
     out_block.second.resize(out_block_size);
+    // prepend preamble
+    for (int i=0; i<preamble_len; i++)
+        out_block.second[i] = preamble[i];
     // prepend signature sequence
-    for (int i=0; i<36; i++)
-        out_block.second[i] = sig_seq[i];
+    for (int i=0; i<sig_seq_len; i++)
+        out_block.second[i+preamble_len] = sig_seq[i];
     // create variables
     std::vector<std::complex<float>> temp_vec;
     temp_vec.resize(in_block_size+1);
@@ -333,7 +337,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             for (int i=0; i<in_block_size; i++) {
                 bpsk_sample = -2.0 * (float)in_block.second[i] + 1.0;
                 temp_vec[i+1] = bpsk_sample*temp_vec[i];
-                out_block.second[36+i] = temp_vec[i+1];
+                out_block.second[i+preamble_len+sig_seq_len] = temp_vec[i+1];
                 // log for debug
                 //logger.log("Block: " + std::to_string(out_block.first) +
                 //           " Bit: " + std::to_string(in_block.second[i]) +

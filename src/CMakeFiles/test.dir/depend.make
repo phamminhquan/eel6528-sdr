@@ -15,6 +15,9 @@ CMakeFiles/test.dir/include/power-average.cpp.o: ../include/power-average.cpp
 CMakeFiles/test.dir/include/power-average.cpp.o: ../include/power-average.h
 CMakeFiles/test.dir/include/power-average.cpp.o: ../include/stop-signal.h
 
+CMakeFiles/test.dir/include/preamble.cpp.o: ../include/preamble.cpp
+CMakeFiles/test.dir/include/preamble.cpp.o: ../include/preamble.h
+
 CMakeFiles/test.dir/include/pulse.cpp.o: ../include/pulse.cpp
 CMakeFiles/test.dir/include/pulse.cpp.o: ../include/pulse.h
 
@@ -36,6 +39,7 @@ CMakeFiles/test.dir/lab4.cpp.o: ../include/fixed-queue.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/logger.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/payload.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/power-average.h
+CMakeFiles/test.dir/lab4.cpp.o: ../include/preamble.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/pulse.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/sig-seq.h
 CMakeFiles/test.dir/lab4.cpp.o: ../include/stop-signal.h

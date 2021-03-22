@@ -96,9 +96,22 @@ CMakeFiles/test.dir/include/power-average.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/include/power-average.cpp.s"
 	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/quanpham/eel6528-sdr/include/power-average.cpp -o CMakeFiles/test.dir/include/power-average.cpp.s
 
+CMakeFiles/test.dir/include/preamble.cpp.o: CMakeFiles/test.dir/flags.make
+CMakeFiles/test.dir/include/preamble.cpp.o: ../include/preamble.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test.dir/include/preamble.cpp.o"
+	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/include/preamble.cpp.o -c /home/quanpham/eel6528-sdr/include/preamble.cpp
+
+CMakeFiles/test.dir/include/preamble.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/include/preamble.cpp.i"
+	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/quanpham/eel6528-sdr/include/preamble.cpp > CMakeFiles/test.dir/include/preamble.cpp.i
+
+CMakeFiles/test.dir/include/preamble.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/include/preamble.cpp.s"
+	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/quanpham/eel6528-sdr/include/preamble.cpp -o CMakeFiles/test.dir/include/preamble.cpp.s
+
 CMakeFiles/test.dir/include/pulse.cpp.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/include/pulse.cpp.o: ../include/pulse.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test.dir/include/pulse.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test.dir/include/pulse.cpp.o"
 	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/include/pulse.cpp.o -c /home/quanpham/eel6528-sdr/include/pulse.cpp
 
 CMakeFiles/test.dir/include/pulse.cpp.i: cmake_force
@@ -111,7 +124,7 @@ CMakeFiles/test.dir/include/pulse.cpp.s: cmake_force
 
 CMakeFiles/test.dir/include/sig-seq.cpp.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/include/sig-seq.cpp.o: ../include/sig-seq.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test.dir/include/sig-seq.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/test.dir/include/sig-seq.cpp.o"
 	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/include/sig-seq.cpp.o -c /home/quanpham/eel6528-sdr/include/sig-seq.cpp
 
 CMakeFiles/test.dir/include/sig-seq.cpp.i: cmake_force
@@ -124,7 +137,7 @@ CMakeFiles/test.dir/include/sig-seq.cpp.s: cmake_force
 
 CMakeFiles/test.dir/include/stop-signal.cpp.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/include/stop-signal.cpp.o: ../include/stop-signal.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/test.dir/include/stop-signal.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/test.dir/include/stop-signal.cpp.o"
 	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/include/stop-signal.cpp.o -c /home/quanpham/eel6528-sdr/include/stop-signal.cpp
 
 CMakeFiles/test.dir/include/stop-signal.cpp.i: cmake_force
@@ -137,7 +150,7 @@ CMakeFiles/test.dir/include/stop-signal.cpp.s: cmake_force
 
 CMakeFiles/test.dir/include/utilities.cpp.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/include/utilities.cpp.o: ../include/utilities.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/test.dir/include/utilities.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/test.dir/include/utilities.cpp.o"
 	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/include/utilities.cpp.o -c /home/quanpham/eel6528-sdr/include/utilities.cpp
 
 CMakeFiles/test.dir/include/utilities.cpp.i: cmake_force
@@ -150,7 +163,7 @@ CMakeFiles/test.dir/include/utilities.cpp.s: cmake_force
 
 CMakeFiles/test.dir/lab4.cpp.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/lab4.cpp.o: lab4.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/test.dir/lab4.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/test.dir/lab4.cpp.o"
 	g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test.dir/lab4.cpp.o -c /home/quanpham/eel6528-sdr/src/lab4.cpp
 
 CMakeFiles/test.dir/lab4.cpp.i: cmake_force
@@ -166,6 +179,7 @@ test_OBJECTS = \
 "CMakeFiles/test.dir/include/filters.cpp.o" \
 "CMakeFiles/test.dir/include/payload.cpp.o" \
 "CMakeFiles/test.dir/include/power-average.cpp.o" \
+"CMakeFiles/test.dir/include/preamble.cpp.o" \
 "CMakeFiles/test.dir/include/pulse.cpp.o" \
 "CMakeFiles/test.dir/include/sig-seq.cpp.o" \
 "CMakeFiles/test.dir/include/stop-signal.cpp.o" \
@@ -178,6 +192,7 @@ test_EXTERNAL_OBJECTS =
 test: CMakeFiles/test.dir/include/filters.cpp.o
 test: CMakeFiles/test.dir/include/payload.cpp.o
 test: CMakeFiles/test.dir/include/power-average.cpp.o
+test: CMakeFiles/test.dir/include/preamble.cpp.o
 test: CMakeFiles/test.dir/include/pulse.cpp.o
 test: CMakeFiles/test.dir/include/sig-seq.cpp.o
 test: CMakeFiles/test.dir/include/stop-signal.cpp.o
@@ -189,7 +204,7 @@ test: /usr/lib/x86_64-linux-gnu/libboost_system.so.1.71.0
 test: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so.1.71.0
 test: /usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.71.0
 test: CMakeFiles/test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/quanpham/eel6528-sdr/src/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

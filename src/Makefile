@@ -204,6 +204,33 @@ include/power-average.cpp.s:
 	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/power-average.cpp.s
 .PHONY : include/power-average.cpp.s
 
+include/preamble.o: include/preamble.cpp.o
+
+.PHONY : include/preamble.o
+
+# target to build an object file
+include/preamble.cpp.o:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/preamble.cpp.o
+.PHONY : include/preamble.cpp.o
+
+include/preamble.i: include/preamble.cpp.i
+
+.PHONY : include/preamble.i
+
+# target to preprocess a source file
+include/preamble.cpp.i:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/preamble.cpp.i
+.PHONY : include/preamble.cpp.i
+
+include/preamble.s: include/preamble.cpp.s
+
+.PHONY : include/preamble.s
+
+# target to generate assembly for a file
+include/preamble.cpp.s:
+	$(MAKE) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/include/preamble.cpp.s
+.PHONY : include/preamble.cpp.s
+
 include/pulse.o: include/pulse.cpp.o
 
 .PHONY : include/pulse.o
@@ -357,6 +384,9 @@ help:
 	@echo "... include/power-average.o"
 	@echo "... include/power-average.i"
 	@echo "... include/power-average.s"
+	@echo "... include/preamble.o"
+	@echo "... include/preamble.i"
+	@echo "... include/preamble.s"
 	@echo "... include/pulse.o"
 	@echo "... include/pulse.i"
 	@echo "... include/pulse.s"

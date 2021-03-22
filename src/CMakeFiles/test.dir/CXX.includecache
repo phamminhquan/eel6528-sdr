@@ -78,6 +78,8 @@ logger.h
 stop-signal.h
 ../include/stop-signal.h
 
+../include/preamble.h
+
 ../include/pulse.h
 complex
 -
@@ -97,6 +99,12 @@ vector
 -
 complex
 -
+
+/home/quanpham/eel6528-sdr/include/preamble.cpp
+preamble.h
+/home/quanpham/eel6528-sdr/include/preamble.h
+
+/home/quanpham/eel6528-sdr/include/preamble.h
 
 /home/quanpham/eel6528-sdr/src/lab4.cpp
 uhd/exception.hpp
@@ -161,4 +169,6 @@ sig-seq.h
 /home/quanpham/eel6528-sdr/src/sig-seq.h
 payload.h
 /home/quanpham/eel6528-sdr/src/payload.h
+preamble.h
+/home/quanpham/eel6528-sdr/src/preamble.h
 
