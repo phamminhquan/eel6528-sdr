@@ -315,13 +315,15 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // prepend preamble
     for (int i=0; i<preamble_len; i++)
         out_block.second[i] = preamble[i];
+    logger.log("Preamble size: " + std::to_string(preamble_len));
     // prepend signature sequence
     for (int i=0; i<sig_seq_len; i++)
         out_block.second[i+preamble_len] = sig_seq[i];
+    logger.log("Signature sequence size: " + std::to_string(sig_seq_len));
     // create variables
     std::vector<std::complex<float>> temp_vec;
     temp_vec.resize(in_block_size+1);
-    temp_vec[0] = sig_seq[35];
+    temp_vec[0] = sig_seq[sig_seq_len-1];
     float bpsk_sample;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -813,7 +815,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         ("tx-payload-len", po::value<size_t>(&tx_payload_len)->default_value(1000), "Tx side payload length in bits")
         //("tx-packet-num-len", po::value<size_t>(&tx_packet_num_len)->default_value(16), "Tx side length of packet number in bits")
-        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((1000+36+16)*5/4+100), "Rx capture length without front extension")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((1000+36+16)*5/4+20), "Rx capture length without front extension")
         ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(20), "Front extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
     ;
