@@ -139,9 +139,9 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
         if (fifo_in.size() != 0) {
             // print out fifo size to check
             if (fifo_in.size() != 1)
-                logger.log("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.logf("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("ACQ output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.logf("ACQ output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -231,9 +231,9 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
         if (fifo_in.size() != 0) {
             // print out fifo size to check
             if (fifo_in.size() != 1)
-                logger.log("AGC input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.logf("AGC input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("AGC output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.logf("AGC output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             // set block counter
@@ -275,7 +275,7 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
     // create logger
     Logger logger("PacketGen", "./packet_gen.log");
     int idle_time_us = (int)(1/(float)packet_rate * 1e6);
-    logger.log("Idle time: " + std::to_string(idle_time_us));
+    logger.logf("Idle time: " + std::to_string(idle_time_us));
     // create block counter
     int block_counter = 0;
     // create dummy block
@@ -339,9 +339,9 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
         if (fifo_in.size() != 0) {
             // print out fifo size to check
             if (fifo_in.size() != 1)
-                logger.log("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.logf("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.logf("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
             // pop bit sequence from input fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -400,9 +400,9 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.log("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.logf("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.logf("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
             // pop fifo in
             fifo_in.pop(in_pair);
             in_block = in_pair.first;
@@ -481,9 +481,9 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.log("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.logf("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.logf("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
             // iir
             // pop block from fifo
             fifo_in.pop(in_block);
@@ -552,9 +552,9 @@ void filter(int D, int U, size_t in_len,
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.log("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.logf("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.log("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.logf("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
             // pop block from fifo
             fifo_in.pop(in_block);
             // get input array
@@ -818,7 +818,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
         ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.002), "Threshold for energy detector")
-        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(6), "Threshold for correlation in acquisition")
+        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(8), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
