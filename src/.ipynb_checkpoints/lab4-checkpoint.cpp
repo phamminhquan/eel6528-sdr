@@ -85,6 +85,11 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     header[i] = demod_bit;
                 else
                     out_block.second[i-16] = demod_bit;
+                if (i==976+16)
+                    logger.log("Index: " + std::to_string(i) +
+                               "  Bit: " + std::to_string(out_block.second[i-16]) +
+                               "  Mod: " + std::to_string(in_block.second[i].real())
+                              );
             }
             out_block.first = (int)header.to_ulong();
             // calculate hamming distance for bit error rate
@@ -99,7 +104,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             temp_per.second = ber;
             per_out.push(temp_per);
             // log packet BER
-            logger.logf("Packet ID: " + std::to_string(out_block.first) +
+            logger.log("Packet ID: " + std::to_string(out_block.first) +
                        "  BER: " + std::to_string(ber));
             // log data to file
             out_file.write((const char*)& out_block.second[0], 1000*sizeof(float));
