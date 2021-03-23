@@ -62,6 +62,11 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     std::pair<int, float> temp_per;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // print out fifo size to check
+            if (fifo_in.size() != 1)
+                logger.logf("Demodulator input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.logf("Demodulator output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             // non-coherent demodulation 
@@ -92,7 +97,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             temp_per.second = ber;
             per_out.push(temp_per);
             // log packet BER
-            logger.log("Packet ID: " + std::to_string(out_block.first) +
+            logger.logf("Packet ID: " + std::to_string(out_block.first) +
                        "  BER: " + std::to_string(ber));
         }
     }
@@ -132,10 +137,14 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
     corr_vec.resize(tao_end);
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // print out fifo size to check
+            if (fifo_in.size() != 1)
+                logger.log("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.log("ACQ output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
-            
             // fine symbol synchronization, i.e. find tao_star
             for (size_t t=0; t<tao_end; t++) {
                 // get temp sequence r[n] = r(nT + tao)
@@ -147,11 +156,10 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
             temp_pair = where_max(corr_vec);
             if (temp_pair.second > thresh) {
                 tao_star = temp_pair.first;
-                logger.logf("Tao_star: " + std::to_string(tao_star));
-
+                //logger.logf("Tao_star: " + std::to_string(tao_star));
                 // get decision statistic for demod
                 packet_start = tao_star + 30*sym_per;
-                logger.logf("Packet start: " + std::to_string(packet_start));
+                //logger.logf("Packet start: " + std::to_string(packet_start));
                 for (size_t i=0; i<payload_and_header_len+1; i++)
                     out_block.second[i] = in_block.second[packet_start+i*sym_per];
 
@@ -174,19 +182,21 @@ void per_count (tsFIFO<std::pair<int, float>>& fifo_in)
     Logger logger("PERCount", "./per_count.log");
     // create dummy block
     std::pair<int, float> in_block;
+    size_t current_fifo_size = 0;
     size_t running_block_count = 0;
     size_t running_error_packet_count = 0;
     float per=0;
     while (not stop_signal_called) {
         // checking fifo size
-        running_block_count += fifo_in.size();
-        for (size_t i=0; i<fifo_in.size(); i++) {
+        current_fifo_size = fifo_in.size();
+        running_block_count += current_fifo_size;
+        for (size_t i=0; i<current_fifo_size; i++) {
             fifo_in.pop(in_block);
-            if (in_block.second != 0)
+            if (in_block.second > 0.00099)
                 running_error_packet_count++;
         }
         if (running_block_count != 0) {
-            per = running_error_packet_count/running_block_count;
+            per = (float)running_error_packet_count/running_block_count;
             logger.log("Running packet count: " + std::to_string(running_block_count) +
                        "  Running PER: " + std::to_string(per));
         }
@@ -221,9 +231,9 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
         if (fifo_in.size() != 0) {
             // print out fifo size to check
             if (fifo_in.size() != 1)
-                logger.logf("AGC input FIFO size: " + std::to_string(fifo_in.size()));
-            //if (fifo_out.size() != 0)
-            //    logger.log("AGC output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.log("AGC input FIFO size: " + std::to_string(fifo_in.size()));
+            if (fifo_out.size() != 0)
+                logger.log("AGC output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             // set block counter
@@ -235,8 +245,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
             rms /= block_size;
             rms = std::sqrt(rms);
-            logger.logf("Block: " + std::to_string(in_block.first) +
-                       " RMS: " + std::to_string(rms));
+            //logger.logf("Block: " + std::to_string(in_block.first) +
+            //           " RMS: " + std::to_string(rms));
             // normalize by dividing each sample by rms value
             for (int i=0; i<block_size; i++) {
                 out_block.second[i] = in_block.second[i]/rms;
@@ -244,8 +254,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // push block to fifo
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
+            //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // close output file
@@ -315,11 +325,11 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // prepend preamble
     for (int i=0; i<preamble_len; i++)
         out_block.second[i] = preamble[i];
-    logger.log("Preamble size: " + std::to_string(preamble_len));
+    logger.logf("Preamble size: " + std::to_string(preamble_len));
     // prepend signature sequence
     for (int i=0; i<sig_seq_len; i++)
         out_block.second[i+preamble_len] = sig_seq[i];
-    logger.log("Signature sequence size: " + std::to_string(sig_seq_len));
+    logger.logf("Signature sequence size: " + std::to_string(sig_seq_len));
     // create variables
     std::vector<std::complex<float>> temp_vec;
     temp_vec.resize(in_block_size+1);
@@ -329,9 +339,9 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
         if (fifo_in.size() != 0) {
             // print out fifo size to check
             if (fifo_in.size() != 1)
-                logger.logf("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.log("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.logf("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.log("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
             // pop bit sequence from input fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -390,9 +400,9 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.logf("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.log("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.logf("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.log("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
             // pop fifo in
             fifo_in.pop(in_pair);
             in_block = in_pair.first;
@@ -471,9 +481,9 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.logf("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.log("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.logf("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.log("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
             // iir
             // pop block from fifo
             fifo_in.pop(in_block);
@@ -542,9 +552,9 @@ void filter(int D, int U, size_t in_len,
         if (fifo_in.size() != 0) {
             // check fifo sizes
             if (fifo_in.size() != 1)
-                logger.logf("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
+                logger.log("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
             if (fifo_out.size() != 0)
-                logger.logf("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
+                logger.log("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
             // pop block from fifo
             fifo_in.pop(in_block);
             // get input array
@@ -552,7 +562,7 @@ void filter(int D, int U, size_t in_len,
                 in[i] = in_block.second[i];
             }
             // put value in file
-            in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
+            //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
             if (continuous) {
                 filt.set_head(in_block.first == 0);
@@ -568,7 +578,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
