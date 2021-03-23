@@ -47,11 +47,13 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
 {
     // create logger
     Logger logger("DEMOD", "./demod.log");
+    // create file to log demodulated packet
+    std::ofstream out_file ("demod_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
-    Block<bool> out_block;
+    Block<float> out_block;
     out_block.second.resize(1000);
-    bool demod_bit;
+    float demod_bit;
     float angle_cur = 0;
     float angle_pre = 0;
     float m_hat_0 = 0;
@@ -99,8 +101,12 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // log packet BER
             logger.logf("Packet ID: " + std::to_string(out_block.first) +
                        "  BER: " + std::to_string(ber));
+            // log data to file
+            out_file.write((const char*)& out_block.second[0], 1000*sizeof(float));
         }
     }
+    // close output file
+    out_file.close();
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -293,6 +299,7 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
         // getting payload from payload.h
         for (size_t i=0; i<payload_size; i++)
             block.second[16+i] = payload[i];
+        logger.log("Payload and header size: " + std::to_string(block.second.size()));
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
