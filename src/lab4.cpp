@@ -299,7 +299,7 @@ void packet_gen (tsFIFO<Block<bool>>& fifo,
         // getting payload from payload.h
         for (size_t i=0; i<payload_size; i++)
             block.second[16+i] = payload[i];
-        logger.log("Payload and header size: " + std::to_string(block.second.size()));
+        //logger.log("Payload and header size: " + std::to_string(block.second.size()));
         // push block to fifo
         fifo.push(block);
         // print out fifo size to check
@@ -325,6 +325,8 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // create filestream
     //std::ofstream in_file ("mod_in.dat", std::ofstream::binary);
     std::ofstream out_file ("mod_out.dat", std::ofstream::binary);
+    logger.log("Modulator input block size: " + std::to_string(in_block_size));
+    logger.log("Modulator output block size: " + std::to_string(out_block_size));
     // create dummy block
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
