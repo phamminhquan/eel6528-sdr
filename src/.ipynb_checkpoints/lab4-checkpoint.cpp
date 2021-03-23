@@ -363,7 +363,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
                 //logger.log("Block: " + std::to_string(out_block.first) +
                 //           " Bit: " + std::to_string(in_block.second[i]) +
                 //           " Symbol: " + std::to_string(out_block.second[36+i].real()));
-                if (i==976)
+                if (i==976+16)
                     logger.log("Input index: " + std::to_string(i) +
                                "  Output index: " + std::to_string(i+preamble_len+sig_seq_len) +
                                "  Bit: " + std::to_string(in_block.second[i]) +
