@@ -127,6 +127,7 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
 {
     // create logger
     Logger logger("ACQ", "./acq.log");
+    logger.logf("Symbol period: " + std::to_string(sym_per));
     // create a signature sequence vector
     std::vector<std::complex<float>> sig_seq_vec;
     sig_seq_vec.resize(sig_seq_len);
@@ -167,10 +168,10 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
             temp_pair = where_max(corr_vec);
             if (temp_pair.second > thresh) {
                 tao_star = temp_pair.first;
-                //logger.logf("Tao_star: " + std::to_string(tao_star));
+                logger.logf("Tao_star: " + std::to_string(tao_star));
                 // get decision statistic for demod
                 packet_start = tao_star + 30*sym_per;
-                //logger.logf("Packet start: " + std::to_string(packet_start));
+                logger.logf("Packet start: " + std::to_string(packet_start));
                 for (size_t i=0; i<payload_and_header_len+1; i++)
                     out_block.second[i] = in_block.second[packet_start+i*sym_per];
 
@@ -582,7 +583,7 @@ void filter(int D, int U, size_t in_len,
                 in[i] = in_block.second[i];
             }
             // put value in file
-            //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
+            in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
             if (continuous) {
                 filt.set_head(in_block.first == 0);
@@ -598,7 +599,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
@@ -1157,7 +1158,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(agc_out_fifo), std::ref(mf_out_fifo));
         // create thread for acquistion
         acq_t = std::thread(&acq, std::ref(mf_out_fifo), std::ref(acq_out_fifo),
-                            (rx_cap_len+rx_pre_cap_len)*4, 5, 1000+16, acq_threshold);
+                            (rx_cap_len+rx_pre_cap_len)*rx_mf_U, rx_mf_U*5/4,
+                            1000+16, acq_threshold);
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
                               std::ref(per_fifo), 1000+16);
