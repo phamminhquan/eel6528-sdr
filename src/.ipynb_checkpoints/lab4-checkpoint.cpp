@@ -576,7 +576,7 @@ void filter(int D, int U, size_t in_len,
                 in[i] = in_block.second[i];
             }
             // put value in file
-            in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
+            //in_file.write((const char*) in, in_len*sizeof(std::complex<float>));
             // filter
             if (continuous) {
                 filt.set_head(in_block.first == 0);
@@ -592,7 +592,7 @@ void filter(int D, int U, size_t in_len,
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
-            out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
         }
     }
     // close ofstream
@@ -831,8 +831,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.002), "Threshold for energy detector")
-        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(8), "Threshold for correlation in acquisition")
+        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.0002), "Threshold for energy detector")
+        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(10), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -1183,7 +1183,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         packet_gen_t = std::thread(&packet_gen,
                 std::ref(bit_fifo), 0.5, ext_payload_len, packets_per_sec);
         // call tx worker function as main thread
-        size_t tx_max_num_samps = tx_stream->get_max_num_samps();
         transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
                         pulse_shape_out_fifo);
     }
