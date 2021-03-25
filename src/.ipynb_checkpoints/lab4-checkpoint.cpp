@@ -43,7 +43,8 @@ namespace po = boost::program_options;
 void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             tsFIFO<Block<bool>>& fifo_out,
             tsFIFO<std::pair<int, float>>& per_out,
-            size_t payload_and_header_len)
+            size_t payload_and_header_len,
+            size_t payload_size)
 {
     // create logger
     Logger logger("DEMOD", "./demod.log");
@@ -52,7 +53,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create dummy block
     Block<std::complex<float>> in_block;
     Block<float> out_block;
-    out_block.second.resize(payload_len);
+    out_block.second.resize(payload_size);
     float demod_bit;
     float angle_cur = 0;
     float angle_pre = 0;
@@ -89,11 +90,11 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             out_block.first = (int)header.to_ulong();
             // calculate hamming distance for bit error rate
             ham_dist = 0;
-            for (size_t i=0; i<payload_len; i++) {
+            for (size_t i=0; i<payload_size; i++) {
                 if (out_block.second[i] != payload[i])
                     ham_dist++;
             }
-            ber = (float)ham_dist/payload_len;
+            ber = (float)ham_dist/payload_size;
             // push packet ID and BER to fifo to count PER
             temp_per.first = out_block.first;
             temp_per.second = ber;
@@ -102,7 +103,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             logger.log("Packet ID: " + std::to_string(out_block.first) +
                        "  BER: " + std::to_string(ber));
             // log data to file
-            out_file.write((const char*)& out_block.second[0], payload_len*sizeof(float));
+            out_file.write((const char*)& out_block.second[0], payload_size*sizeof(float));
         }
     }
     // close output file
@@ -200,7 +201,7 @@ void per_count (tsFIFO<std::pair<int, float>>& fifo_in)
         running_block_count += current_fifo_size;
         for (size_t i=0; i<current_fifo_size; i++) {
             fifo_in.pop(in_block);
-            if (in_block.second > 0.00099)
+            if (in_block.second > 0.0)
                 running_error_packet_count++;
         }
         if (running_block_count != 0) {
@@ -1157,7 +1158,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                             acq_threshold);
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                              std::ref(per_fifo), ext_payload_len+16);
+                              std::ref(per_fifo), payload_len+16, payload_len);
         // create thread for counting receiving blocks every 10 seconds
         per_count_t = std::thread(&per_count,
                     std::ref(per_fifo));
