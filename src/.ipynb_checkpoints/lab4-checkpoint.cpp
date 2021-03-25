@@ -449,7 +449,7 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
                             for (int j=0; j<edge_mid_ind; j++)  // take the first few samples
                                 cap_block.second[pre_cap_len+j] = in_block.second[i+j];
                             cap_block.first = cap_block_num++;  // assign, increment capture counter
-                            //logger.log("Detected a packet at edge");
+                            logger.log("Detected a packet at edge");
                             break;
                         } else {    // if capture range in middle
                             for (int j=0; j<pre_cap_len; j++) // capture samples before packet
@@ -458,7 +458,7 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
                                 cap_block.second[pre_cap_len+j] = in_block.second[i+j];
                             cap_block.first = cap_block_num++; // assign, increment capture counter
                             fifo_out.push(cap_block);   // push captured block to fifo out
-                            //logger.log("Detected a packet in middle");
+                            logger.log("Detected a packet in middle");
                         }
                     }
                 } else {
