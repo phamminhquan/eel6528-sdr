@@ -2,6 +2,7 @@
 #define PAYLOAD_H
 
 // declar global ctrl-c signal
-extern const bool payload[1000];
+extern const int payload_len;
+extern const bool payload[1000-25];
 
 #endif
