@@ -3,6 +3,6 @@
 
 // declar global ctrl-c signal
 extern const int payload_len;
-extern const bool payload[1000-25];
+extern const bool payload[1000-60];
 
 #endif
