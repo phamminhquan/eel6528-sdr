@@ -848,7 +848,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
         ("rrc-half-len", po::value<size_t>(&rrc_half_len)->default_value(50), "Tx side down-sampling factor")
         //("tx-packet-num-len", po::value<size_t>(&tx_packet_num_len)->default_value(16), "Tx side length of packet number in bits")
-        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((payload_len+36+16)*5/4), "Rx capture length without front extension")
+        ("rx-cap-len", po::value<int>(&rx_cap_len)->default_value((ext_payload_len+36+16)*5/4), "Rx capture length without front extension")
         ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(20), "Front extension length of rx capture")
         ("rx-post-cap-len", po::value<int>(&rx_post_cap_len)->default_value(200), "Back extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
@@ -1120,7 +1120,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread captured_block_count_t;
     
     // init packet len
-    tx_packet_len = preamble_len + sig_seq_len + 16 + payload_len;
+    tx_packet_len = preamble_len + sig_seq_len + 16 + ext_payload_len;
     main_logger.log("Total transmit packet size: " + std::to_string(tx_packet_len));
     
     // make an array pointer to hold pulse shape filter
@@ -1164,10 +1164,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for acquistion
         acq_t = std::thread(&acq, std::ref(mf_out_fifo), std::ref(acq_out_fifo),
                             (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-                            rx_post_cap_len, rx_mf_U*5/4, payload_len+16, acq_threshold);
+                            rx_post_cap_len, rx_mf_U*5/4, ext_payload_len+16,
+                            acq_threshold);
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                              std::ref(per_fifo), payload_len+16);
+                              std::ref(per_fifo), ext_payload_len+16);
         // create thread for counting receiving blocks every 10 seconds
         per_count_t = std::thread(&per_count,
                     std::ref(per_fifo));
@@ -1187,10 +1188,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
         // spawn modulation thread
         modulator_t = std::thread(&modulate, std::ref(bit_fifo),
-                std::ref(mod_fifo), payload_len+16, tx_packet_len);
+                std::ref(mod_fifo), ext_payload_len+16, tx_packet_len);
         // spawn bit generation thread
         packet_gen_t = std::thread(&packet_gen,
-                std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
+                std::ref(bit_fifo), 0.5, ext_payload_len, packets_per_sec);
         // call tx worker function as main thread
         size_t tx_max_num_samps = tx_stream->get_max_num_samps();
         transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
