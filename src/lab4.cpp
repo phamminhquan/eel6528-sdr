@@ -264,7 +264,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
             //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // close output file
@@ -1143,16 +1143,17 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
                     std::ref(energy_detector_out_fifo), rx_spb,
                     iir_threshold, rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
-        // create thread for agc
-        agc_t = std::thread(&agc, std::ref(energy_detector_out_fifo),
-                    std::ref(agc_out_fifo), rx_cap_len+rx_pre_cap_len+rx_post_cap_len);
         // create thread for multirate filtering
         mf_worker_t = std::thread(&filter, 1, rx_mf_U,
                 rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
                 std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(agc_out_fifo), std::ref(mf_out_fifo));
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
+        // create thread for agc
+        agc_t = std::thread(&agc, std::ref(mf_out_fifo),
+                    std::ref(agc_out_fifo),
+                    (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
         // create thread for acquistion
-        acq_t = std::thread(&acq, std::ref(mf_out_fifo), std::ref(acq_out_fifo),
+        acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
                             (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
                             rx_post_cap_len, rx_mf_U*5/4, ext_payload_len+16,
                             acq_threshold);
