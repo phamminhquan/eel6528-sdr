@@ -74,18 +74,19 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             for (size_t i=0; i<32; i++)
                 rx_crc_bitset[i] = rx_crc_vec[i];
             boost::uint32_t rx_crc = rx_crc_bitset.to_ulong();
-            logger.log("Checksum: " + std::to_string(rx_crc));
+            logger.log("Block: " + std::to_string(in_block.first) +
+                       "\t RX Checksum: " + std::to_string(rx_crc));
             // do crc calculation
             crc32.reset();
             crc32.process_bytes(info_char_vec.data(), info_char_vec.size());
             // compare checksum
-            if (rx_crc == crc32.checksum()) {
-                logger.log("Block: " + std::to_string(in_block.first) +
-                                "\t CRC checked: No error");
-            } else {
-                logger.log("Block: " + std::to_string(in_block.first) +
-                                "\t CRC checked: Error");
-            }
+            //if (rx_crc == crc32.checksum()) {
+            //    logger.log("Block: " + std::to_string(in_block.first) +
+            //                    "\t CRC checked: No error");
+            //} else {
+            //    logger.log("Block: " + std::to_string(in_block.first) +
+            //                    "\t CRC checked: Error");
+            //}
         }
     }
     // notify user that processing thread is done
@@ -122,7 +123,8 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             // get checksum and append to the end of payload
             boost::uint32_t crc_val = crc32.checksum();
             std::bitset<32> crc_bitset(crc32.checksum());
-            logger.log("Checksum: " + std::to_string(crc_val));
+            logger.log("Block: " + std::to_string(out_block.first) +
+                       "\t TX Checksum: " + std::to_string(crc_val));
             // concatenate crc parity bits
             for (size_t i=0; i<32; i++)
                 out_block.second.push_back(crc_bitset[i]);
@@ -132,8 +134,8 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             // push output block to fifo out
             fifo_out.push(out_block);
             // check outblock size
-            logger.log("Block: " + std::to_string(out_block.first) +
-                       "\t Size: " + std::to_string(out_block.second.size()));
+            //logger.log("Block: " + std::to_string(out_block.first) +
+            //           "\t Size: " + std::to_string(out_block.second.size()));
         }
     }
     // notify user that processing thread is done
