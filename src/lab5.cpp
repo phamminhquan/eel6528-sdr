@@ -76,7 +76,7 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             for (size_t i=0; i<post_payload_len; i++)
                 out_block.second.push_back(0);
             // push output block to fifo out
-            //fifo_out.push(out_block);
+            fifo_out.push(out_block);
             // check outblock size
             logger.log("Block: " + std::to_string(out_block.first) +
                        "\t Size: " + std::to_string(out_block.second.size()));
@@ -248,6 +248,7 @@ void per_count (tsFIFO<std::pair<int, float>>& fifo_in)
     while (not stop_signal_called) {
         // checking fifo size
         current_fifo_size = fifo_in.size();
+        logger.log("In Block size: " + std::to_string(current_fifo_size));
         running_block_count += current_fifo_size;
         for (size_t i=0; i<current_fifo_size; i++) {
             fifo_in.pop(in_block);
@@ -881,8 +882,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.0002), "Threshold for energy detector")
-        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(10), "Threshold for correlation in acquisition")
+        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.002), "Threshold for energy detector")
+        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(22), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -1258,7 +1259,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // spawn bit generation thread
         payload_gen_t = std::thread(&payload_gen,
                 std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
-        //// call tx worker function as main thread
+        // call tx worker function as main thread
         transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
                         pulse_shape_out_fifo);
     }
