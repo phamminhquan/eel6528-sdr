@@ -39,6 +39,58 @@
 namespace po = boost::program_options;
 
 
+/***********************************************************************
+ * CRC encode payload
+ **********************************************************************/
+void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
+                 size_t info_size)
+{
+    // create logger
+    Logger logger("EccDecode", "./ecc_decode.log");
+    logger.log("Info size: " + std::to_string(info_size));
+    // Instantiate a crc-32 object
+    boost::crc_32_type crc32;
+    // create dummy block
+    Block<bool> in_block;
+    Block<bool> out_block;
+    std::vector<bool> info_vec;
+    std::vector<unsigned char> info_char_vec;
+    std::vector<bool> rx_crc_vec;
+    std::bitset<32> rx_crc_bitset;
+    int check_sum_diff = 0;
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop input block
+            fifo_in.pop(in_block);
+            //logger.log("Payload size: " + std::to_string(in_block.second.size()));
+            // get the information and ecc part of the payload
+            std::vector<bool> info_vec (in_block.second.begin(),
+                                        in_block.second.begin()+info_size);
+            std::vector<bool> rx_crc_vec (in_block.second.begin()+info_size,
+                                      in_block.second.begin()+info_size+32);
+            // convert vector of boolean to vector of unsigned char
+            info_char_vec = to_uchar_vec(info_vec);
+            // convert crc vector of boolean to bitset to uint32
+            for (size_t i=0; i<32; i++)
+                rx_crc_bitset[i] = rx_crc_vec[i];
+            boost::uint32_t rx_crc = rx_crc_bitset.to_ulong();
+            // do crc calculation
+            crc32.reset();
+            crc32.process_bytes(info_char_vec.data(), info_char_vec.size());
+            // compare checksum
+            if (rx_crc == crc32.checksum()) {
+                logger.log("Block: " + std::to_string(in_block.first) +
+                                "\t CRC checked: No error");
+            } else {
+                logger.log("Block: " + std::to_string(in_block.first) +
+                                "\t CRC checked: Error");
+            }
+        }
+    }
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
 
 /***********************************************************************
  * CRC encode payload
@@ -55,7 +107,6 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
     // create dummy block
     Block<bool> in_block;
     Block<bool> out_block;
-    in_block.second.resize(payload_size);
     std::vector<unsigned char> temp_vec;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -65,6 +116,7 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             // convert vector of boolean to vector of unsigned char
             temp_vec = to_uchar_vec(in_block.second);
             // CRC encode
+            crc32.reset();
             crc32.process_bytes(temp_vec.data(), temp_vec.size());
             // get checksum and append to the end of payload
             boost::uint32_t crc_val = crc32.checksum();
@@ -102,9 +154,9 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     std::ofstream out_file ("demod_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
-    Block<float> out_block;
+    Block<bool> out_block;
     out_block.second.resize(payload_size);
-    float demod_bit;
+    bool demod_bit;
     float angle_cur = 0;
     float angle_pre = 0;
     float m_hat_0 = 0;
@@ -138,6 +190,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     out_block.second[i-16] = demod_bit;
             }
             out_block.first = (int)header.to_ulong();
+            fifo_out.push(out_block);
             // calculate hamming distance for bit error rate
             ham_dist = 0;
             for (size_t i=0; i<payload_size; i++) {
@@ -148,12 +201,12 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // push packet ID and BER to fifo to count PER
             temp_per.first = out_block.first;
             temp_per.second = ber;
-            per_out.push(temp_per);
+            //per_out.push(temp_per);
             // log packet BER
-            logger.log("Packet ID: " + std::to_string(out_block.first) +
+            logger.logf("Packet ID: " + std::to_string(out_block.first) +
                        "  BER: " + std::to_string(ber));
             // log data to file
-            out_file.write((const char*)& out_block.second[0], payload_size*sizeof(float));
+            //out_file.write((const char*)& out_block.second[0], payload_size*sizeof(bool));
         }
     }
     // close output file
@@ -882,8 +935,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.002), "Threshold for energy detector")
-        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(22), "Threshold for correlation in acquisition")
+        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.0004), "Threshold for energy detector")
+        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(15), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -1180,6 +1233,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread demod_t;
     std::thread per_count_t;
     std::thread captured_block_count_t;
+    std::thread ecc_decode_t;
     
     // init packet len
     tx_packet_len = preamble_len + sig_seq_len + 16 + payload_len + 32 + post_payload_len;
@@ -1232,9 +1286,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
                               std::ref(per_fifo), payload_len+16+32, payload_len+32);
+        // create thread for ecc decode
+        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo), 1000);
         // create thread for counting receiving blocks every 10 seconds
-        per_count_t = std::thread(&per_count,
-                    std::ref(per_fifo));
+        //per_count_t = std::thread(&per_count,
+        //            std::ref(per_fifo));
         // call receive function
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
