@@ -74,6 +74,7 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             for (size_t i=0; i<32; i++)
                 rx_crc_bitset[i] = rx_crc_vec[i];
             boost::uint32_t rx_crc = rx_crc_bitset.to_ulong();
+            logger.log("Checksum: " + std::to_string(rx_crc));
             // do crc calculation
             crc32.reset();
             crc32.process_bytes(info_char_vec.data(), info_char_vec.size());
@@ -120,7 +121,8 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             crc32.process_bytes(temp_vec.data(), temp_vec.size());
             // get checksum and append to the end of payload
             boost::uint32_t crc_val = crc32.checksum();
-            std::bitset<32> crc_bitset(crc32.checksum()); 
+            std::bitset<32> crc_bitset(crc32.checksum());
+            logger.log("Checksum: " + std::to_string(crc_val));
             // concatenate crc parity bits
             for (size_t i=0; i<32; i++)
                 out_block.second.push_back(crc_bitset[i]);
