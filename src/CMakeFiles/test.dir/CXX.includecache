@@ -100,7 +100,7 @@ vector
 complex
 -
 
-/home/quanpham/eel6528-sdr/src/lab4.cpp
+/home/quanpham/eel6528-sdr/src/lab5.cpp
 uhd/exception.hpp
 -
 uhd/types/tune_request.hpp
@@ -121,6 +121,8 @@ boost/program_options.hpp
 -
 boost/thread/thread.hpp
 -
+boost/crc.hpp
+-
 csignal
 -
 fstream
@@ -136,6 +138,8 @@ map
 random
 -
 string
+-
+cstring
 -
 bitset
 -

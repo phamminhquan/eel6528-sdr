@@ -35,3 +35,31 @@ std::pair<int, float> where_max (const std::vector<float> vec) {
     }
     return max_entry;
 }
+
+unsigned char to_uchar (const std::vector<bool> input) {
+    // create dummy unsigned char
+    unsigned char output = 0;
+    // loop through 8 bit
+    for (int i=0; i<8; i++) {
+        if (input[i]) {
+            output |= 1 << i;
+        }
+    }
+    return output;
+}
+
+std::vector<unsigned char> to_uchar_vec (const std::vector<bool> input) {
+    // only take the highest number of bits that is divisible by 8
+    int input_size = input.size();
+    int output_size = (int)std::floor(input_size/8);
+    // create dummy output
+    std::vector<unsigned char> output;
+    output.resize(output_size);
+    // loop through each char size
+    for (int i=0; i<output_size; i++) {
+        // grab boolean vector
+        std::vector<bool> input_slice (input.begin()+i*8, input.begin()+(i+1)*8);
+        output[i] = to_uchar(input_slice);
+    }
+    return output;
+}

@@ -18,4 +18,9 @@ float correlation (const std::vector<std::complex<float>> vec1,
 // function to find index of vector where it is max
 std::pair<int, float> where_max (const std::vector<float> vec);
 
+// function to convert vector of boolean to vector of unsigned char
+unsigned char to_uchar (const std::vector<bool> input);
+std::vector<unsigned char> to_uchar_vec (const std::vector<bool> input);
+
+
 #endif

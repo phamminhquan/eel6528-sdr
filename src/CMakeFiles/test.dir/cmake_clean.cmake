@@ -7,7 +7,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/test.dir/include/sig-seq.cpp.o"
   "CMakeFiles/test.dir/include/stop-signal.cpp.o"
   "CMakeFiles/test.dir/include/utilities.cpp.o"
-  "CMakeFiles/test.dir/lab4.cpp.o"
+  "CMakeFiles/test.dir/lab5.cpp.o"
   "test"
   "test.pdb"
 )
