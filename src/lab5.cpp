@@ -43,50 +43,56 @@ namespace po = boost::program_options;
  * CRC encode payload
  **********************************************************************/
 void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
-                 size_t info_size)
+                 size_t payload_size)
 {
     // create logger
     Logger logger("EccDecode", "./ecc_decode.log");
-    logger.log("Info size: " + std::to_string(info_size));
+    logger.log("Payload size: " + std::to_string(payload_size));
     // Instantiate a crc-32 object
     boost::crc_32_type crc32;
     // create dummy block
     Block<bool> in_block;
     Block<bool> out_block;
-    std::vector<bool> info_vec;
-    std::vector<unsigned char> info_char_vec;
+    out_block.second.resize(payload_len);
+    std::vector<unsigned char> payload_char_vec;
     std::vector<bool> rx_crc_vec;
     std::bitset<32> rx_crc_bitset;
+    std::bitset<16> header;
+    
     int check_sum_diff = 0;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop input block
             fifo_in.pop(in_block);
-            //logger.log("Payload size: " + std::to_string(in_block.second.size()));
             // get the information and ecc part of the payload
-            std::vector<bool> info_vec (in_block.second.begin(),
-                                        in_block.second.begin()+info_size);
-            std::vector<bool> rx_crc_vec (in_block.second.begin()+info_size,
-                                      in_block.second.begin()+info_size+32);
+            std::vector<bool> payload_vec (in_block.second.begin(),
+                                           in_block.second.begin()+payload_size);
+            std::vector<bool> rx_crc_vec (in_block.second.begin()+payload_size,
+                                          in_block.second.begin()+payload_size+32);
             // convert vector of boolean to vector of unsigned char
-            info_char_vec = to_uchar_vec(info_vec);
+            payload_char_vec = to_uchar_vec(payload_vec);
             // convert crc vector of boolean to bitset to uint32
             for (size_t i=0; i<32; i++)
                 rx_crc_bitset[i] = rx_crc_vec[i];
             boost::uint32_t rx_crc = rx_crc_bitset.to_ulong();
-            logger.log("Block: " + std::to_string(in_block.first) +
-                       "\t RX Checksum: " + std::to_string(rx_crc));
             // do crc calculation
             crc32.reset();
-            crc32.process_bytes(info_char_vec.data(), info_char_vec.size());
+            crc32.process_bytes(payload_char_vec.data(), payload_char_vec.size());
             // compare checksum
-            //if (rx_crc == crc32.checksum()) {
-            //    logger.log("Block: " + std::to_string(in_block.first) +
-            //                    "\t CRC checked: No error");
-            //} else {
-            //    logger.log("Block: " + std::to_string(in_block.first) +
-            //                    "\t CRC checked: Error");
-            //}
+            if (rx_crc == crc32.checksum()) { // checksum are equal
+                // separate header and info
+                for (size_t i=0; i<16; i++)
+                    header[i] = payload_vec[i];
+                std::vector<bool> info_vec (payload_vec.begin(),
+                                            payload_vec.begin()+payload_len);
+                out_block.first = header.to_ulong();
+                out_block.second = info_vec;
+                logger.log("Header: " + std::to_string(out_block.first) +
+                           "\t CRC checked: No error");
+            } else { // checksum are different
+                logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
+                           "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
+            }
         }
     }
     // notify user that processing thread is done
@@ -98,12 +104,10 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
  * CRC encode payload
  **********************************************************************/
 void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
-                 tsFIFO<Block<bool>>& fifo_out,
-                 size_t payload_size)
+                 tsFIFO<Block<bool>>& fifo_out)
 {
     // create logger
     Logger logger("EccEncode", "./ecc_encode.log");
-    logger.log("Payload size: " + std::to_string(payload_size));
     // Instantiate a crc-32 object
     boost::crc_32_type crc32;
     // create dummy block
@@ -115,6 +119,7 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             // pop input block
             fifo_in.pop(in_block);
             out_block = in_block;
+            logger.log("In block size: " + std::to_string(in_block.second.size()));
             // convert vector of boolean to vector of unsigned char
             temp_vec = to_uchar_vec(in_block.second);
             // CRC encode
@@ -154,18 +159,20 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
 {
     // create logger
     Logger logger("DEMOD", "./demod.log");
+    logger.log("Demod length: " + std::to_string(demod_len));
     // create file to log demodulated packet
     std::ofstream out_file ("demod_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
     Block<bool> out_block;
-    out_block.second.resize(payload_size);
+    //out_block.second.resize(payload_size);
+    out_block.second.resize(demod_len);
     bool demod_bit;
     float angle_cur = 0;
     float angle_pre = 0;
     float m_hat_0 = 0;
     float m_hat_1 = 0;
-    std::bitset<16> header;
+    //std::bitset<16> header;
     int ham_dist = 0;
     float ber = 0;
     std::pair<int, float> temp_per;
@@ -188,27 +195,29 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     demod_bit = 0;
                 else
                     demod_bit = 1;
-                if (i<16)
-                    header[i] = demod_bit;
-                else
-                    out_block.second[i-16] = demod_bit;
+                out_block.second[i] = demod_bit;
+                //if (i<16)
+                //    header[i] = demod_bit;
+                //else
+                //    out_block.second[i-16] = demod_bit;
             }
-            out_block.first = (int)header.to_ulong();
+            //out_block.first = (int)header.to_ulong();
+            out_block.first = 0;
             fifo_out.push(out_block);
             // calculate hamming distance for bit error rate
-            ham_dist = 0;
-            for (size_t i=0; i<payload_size; i++) {
-                if (out_block.second[i] != payload[i])
-                    ham_dist++;
-            }
-            ber = (float)ham_dist/payload_size;
-            // push packet ID and BER to fifo to count PER
-            temp_per.first = out_block.first;
-            temp_per.second = ber;
-            //per_out.push(temp_per);
-            // log packet BER
-            logger.logf("Packet ID: " + std::to_string(out_block.first) +
-                       "  BER: " + std::to_string(ber));
+            //ham_dist = 0;
+            //for (size_t i=0; i<payload_size; i++) {
+            //    if (out_block.second[i] != payload[i])
+            //        ham_dist++;
+            //}
+            //ber = (float)ham_dist/payload_size;
+            //// push packet ID and BER to fifo to count PER
+            //temp_per.first = out_block.first;
+            //temp_per.second = ber;
+            ////per_out.push(temp_per);
+            //// log packet BER
+            //logger.logf("Packet ID: " + std::to_string(out_block.first) +
+            //           "  BER: " + std::to_string(ber));
             // log data to file
             //out_file.write((const char*)& out_block.second[0], payload_size*sizeof(bool));
         }
@@ -1291,7 +1300,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
                               std::ref(per_fifo), payload_len+16+32, payload_len+32);
         // create thread for ecc decode
-        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo), 1000);
+        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo), payload_len+16);
         // create thread for counting receiving blocks every 10 seconds
         //per_count_t = std::thread(&per_count,
         //            std::ref(per_fifo));
@@ -1315,7 +1324,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(mod_fifo), payload_len+16+32+post_payload_len, tx_packet_len);
         // spawn error control thread
         ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_fifo),
-                std::ref(ecc_fifo), payload_len+16);
+                std::ref(ecc_fifo));
         // spawn bit generation thread
         payload_gen_t = std::thread(&payload_gen,
                 std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
