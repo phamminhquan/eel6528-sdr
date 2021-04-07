@@ -40,7 +40,56 @@ namespace po = boost::program_options;
 
 
 /***********************************************************************
- * CRC encode payload
+ * Read in payload file
+ **********************************************************************/
+void read_payload (std::string filename,
+                   tsFIFO<Block<unsigned char>>& fifo_out,
+                   size_t frag_size)
+{
+    // create logger
+    Logger logger("ReadPayload", "./read_payload.log");
+    logger.log("Payload filename: " + filename);
+    logger.log("Fragmentation size: " + std::to_string(frag_size) + " bytes");
+    // Define file stream object, and open the file
+    std::ifstream file(filename, ios::binary);
+    // Prepare iterator pairs to iterate the file content!
+    std::istream_iterator<unsigned char> begin(file), end;
+    // Reading the file content using the iterator!
+    std::vector<unsigned char> buffer(begin,end);
+    logger.log("Total payload size: " + std::to_string(buffer.size()) + " bytes");
+    // fragment total payload into packets
+    Block<unsigned char> out_block;
+    out_block.second.resize(frag_size);
+    size_t num_frag = std::floor(buffer.size()/frag_size);
+    logger.log("Floor number of fraqments: " + std::to_string(num_frag));
+    // packetize the complete fragments
+    for (size_t i=0; i<num_frag; i++) {
+        out_block.first = i;
+        for (size_t k=0; k<frag_size; k++)
+            out_block.second[k] = buffer[i*(frag_size)+k];
+        logger.logf("Pushing fragment: " + std::to_string(out_block.first));
+        fifo_out.push(out_block);
+    }
+    // packetize the last remaining bytes
+    size_t rem_num_bytes = buffer.size()-num_frag*frag_size;
+    if (rem_num_bytes != 0) {
+        out_block.first++;
+        std::fill(out_block.second.begin(), out_block.second.end(), 0);
+        for (size_t k=0; k<rem_num_bytes; k++)
+            out_block.second[k] = buffer[num_frag*(frag_size)+k];
+        logger.logf("Pushing fragment: " + std::to_string(out_block.first));
+        fifo_out.push(out_block);
+    }
+    
+    // close output file
+    file.close();
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
+
+/***********************************************************************
+ * CRC decode payload
  **********************************************************************/
 void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                  size_t payload_size)
@@ -890,8 +939,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 #endif
     
     // tx variables
-    std::string tx_args, tx_ant, tx_subdev, tx_channels;
-    double tx_rate, tx_freq, tx_gain, tx_bw;
+    std::string tx_args, tx_ant, tx_subdev, tx_channels, payload_filename;
+    double tx_rate, ff_freq, tx_gain, tx_bw, tx_freq;
     int tx_D, tx_U;
     size_t rrc_half_len, packets_per_sec;
     size_t tx_packet_len, tx_packet_num_len;
@@ -900,7 +949,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::string ref, otw;
     std::string rx_args, file, rx_ant, rx_subdev, rx_channels;
     size_t total_num_samps, rx_spb;
-    double rx_rate, rx_freq, rx_gain, rx_bw;
+    double rx_rate, fb_freq, rx_gain, rx_bw, rx_freq;
     double settling;
     int rx_D, rx_mf_U, rx_cap_len, rx_pre_cap_len, rx_post_cap_len;
     float alpha, iir_threshold, acq_threshold;
@@ -925,11 +974,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("nsamps", po::value<size_t>(&total_num_samps)->default_value(0), "total number of samples to receive")
         ("settling", po::value<double>(&settling)->default_value(double(0.2)), "settling time (seconds) before receiving")
         ("tx-rate", po::value<double>(&tx_rate)->default_value(1000000), "rate of transmit outgoing samples")
-        ("tx-freq", po::value<double>(&tx_freq)->default_value(915000000), "transmit RF center frequency in Hz")
+        ("ff-freq", po::value<double>(&ff_freq)->default_value(915000000), "Feedforward channel center frequency in Hz")
         ("tx-gain", po::value<double>(&tx_gain)->default_value(20), "gain for the transmit RF chain")
         ("rx-spb", po::value<size_t>(&rx_spb)->default_value(10000), "samples per buffer")
         ("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
-        ("rx-freq", po::value<double>(&rx_freq)->default_value(915000000), "receive RF center frequency in Hz")
+        ("fb-freq", po::value<double>(&fb_freq)->default_value(2412000000), "Feedback channel center frequency in Hz")
         ("rx-gain", po::value<double>(&rx_gain)->default_value(20), "gain for the receive RF chain")
         ("tx-ant", po::value<std::string>(&tx_ant), "transmit antenna selection")
         ("rx-ant", po::value<std::string>(&rx_ant), "receive antenna selection")
@@ -959,6 +1008,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-pre-cap-len", po::value<int>(&rx_pre_cap_len)->default_value(20), "Front extension length of rx capture")
         ("rx-post-cap-len", po::value<int>(&rx_post_cap_len)->default_value(200), "Back extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
+        ("payload", po::value<std::string>(&payload_filename)->default_value("payload.jpeg"), "File to transmit")
     ;
 
     // clang-format on
@@ -979,17 +1029,16 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         return ~0;
     }
     
-    // setup the filter taps object
-    //if (not vm.count("taps-file")) {
-    //    std::cerr << "Please specify the filter taps file with --taps-file"
-    //              << std::endl;
-    //    return ~0;
-    //}
-    //FilterTaps filter_taps (taps_filename);
-    
     // check packets per sec
     if (packets_per_sec > 800) {
         std::cerr << "Invalid packets per second, please retry with a different value"
+                  << std::endl;
+        return ~0;
+    }
+    
+    // check payload filename
+    if (not vm.count("payload")) {
+        std::cerr << "Please specify the file to transmit with --payload"
                   << std::endl;
         return ~0;
     }
@@ -1055,52 +1104,57 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     rx_usrp->set_rx_rate(rx_rate);
     main_logger.log("Actual RX Rate: " + std::to_string(rx_usrp->get_rx_rate()/1e6) + "Msps");
 
-    // set the transmit center frequency
-    if (not vm.count("tx-freq")) {
-        std::cerr << "Please specify the transmit center frequency with --tx-freq"
+    // set the feedforward center frequency
+    if (not vm.count("ff-freq")) {
+        std::cerr << "Please specify the feedforward center frequency with --ff-freq"
                   << std::endl;
         return ~0;
+    }
+    
+    // set the feedback center frequency
+    if (not vm.count("fb-freq")) {
+        std::cerr << "Please specify the feedback center frequency with --fb-freq"
+                  << std::endl;
+        return ~0;
+    }
+    
+    // check feedforward or feedback
+    if (tx_rx == 1) { // feed forward
+        tx_freq = ff_freq;
+        rx_freq = fb_freq;
+    } else {
+        tx_freq = fb_freq;
+        rx_freq = ff_freq;
     }
     
     // set transmit args
     for (size_t ch = 0; ch < tx_channel_nums.size(); ch++) {
         size_t channel = tx_channel_nums[ch];
         if (tx_channel_nums.size() > 1) {
-            std::cout << "Configuring TX Channel " << channel << std::endl;
+            main_logger.log("Configuring TX Channel " + std::to_string(channel));
         }
-        std::cout << boost::format("Setting TX Freq: %f MHz...") % (tx_freq / 1e6)
-                  << std::endl;
+        main_logger.log("Setting TX Freq: " + std::to_string(tx_freq / 1e6) + "MHz");
+        // check feedforward or feedback
         uhd::tune_request_t tx_tune_request(tx_freq);
         if (vm.count("tx-int-n"))
             tx_tune_request.args = uhd::device_addr_t("mode_n=integer");
         tx_usrp->set_tx_freq(tx_tune_request, channel);
-        std::cout << boost::format("Actual TX Freq: %f MHz...")
-                         % (tx_usrp->get_tx_freq(channel) / 1e6)
-                  << std::endl
-                  << std::endl;
-
+        main_logger.log("Actual TX Freq: " +
+                        std::to_string(tx_usrp->get_tx_freq(channel) / 1e6) + "MHz");
         // set the rf gain
         if (vm.count("tx-gain")) {
-            std::cout << boost::format("Setting TX Gain: %f dB...") % tx_gain
-                      << std::endl;
+            main_logger.log("Setting TX Gain: " + std::to_string(tx_gain) + "dB");
             tx_usrp->set_tx_gain(tx_gain, channel);
-            std::cout << boost::format("Actual TX Gain: %f dB...")
-                             % tx_usrp->get_tx_gain(channel)
-                      << std::endl
-                      << std::endl;
+            main_logger.log("Actual TX Gain:" +
+                            std::to_string(tx_usrp->get_tx_gain(channel)) + "dB");
         }
-
         // set the analog frontend filter bandwidth
         if (vm.count("tx-bw")) {
-            std::cout << boost::format("Setting TX Bandwidth: %f MHz...") % tx_bw
-                      << std::endl;
+            main_logger.log("Setting TX Bandwidth: " + std::to_string(tx_bw) + "MHz");
             tx_usrp->set_tx_bandwidth(tx_bw, channel);
-            std::cout << boost::format("Actual TX Bandwidth: %f MHz...")
-                             % tx_usrp->get_tx_bandwidth(channel)
-                      << std::endl
-                      << std::endl;
+            main_logger.log("Actual TX Bandwidth: " +
+                            std::to_string(tx_usrp->get_tx_bandwidth(channel)) + "MHz");
         }
-
         // set the antenna
         if (vm.count("tx-ant"))
             tx_usrp->set_tx_antenna(tx_ant, channel);
@@ -1112,26 +1166,20 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         if (rx_channel_nums.size() > 1) {
             main_logger.log("Configuring RX Channel " + std::to_string(channel));
         }
-
-        // set the receive center frequency
-        if (not vm.count("rx-freq")) {
-            std::cerr << "Please specify the center frequency with --rx-freq"
-                      << std::endl;
-            return ~0;
-        }
         main_logger.log("Setting RX Freq: " + std::to_string(rx_freq/1e6) + "MHz");
         uhd::tune_request_t rx_tune_request(rx_freq);
         if (vm.count("rx-int-n"))
             rx_tune_request.args = uhd::device_addr_t("mode_n=integer");
         rx_usrp->set_rx_freq(rx_tune_request, channel);
         main_logger.log("Actual RX Freq: " + std::to_string(rx_usrp->get_rx_freq(channel)/1e6));
+        
         // set the receive rf gain
         if (vm.count("rx-gain")) {
             main_logger.log("Setting RX Gain: " + std::to_string(rx_gain) + "dB");
             rx_usrp->set_rx_gain(rx_gain, channel);
             main_logger.log("Actual RX Gain: " + std::to_string(rx_usrp->get_rx_gain(channel)) + "dB");
         }
-
+        
         // set the receive analog frontend filter bandwidth
         if (vm.count("rx-bw")) {
             main_logger.log("Setting RX Bandwidth: " + std::to_string(rx_bw/1e6) + "MHz");
@@ -1156,16 +1204,18 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     if (std::find(tx_sensor_names.begin(), tx_sensor_names.end(), "lo_locked")
         != tx_sensor_names.end()) {
         uhd::sensor_value_t lo_locked = tx_usrp->get_tx_sensor("lo_locked", 0);
-        std::cout << boost::format("Checking TX: %s ...") % lo_locked.to_pp_string()
-                  << std::endl;
+        //std::cout << boost::format("Checking TX: %s ...") % lo_locked.to_pp_string()
+        //          << std::endl;
+        main_logger.log("Checking TX: " + lo_locked.to_pp_string());
         UHD_ASSERT_THROW(lo_locked.to_bool());
     }
     rx_sensor_names = rx_usrp->get_rx_sensor_names(0);
     if (std::find(rx_sensor_names.begin(), rx_sensor_names.end(), "lo_locked")
         != rx_sensor_names.end()) {
         uhd::sensor_value_t lo_locked = rx_usrp->get_rx_sensor("lo_locked", 0);
-        std::cout << boost::format("Checking RX: %s ...") % lo_locked.to_pp_string()
-                  << std::endl;
+        //std::cout << boost::format("Checking RX: %s ...") % lo_locked.to_pp_string()
+        //          << std::endl;
+        main_logger.log("Checking RX: " + lo_locked.to_pp_string());
         UHD_ASSERT_THROW(lo_locked.to_bool());
     }
 
@@ -1208,27 +1258,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // reset usrp time to prepare for transmit/receive
     main_logger.log("Setting device timestamp to 0");
     tx_usrp->set_time_now(uhd::time_spec_t(0.0));
-    //rx_usrp->set_time_now(uhd::time_spec_t(0.0)); 
-    
-    
-    // test to_uchar and to_uchar_vec function
-    std::vector<bool> test_bool {1, 0, 0, 1,
-                                 0, 0, 1, 1,
-                                 0, 1, 1, 0,
-                                 1, 1, 1, 1,
-                                 0, 1, 0, 1};
-    std::vector<unsigned char> test_char = to_uchar_vec(test_bool);
-    //unsigned short test_short = (unsigned short) test_char;
-    //main_logger.log("Converted char: ", std::uppercase(std::hex(test_short)));
-    std::cout << "Converted char: " << std::endl;
-    for (size_t i=0; i<test_char.size(); i++)
-        std::cout << std::uppercase << std::hex << (unsigned short) test_char[i] << std::endl;
-    
-    // test bitset
-    boost::uint32_t crc_val = 15;
-    std::bitset<32> crc_bitset(crc_val);
-    std::cout << "Bitset test: " << crc_bitset.to_string() << std::endl;
-    
+    //rx_usrp->set_time_now(uhd::time_spec_t(0.0));
     
     // set up tx threads worker
     std::thread payload_gen_t;
@@ -1311,26 +1341,31 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     } else {      // TX SIDE
         // instantiate fifo for data transfers
-        tsFIFO<Block<bool>> bit_fifo;
-        tsFIFO<Block<bool>> ecc_fifo;
-        tsFIFO<Block<std::complex<float>>> mod_fifo;
-        tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
-        // instantiate pulse shaping filter as multirate filter
-        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
-        // spawn modulation thread
-        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-                std::ref(mod_fifo), payload_len+16+32+post_payload_len, tx_packet_len);
-        // spawn error control thread
-        ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_fifo),
-                std::ref(ecc_fifo));
-        // spawn bit generation thread
-        payload_gen_t = std::thread(&payload_gen,
-                std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
+        tsFIFO<Block<unsigned char>> payload_fifo;
+        //tsFIFO<Block<bool>> bit_fifo;
+        //tsFIFO<Block<bool>> ecc_fifo;
+        //tsFIFO<Block<std::complex<float>>> mod_fifo;
+        //tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
+        //// instantiate pulse shaping filter as multirate filter
+        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
+        //        std::ref(rrc_vec), num_filt_threads, false,
+        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+        //// spawn modulation thread
+        //modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+        //        std::ref(mod_fifo), payload_len+16+32+post_payload_len, tx_packet_len);
+        //// spawn error control thread
+        //ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_fifo),
+        //        std::ref(ecc_fifo));
+        //// spawn bit generation thread
+        //payload_gen_t = std::thread(&payload_gen,
+        //        std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
+        
+        // call function to read in payload file
+        read_payload(payload_filename, payload_fifo, 125);
+            
         // call tx worker function as main thread
-        transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
-                        pulse_shape_out_fifo);
+        //transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
+        //                pulse_shape_out_fifo);
     }
     
     // clean up transmit worker
@@ -1354,7 +1389,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     if (pulse_shaper_t.joinable())
         pulse_shaper_t.join();
     
-
     // finished
     std::cout << std::endl << "Done!" << std::endl << std::endl;
     return EXIT_SUCCESS;
