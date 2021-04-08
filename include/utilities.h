@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <complex>
+#include <bitset>
 
 //! Change to filename, e.g. from usrp_samples.dat to usrp_samples.00.dat,
 //  but only if multiple names are to be generated.
@@ -22,5 +23,10 @@ std::pair<int, float> where_max (const std::vector<float> vec);
 unsigned char to_uchar (const std::vector<bool> input);
 std::vector<unsigned char> to_uchar_vec (const std::vector<bool> input);
 
+// function to convert char to vector of boolean
+std::vector<bool> to_bool (const unsigned char input);
+
+// function to convert vector of char to vector of bool
+std::vector<bool> to_bool_vec (const std::vector<unsigned char> input);
 
 #endif

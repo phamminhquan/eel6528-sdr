@@ -40,10 +40,59 @@ namespace po = boost::program_options;
 
 
 /***********************************************************************
+ * ARQ scheduler
+ **********************************************************************/
+void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
+                       tsFIFO<Block<bool>>& fifo_out,
+                       tsFIFO<Block<bool>>& ack_fifo,
+                       size_t info_size)
+{
+    // create logger
+    Logger logger("ARQ", "./arq.log");
+    
+    // create temp blocks
+    Block<bool> in_block;
+    Block<bool> out_block;
+    out_block.second.resize(16+info_size);
+    // create block counter
+    int block_counter = 0;
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            if (ack_fifo.size() != 0) {
+                // getting payload from fifo
+                fifo_in.pop(in_block);
+                // create 16-bit packet number bitset
+                std::bitset<16> packet_num_b(block_counter);
+                // set block counter
+                out_block.first = block_counter++;
+                // push packet counter as 16-bit number
+                for (size_t i=0; i<16; i++)
+                    out_block.second[i] = packet_num_b[i];
+                // push payload
+                for (size_t i=0; i<in_block.second.size(); i++)
+                    out_block.second[16+i] = in_block.second[i];
+                logger.log("Block: " + std::to_string(out_block.first) +
+                           "\tSize: " + std::to_string(out_block.second.size()));
+                // push to fifo out
+                fifo_out.push(out_block);
+                // wait for a little bit
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+        }
+    }
+    
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
+
+/***********************************************************************
  * Read in payload file
  **********************************************************************/
 void read_payload (std::string filename,
                    tsFIFO<Block<unsigned char>>& fifo_out,
+                   tsFIFO<Block<bool>>& temp_fifo_out,
                    size_t frag_size)
 {
     // create logger
@@ -60,6 +109,8 @@ void read_payload (std::string filename,
     // fragment total payload into packets
     Block<unsigned char> out_block;
     out_block.second.resize(frag_size);
+    Block<bool> temp_out_block;
+    temp_out_block.second.resize(frag_size*8);
     size_t num_frag = std::floor(buffer.size()/frag_size);
     logger.log("Floor number of fraqments: " + std::to_string(num_frag));
     // packetize the complete fragments
@@ -67,8 +118,10 @@ void read_payload (std::string filename,
         out_block.first = i;
         for (size_t k=0; k<frag_size; k++)
             out_block.second[k] = buffer[i*(frag_size)+k];
+        temp_out_block.second = to_bool_vec(out_block.second);
         logger.logf("Pushing fragment: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
+        temp_fifo_out.push(temp_out_block);
     }
     // packetize the last remaining bytes
     size_t rem_num_bytes = buffer.size()-num_frag*frag_size;
@@ -77,9 +130,16 @@ void read_payload (std::string filename,
         std::fill(out_block.second.begin(), out_block.second.end(), 0);
         for (size_t k=0; k<rem_num_bytes; k++)
             out_block.second[k] = buffer[num_frag*(frag_size)+k];
+        temp_out_block.second = to_bool_vec(out_block.second);
         logger.logf("Pushing fragment: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
+        temp_fifo_out.push(temp_out_block);
     }
+    
+    logger.log("Char block size: " + std::to_string(out_block.second.size()));
+    logger.log("Bit block size: " + std::to_string(temp_out_block.second.size()));
+    logger.log("Char FIFO size: " + std::to_string(fifo_out.size()));
+    logger.log("Bit FIFO size: " + std::to_string(temp_fifo_out.size()));
     
     // close output file
     file.close();
@@ -1262,6 +1322,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     
     // set up tx threads worker
     std::thread payload_gen_t;
+    std::thread src_arq_schedule_t;
     std::thread ecc_encode_t;
     std::thread pulse_shaper_t;
     std::thread modulator_t;
@@ -1341,11 +1402,14 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     } else {      // TX SIDE
         // instantiate fifo for data transfers
-        tsFIFO<Block<unsigned char>> payload_fifo;
+        tsFIFO<Block<unsigned char>> char_payload_fifo;
+        tsFIFO<Block<bool>> bit_payload_fifo;
+        tsFIFO<Block<bool>> arq_fifo;
+        tsFIFO<Block<bool>> ack_fifo;
         //tsFIFO<Block<bool>> bit_fifo;
         //tsFIFO<Block<bool>> ecc_fifo;
         //tsFIFO<Block<std::complex<float>>> mod_fifo;
-        //tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
+        tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
         //// instantiate pulse shaping filter as multirate filter
         //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
         //        std::ref(rrc_vec), num_filt_threads, false,
@@ -1359,13 +1423,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //// spawn bit generation thread
         //payload_gen_t = std::thread(&payload_gen,
         //        std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
-        
+        // spawn thread for arq scheduler
+        src_arq_schedule_t = std::thread(&src_arq_schedule, std::ref(bit_payload_fifo),
+                std::ref(arq_fifo), std::ref(ack_fifo), 1000);
         // call function to read in payload file
-        read_payload(payload_filename, payload_fifo, 125);
+        read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
             
         // call tx worker function as main thread
-        //transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
-        //                pulse_shape_out_fifo);
+        transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
+                        pulse_shape_out_fifo);
     }
     
     // clean up transmit worker

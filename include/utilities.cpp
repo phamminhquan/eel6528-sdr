@@ -63,3 +63,29 @@ std::vector<unsigned char> to_uchar_vec (const std::vector<bool> input) {
     }
     return output;
 }
+
+std::vector<bool> to_bool (const unsigned char input) {
+    // create temp vector
+    std::vector<bool> temp_vec;
+    temp_vec.resize(8);
+    std::bitset<8> temp_bitset (input);
+    for (int i=0; i<8; i++)
+        temp_vec[i] = temp_bitset[i];
+    return temp_vec;
+}
+
+std::vector<bool> to_bool_vec (const std::vector<unsigned char> input) {
+    // create temp vector
+    int input_size = input.size();
+    int output_size = input_size*8;
+    std::vector<bool> output;
+    output.resize(output_size);
+    std::vector<bool> temp;
+    temp.resize(8);
+    for (int i=0; i<input_size; i++) {
+        temp = to_bool(input[i]);
+        for (int k=0; k<8; k++)
+            output[i*8+k] = temp[k];
+    }
+    return output;
+}
