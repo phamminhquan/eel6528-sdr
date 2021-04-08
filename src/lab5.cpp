@@ -19,6 +19,9 @@
 #include <string>
 #include <cstring>
 #include <bitset>
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
 
 #include "utilities.h"
@@ -107,6 +110,13 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     int S = 0;
     int R = 0;
     bool first = true;
+    // set up timers
+    // set start time and end time for time out
+    using namespace std::chrono;
+    steady_clock::time_point t1 = steady_clock::now();
+    steady_clock::time_point t2 = steady_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    using namespace std;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -131,6 +141,8 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 // push to fifo out
                 fifo_out.push(out_block);
+                // start timer after first packet is pushed
+                t1 = std::chrono::steady_clock::now();
             } else {
                 if (ack_fifo.size() != 0) {
                     // pop ack
@@ -159,6 +171,17 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                         // push new packet
                         fifo_out.push(out_block);
                     } else {
+                        // push same packet as last time
+                        fifo_out.push(out_block);
+                    }
+                    // reset timer to now
+                    t1 = std::chrono::steady_clock::now();
+                } else {
+                    // calculate time elapsed from packet transmitted
+                    using namespace std::chrono;
+                    t2 = steady_clock::now();
+                    time_span = duration_cast<duration<double>>(t2 - t1);
+                    if (time_span.count() > 2.0) { // more than 2s has elapsed
                         // push same packet as last time
                         fifo_out.push(out_block);
                     }
