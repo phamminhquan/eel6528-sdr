@@ -40,7 +40,55 @@ namespace po = boost::program_options;
 
 
 /***********************************************************************
- * ARQ scheduler
+ * Thread to test source arq scheduler
+ **********************************************************************/
+void src_arq_schedule_test (tsFIFO<Block<bool>>& fifo_in,
+                           tsFIFO<Block<bool>>& fifo_out)
+{
+    // create logger
+    Logger logger("ARQTest", "./arq_test.log");
+    // create temp blocks
+    Block<bool> in_block;
+    Block<bool> out_block;
+    out_block.second.resize(16);
+    // create block counter
+    int S = 0;
+    int R = 0;
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop ack
+            fifo_in.pop(in_block);
+            // check ack content to get S
+            std::bitset<16> S_bitset;
+            for (size_t i=0; i<16; i++)
+                S_bitset[i] = in_block.second[i];
+            S = S_bitset.to_ulong();
+            // check S
+            if (S == R) {
+                // increment R and make new ack
+                R++;
+                std::bitset<16> R_bitset (R);
+                for (size_t i=0; i<16; i++)
+                    out_block.second[i] = R_bitset[i];
+                // push new packet
+                logger.log("R: " + std::to_string(R) +
+                           "\tSize: " + std::to_string(out_block.second.size()));
+                // push new packet
+                fifo_out.push(out_block);
+                // wait a little bit
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+        }
+    }
+    
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
+
+/***********************************************************************
+ * Source ARQ scheduler
  **********************************************************************/
 void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                        tsFIFO<Block<bool>>& fifo_out,
@@ -49,35 +97,72 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
 {
     // create logger
     Logger logger("ARQ", "./arq.log");
-    
+    logger.log("Info size: " + std::to_string(info_size));
     // create temp blocks
     Block<bool> in_block;
     Block<bool> out_block;
+    Block<bool> ack_block;
     out_block.second.resize(16+info_size);
     // create block counter
-    int block_counter = 0;
+    int S = 0;
+    int R = 0;
+    bool first = true;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            if (ack_fifo.size() != 0) {
+            if (first) {
+                // clear first packet flag
+                first = false;
                 // getting payload from fifo
                 fifo_in.pop(in_block);
                 // create 16-bit packet number bitset
-                std::bitset<16> packet_num_b(block_counter);
+                std::bitset<16> packet_num_b(S);
                 // set block counter
-                out_block.first = block_counter++;
+                //out_block.first = block_counter++;
                 // push packet counter as 16-bit number
                 for (size_t i=0; i<16; i++)
                     out_block.second[i] = packet_num_b[i];
                 // push payload
                 for (size_t i=0; i<in_block.second.size(); i++)
                     out_block.second[16+i] = in_block.second[i];
-                logger.log("Block: " + std::to_string(out_block.first) +
+                logger.log("S: " + std::to_string(S) +
                            "\tSize: " + std::to_string(out_block.second.size()));
-                // push to fifo out
-                fifo_out.push(out_block);
                 // wait for a little bit
                 std::this_thread::sleep_for(std::chrono::seconds(1));
+                // push to fifo out
+                fifo_out.push(out_block);
+            } else {
+                if (ack_fifo.size() != 0) {
+                    // pop ack
+                    ack_fifo.pop(ack_block);
+                    // check ack content to get R
+                    std::bitset<16> R_bitset;
+                    for (size_t i=0; i<16; i++)
+                        R_bitset[i] = ack_block.second[i];
+                    R = R_bitset.to_ulong();
+                    // check R
+                    if (R > S) {
+                        // push new packet
+                        // getting payload from fifo
+                        fifo_in.pop(in_block);
+                        // create 16-bit packet number bitset
+                        S++;
+                        std::bitset<16> packet_num_b(S);
+                        // push packet counter as 16-bit number
+                        for (size_t i=0; i<16; i++)
+                            out_block.second[i] = packet_num_b[i];
+                        // push payload
+                        for (size_t i=0; i<in_block.second.size(); i++)
+                            out_block.second[16+i] = in_block.second[i];
+                        logger.log("S: " + std::to_string(S) +
+                                   "\tSize: " + std::to_string(out_block.second.size()));
+                        // push new packet
+                        fifo_out.push(out_block);
+                    } else {
+                        // push same packet as last time
+                        fifo_out.push(out_block);
+                    }
+                }
             }
         }
     }
@@ -1323,6 +1408,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     // set up tx threads worker
     std::thread payload_gen_t;
     std::thread src_arq_schedule_t;
+    std::thread src_arq_schedule_test_t;
     std::thread ecc_encode_t;
     std::thread pulse_shaper_t;
     std::thread modulator_t;
@@ -1423,7 +1509,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //// spawn bit generation thread
         //payload_gen_t = std::thread(&payload_gen,
         //        std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
-        // spawn thread for arq scheduler
+        // spawn thread to test source scheduler
+        src_arq_schedule_test_t = std::thread(&src_arq_schedule_test,
+                std::ref(arq_fifo), std::ref(ack_fifo));
+        // spawn thread for source arq scheduler
         src_arq_schedule_t = std::thread(&src_arq_schedule, std::ref(bit_payload_fifo),
                 std::ref(arq_fifo), std::ref(ack_fifo), 1000);
         // call function to read in payload file
