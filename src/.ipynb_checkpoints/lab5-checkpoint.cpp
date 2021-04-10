@@ -77,7 +77,7 @@ void src_arq_schedule_test (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 // push new packet
                 fifo_out.push(out_block);
                 // wait a little bit
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         }
     }
@@ -92,7 +92,8 @@ void src_arq_schedule_test (tsFIFO<Block<std::complex<float>>>& fifo_in,
  **********************************************************************/
 void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                        tsFIFO<Block<std::complex<float>>>& fifo_out,
-                       tsFIFO<Block<bool>>& ack_fifo)
+                       tsFIFO<Block<bool>>& ack_fifo,
+                       tsFIFO<Block<std::complex<float>>>& test_out)
 {
     // create logger
     Logger logger("ARQ", "./arq.log");
@@ -115,12 +116,13 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 // getting payload from fifo
                 fifo_in.pop(in_block);
                 out_block = in_block;
-                logger.log("S: " + std::to_string(S) +
+                logger.log("First S: " + std::to_string(S) +
                            "\tSize: " + std::to_string(out_block.second.size()));
                 // wait for a little bit
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 // push to fifo out
                 fifo_out.push(out_block);
+                test_out.push(out_block);
                 // start timer after first packet is pushed
                 timer.reset();
             } else {
@@ -146,17 +148,23 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                                    "\tSize: " + std::to_string(out_block.second.size()));
                         // push new packet
                         fifo_out.push(out_block);
+                        test_out.push(out_block);
                     } else {
+                        logger.log("ACK R is less than or equal to S");
                         // push same packet as last time
                         fifo_out.push(out_block);
+                        test_out.push(out_block);
                     }
                     // reset timer to now
                     timer.reset();
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
-                    if (timer.elapse() > 2.0) { // more than 2s has elapsed
+                    double timer_count = timer.elapse();
+                    if (timer_count > 2.0) { // more than 2s has elapsed
+                        logger.log("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
+                        test_out.push(out_block);
                     }
                 }
             }
@@ -1508,15 +1516,15 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> mod_fifo;
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
         tsFIFO<Block<std::complex<float>>> arq_fifo;
-        tsFIFO<Block<std::complex<float>>> empty_fifo;
+        tsFIFO<Block<std::complex<float>>> arq_test_fifo;
         
         // spawn thread to test source scheduler
         src_arq_schedule_test_t = std::thread(&src_arq_schedule_test,
-                std::ref(arq_fifo), std::ref(ack_fifo));
+                std::ref(arq_test_fifo), std::ref(ack_fifo));
         // spawn thread for source arq scheduler
         src_arq_schedule_t = std::thread(&src_arq_schedule,
                 std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
-                std::ref(ack_fifo));
+                std::ref(ack_fifo), std::ref(arq_test_fifo));
         // instantiate pulse shaping filter as multirate filter
         pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
                 std::ref(rrc_vec), num_filt_threads, false,
@@ -1533,7 +1541,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
             
         // call tx worker function as main thread
         transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
-                        empty_fifo);
+                        arq_fifo);
     }
     
     // clean up transmit worker
