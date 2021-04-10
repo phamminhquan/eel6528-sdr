@@ -21,7 +21,7 @@
 #include <bitset>
 #include <ctime>
 #include <ratio>
-#include <chrono>
+//#include <chrono>
 
 
 #include "utilities.h"
@@ -37,6 +37,7 @@
 #include "sig-seq.h"
 #include "payload.h"
 #include "preamble.h"
+#include "timer.h"
 
 
 namespace po = boost::program_options;
@@ -45,13 +46,13 @@ namespace po = boost::program_options;
 /***********************************************************************
  * Thread to test source arq scheduler
  **********************************************************************/
-void src_arq_schedule_test (tsFIFO<Block<bool>>& fifo_in,
+void src_arq_schedule_test (tsFIFO<Block<std::complex<float>>>& fifo_in,
                            tsFIFO<Block<bool>>& fifo_out)
 {
     // create logger
     Logger logger("ARQTest", "./arq_test.log");
     // create temp blocks
-    Block<bool> in_block;
+    Block<std::complex<float>> in_block;
     Block<bool> out_block;
     out_block.second.resize(16);
     // create block counter
@@ -62,11 +63,7 @@ void src_arq_schedule_test (tsFIFO<Block<bool>>& fifo_in,
         if (fifo_in.size() != 0) {
             // pop ack
             fifo_in.pop(in_block);
-            // check ack content to get S
-            std::bitset<16> S_bitset;
-            for (size_t i=0; i<16; i++)
-                S_bitset[i] = in_block.second[i];
-            S = S_bitset.to_ulong();
+            S = in_block.first;
             // check S
             if (S == R) {
                 // increment R and make new ack
@@ -93,30 +90,22 @@ void src_arq_schedule_test (tsFIFO<Block<bool>>& fifo_in,
 /***********************************************************************
  * Source ARQ scheduler
  **********************************************************************/
-void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
-                       tsFIFO<Block<bool>>& fifo_out,
-                       tsFIFO<Block<bool>>& ack_fifo,
-                       size_t info_size)
+void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
+                       tsFIFO<Block<std::complex<float>>>& fifo_out,
+                       tsFIFO<Block<bool>>& ack_fifo)
 {
     // create logger
     Logger logger("ARQ", "./arq.log");
-    logger.log("Info size: " + std::to_string(info_size));
     // create temp blocks
-    Block<bool> in_block;
-    Block<bool> out_block;
+    Block<std::complex<float>> in_block;
+    Block<std::complex<float>> out_block;
     Block<bool> ack_block;
-    out_block.second.resize(16+info_size);
     // create block counter
     int S = 0;
     int R = 0;
     bool first = true;
-    // set up timers
-    // set start time and end time for time out
-    using namespace std::chrono;
-    steady_clock::time_point t1 = steady_clock::now();
-    steady_clock::time_point t2 = steady_clock::now();
-    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-    using namespace std;
+    // set up timer
+    Timer timer;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -125,16 +114,7 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 first = false;
                 // getting payload from fifo
                 fifo_in.pop(in_block);
-                // create 16-bit packet number bitset
-                std::bitset<16> packet_num_b(S);
-                // set block counter
-                //out_block.first = block_counter++;
-                // push packet counter as 16-bit number
-                for (size_t i=0; i<16; i++)
-                    out_block.second[i] = packet_num_b[i];
-                // push payload
-                for (size_t i=0; i<in_block.second.size(); i++)
-                    out_block.second[16+i] = in_block.second[i];
+                out_block = in_block;
                 logger.log("S: " + std::to_string(S) +
                            "\tSize: " + std::to_string(out_block.second.size()));
                 // wait for a little bit
@@ -142,9 +122,11 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 // push to fifo out
                 fifo_out.push(out_block);
                 // start timer after first packet is pushed
-                t1 = std::chrono::steady_clock::now();
+                timer.reset();
             } else {
                 if (ack_fifo.size() != 0) {
+                    // log to see arrival queue length should be a lot
+                    logger.log("ARQ input fifo size: " + std::to_string(fifo_in.size()));
                     // pop ack
                     ack_fifo.pop(ack_block);
                     // check ack content to get R
@@ -159,13 +141,7 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                         fifo_in.pop(in_block);
                         // create 16-bit packet number bitset
                         S++;
-                        std::bitset<16> packet_num_b(S);
-                        // push packet counter as 16-bit number
-                        for (size_t i=0; i<16; i++)
-                            out_block.second[i] = packet_num_b[i];
-                        // push payload
-                        for (size_t i=0; i<in_block.second.size(); i++)
-                            out_block.second[16+i] = in_block.second[i];
+                        out_block = in_block;
                         logger.log("S: " + std::to_string(S) +
                                    "\tSize: " + std::to_string(out_block.second.size()));
                         // push new packet
@@ -175,13 +151,10 @@ void src_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                         fifo_out.push(out_block);
                     }
                     // reset timer to now
-                    t1 = std::chrono::steady_clock::now();
+                    timer.reset();
                 } else {
-                    // calculate time elapsed from packet transmitted
-                    using namespace std::chrono;
-                    t2 = steady_clock::now();
-                    time_span = duration_cast<duration<double>>(t2 - t1);
-                    if (time_span.count() > 2.0) { // more than 2s has elapsed
+                    // calculate time elapsed from packet transmitted (in seconds)
+                    if (timer.elapse() > 2.0) { // more than 2s has elapsed
                         // push same packet as last time
                         fifo_out.push(out_block);
                     }
@@ -224,6 +197,7 @@ void read_payload (std::string filename,
     // packetize the complete fragments
     for (size_t i=0; i<num_frag; i++) {
         out_block.first = i;
+        temp_out_block.first = out_block.first;
         for (size_t k=0; k<frag_size; k++)
             out_block.second[k] = buffer[i*(frag_size)+k];
         temp_out_block.second = to_bool_vec(out_block.second);
@@ -235,6 +209,7 @@ void read_payload (std::string filename,
     size_t rem_num_bytes = buffer.size()-num_frag*frag_size;
     if (rem_num_bytes != 0) {
         out_block.first++;
+        temp_out_block.first = out_block.first;
         std::fill(out_block.second.begin(), out_block.second.end(), 0);
         for (size_t k=0; k<rem_num_bytes; k++)
             out_block.second[k] = buffer[num_frag*(frag_size)+k];
@@ -321,43 +296,57 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
  * CRC encode payload
  **********************************************************************/
 void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
-                 tsFIFO<Block<bool>>& fifo_out)
+                 tsFIFO<Block<bool>>& fifo_out,
+                 size_t payload_size)
 {
     // create logger
     Logger logger("EccEncode", "./ecc_encode.log");
+    logger.logf("Payload size: " + std::to_string(payload_size));
     // Instantiate a crc-32 object
     boost::crc_32_type crc32;
     // create dummy block
     Block<bool> in_block;
     Block<bool> out_block;
-    std::vector<unsigned char> temp_vec;
+    out_block.second.resize(payload_size+16+32+post_payload_len);
+    logger.logf("Out block size: " + std::to_string(out_block.second.size()));
+    std::vector<unsigned char> temp_char_vec;
+    std::vector<bool> temp_bool_vec;
+    temp_bool_vec.resize(16+payload_size);
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop input block
             fifo_in.pop(in_block);
-            out_block = in_block;
-            logger.log("In block size: " + std::to_string(in_block.second.size()));
+            out_block.first = in_block.first;
+            // create 16-bit packet number bitset
+            std::bitset<16> packet_num_b(out_block.first);
+            // push packet counter as 16-bit number
+            for (size_t i=0; i<16; i++) {
+                out_block.second[i] = packet_num_b[i];
+                temp_bool_vec[i] = packet_num_b[i];
+            }
+            // getting payload from payload.h
+            for (size_t i=0; i<payload_size; i++) {
+                out_block.second[16+i] = in_block.second[i];
+                temp_bool_vec[16+i] = in_block.second[i];
+            }
             // convert vector of boolean to vector of unsigned char
-            temp_vec = to_uchar_vec(in_block.second);
+            temp_char_vec = to_uchar_vec(temp_bool_vec);
             // CRC encode
             crc32.reset();
-            crc32.process_bytes(temp_vec.data(), temp_vec.size());
+            crc32.process_bytes(temp_char_vec.data(), temp_char_vec.size());
             // get checksum and append to the end of payload
             boost::uint32_t crc_val = crc32.checksum();
             std::bitset<32> crc_bitset(crc32.checksum());
-            logger.log("Block: " + std::to_string(out_block.first) +
+            logger.logf("Block: " + std::to_string(out_block.first) +
                        "\t TX Checksum: " + std::to_string(crc_val));
             // concatenate crc parity bits
             for (size_t i=0; i<32; i++)
-                out_block.second.push_back(crc_bitset[i]);
+                out_block.second[16+payload_size+i] = crc_bitset[i];
             // concatenate 28 zeros after ecc
             for (size_t i=0; i<post_payload_len; i++)
-                out_block.second.push_back(0);
+                out_block.second[16+payload_size+32+i] = 0;
             // push output block to fifo out
             fifo_out.push(out_block);
-            // check outblock size
-            //logger.log("Block: " + std::to_string(out_block.first) +
-            //           "\t Size: " + std::to_string(out_block.second.size()));
         }
     }
     // notify user that processing thread is done
@@ -1513,37 +1502,38 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // instantiate fifo for data transfers
         tsFIFO<Block<unsigned char>> char_payload_fifo;
         tsFIFO<Block<bool>> bit_payload_fifo;
-        tsFIFO<Block<bool>> arq_fifo;
         tsFIFO<Block<bool>> ack_fifo;
-        //tsFIFO<Block<bool>> bit_fifo;
-        //tsFIFO<Block<bool>> ecc_fifo;
-        //tsFIFO<Block<std::complex<float>>> mod_fifo;
+        tsFIFO<Block<bool>> bit_fifo;
+        tsFIFO<Block<bool>> ecc_fifo;
+        tsFIFO<Block<std::complex<float>>> mod_fifo;
         tsFIFO<Block<std::complex<float>>> pulse_shape_out_fifo;
-        //// instantiate pulse shaping filter as multirate filter
-        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
-        //// spawn modulation thread
-        //modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-        //        std::ref(mod_fifo), payload_len+16+32+post_payload_len, tx_packet_len);
-        //// spawn error control thread
-        //ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_fifo),
-        //        std::ref(ecc_fifo));
-        //// spawn bit generation thread
-        //payload_gen_t = std::thread(&payload_gen,
-        //        std::ref(bit_fifo), 0.5, payload_len, packets_per_sec);
+        tsFIFO<Block<std::complex<float>>> arq_fifo;
+        tsFIFO<Block<std::complex<float>>> empty_fifo;
+        
         // spawn thread to test source scheduler
         src_arq_schedule_test_t = std::thread(&src_arq_schedule_test,
                 std::ref(arq_fifo), std::ref(ack_fifo));
         // spawn thread for source arq scheduler
-        src_arq_schedule_t = std::thread(&src_arq_schedule, std::ref(bit_payload_fifo),
-                std::ref(arq_fifo), std::ref(ack_fifo), 1000);
+        src_arq_schedule_t = std::thread(&src_arq_schedule,
+                std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
+                std::ref(ack_fifo));
+        // instantiate pulse shaping filter as multirate filter
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, tx_packet_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+        // spawn modulation thread
+        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+                std::ref(mod_fifo), 16+payload_len+32+post_payload_len,
+                tx_packet_len);
+        // spawn error control thread
+        ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_payload_fifo),
+                std::ref(ecc_fifo), payload_len);
         // call function to read in payload file
         read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
             
         // call tx worker function as main thread
         transmit_worker(tx_packet_len*tx_U/tx_D, tx_stream,
-                        pulse_shape_out_fifo);
+                        empty_fifo);
     }
     
     // clean up transmit worker

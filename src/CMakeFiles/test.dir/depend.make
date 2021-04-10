@@ -43,6 +43,7 @@ CMakeFiles/test.dir/lab5.cpp.o: ../include/preamble.h
 CMakeFiles/test.dir/lab5.cpp.o: ../include/pulse.h
 CMakeFiles/test.dir/lab5.cpp.o: ../include/sig-seq.h
 CMakeFiles/test.dir/lab5.cpp.o: ../include/stop-signal.h
+CMakeFiles/test.dir/lab5.cpp.o: ../include/timer.h
 CMakeFiles/test.dir/lab5.cpp.o: ../include/utilities.h
 CMakeFiles/test.dir/lab5.cpp.o: lab5.cpp
 

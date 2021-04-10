@@ -44,5 +44,6 @@ CMakeFiles/test.dir/lab5.cpp.o
  ../include/pulse.h
  ../include/sig-seq.h
  ../include/stop-signal.h
+ ../include/timer.h
  ../include/utilities.h
  /home/quanpham/eel6528-sdr/src/lab5.cpp
