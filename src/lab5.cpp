@@ -82,6 +82,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             double timer_count = timer.elapse();
             if (timer_count > 2.0) { // more than 2s has elapsed
                 logger.log("Time out: " + std::to_string(timer_count));
+                timer.reset();
             }
         }
     }
@@ -213,6 +214,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         // push same packet as last time
                         fifo_out.push(out_block);
                         test_out.push(out_block);
+                        timer.reset();
                     }
                 }
             }
