@@ -44,6 +44,54 @@ namespace po = boost::program_options;
 
 
 /***********************************************************************
+ * Sink ARQ scheduler
+ **********************************************************************/
+void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
+                       tsFIFO<Block<bool>>& fifo_out)
+{
+    // create logger
+    Logger logger("ARQ", "./arq.log");
+    // create temp blocks
+    Block<bool> in_block;
+    Block<bool> out_block;
+    Block<bool> ack_block;
+    // create block counter
+    int S = 0;
+    int R = 0;
+    // set up timer
+    Timer timer;
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // pop decoded info block
+            fifo_in.pop(in_block);
+            // S is contained in block.first
+            S = in_block.first;
+            // check R
+            if (R == S) {
+                // increment R
+                R++;
+                logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
+            } else {
+                logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
+            }
+            // reset timer to now
+            timer.reset();
+        } else {
+            // calculate time elapsed from packet transmitted (in seconds)
+            double timer_count = timer.elapse();
+            if (timer_count > 2.0) { // more than 2s has elapsed
+                logger.log("Time out: " + std::to_string(timer_count));
+            }
+        }
+    }
+    
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
+
+
+/***********************************************************************
  * Thread to test source arq scheduler
  **********************************************************************/
 void src_arq_schedule_test (tsFIFO<Block<std::complex<float>>>& fifo_in,
@@ -77,7 +125,7 @@ void src_arq_schedule_test (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 // push new packet
                 fifo_out.push(out_block);
                 // wait a little bit
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
         }
     }
@@ -170,7 +218,6 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
         }
     }
-    
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -243,6 +290,7 @@ void read_payload (std::string filename,
  * CRC decode payload
  **********************************************************************/
 void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
+                 tsFIFO<Block<bool>>& fifo_out,
                  size_t payload_size)
 {
     // create logger
@@ -289,7 +337,8 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                 out_block.second = info_vec;
                 logger.log("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
-            } else { // checksum are different
+                fifo_out.push(out_block);
+            } else { // checksum are different, drop packet if so
                 logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
@@ -1444,6 +1493,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread per_count_t;
     std::thread captured_block_count_t;
     std::thread ecc_decode_t;
+    std::thread snk_arq_schedule_t;
+    std::thread snk_arq_schedule_test_t;
     
     // init packet len
     tx_packet_len = preamble_len + sig_seq_len + 16 + payload_len + 32 + post_payload_len;
@@ -1470,15 +1521,17 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> mf_out_fifo;
         tsFIFO<Block<std::complex<float>>> acq_out_fifo;
         tsFIFO<Block<bool>> demod_out_fifo;
+        tsFIFO<Block<bool>> decode_out_fifo;
         tsFIFO<std::pair<int, float>> per_fifo;
+        tsFIFO<Block<bool>> empty_fifo;
         
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
-                    std::ref(iir_out_fifo), rx_spb, alpha);
+                std::ref(iir_out_fifo), rx_spb, alpha);
         // create thread for energy detector
         energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
-                    std::ref(energy_detector_out_fifo), rx_spb,
-                    iir_threshold, rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+                std::ref(energy_detector_out_fifo), rx_spb,
+                iir_threshold, rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
         // create thread for multirate filtering
         mf_worker_t = std::thread(&filter, 1, rx_mf_U,
                 rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
@@ -1486,18 +1539,22 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
         // create thread for agc
         agc_t = std::thread(&agc, std::ref(mf_out_fifo),
-                    std::ref(agc_out_fifo),
-                    (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
+                std::ref(agc_out_fifo),
+                (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
         // create thread for acquistion
         acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
-                            (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-                            rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
-                            acq_threshold);
+                (rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
+                rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
+                acq_threshold);
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                              std::ref(per_fifo), payload_len+16+32, payload_len+32);
+                std::ref(per_fifo), payload_len+16+32, payload_len+32);
         // create thread for ecc decode
-        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo), payload_len+16);
+        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
+                std::ref(decode_out_fifo), payload_len+16);
+        
+        snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
+                std::ref(empty_fifo));
         // create thread for counting receiving blocks every 10 seconds
         //per_count_t = std::thread(&per_count,
         //            std::ref(per_fifo));
