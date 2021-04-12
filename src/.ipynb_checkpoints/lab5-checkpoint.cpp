@@ -90,6 +90,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     logger.log("Create timer");
     Timer timer;
     
+    
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // receiving data so clear first flag
@@ -124,7 +125,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             if (!first) { // waiting for first packet should not be time out
                 // calculate time elapsed from packet transmitted (in seconds)
                 double timer_count = timer.elapse();
-                if (timer_count > 1.0) { // more than 2s has elapsed
+                if (timer_count > 0.2) { // more than 2s has elapsed
                     // resend request at time out
                     ack_fifo_out.push(ack_block);
                     // log for debug
@@ -135,50 +136,6 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             }
         }
     }
-    // notify user that processing thread is done
-    logger.log("Closing");
-}
-
-
-/***********************************************************************
- * Thread to test source arq scheduler
- **********************************************************************/
-void src_arq_schedule_test (tsFIFO<Block<std::complex<float>>>& fifo_in,
-                           tsFIFO<Block<bool>>& fifo_out)
-{
-    // create logger
-    Logger logger("ARQTest", "./arq_test.log");
-    // create temp blocks
-    Block<std::complex<float>> in_block;
-    Block<bool> out_block;
-    out_block.second.resize(16);
-    // create block counter
-    int S = 0;
-    int R = 0;
-    
-    while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
-            // pop ack
-            fifo_in.pop(in_block);
-            S = in_block.first;
-            // check S
-            if (S == R) {
-                // increment R and make new ack
-                R++;
-                std::bitset<16> R_bitset (R);
-                for (size_t i=0; i<16; i++)
-                    out_block.second[i] = R_bitset[i];
-                // push new packet
-                logger.log("R: " + std::to_string(R) +
-                           "\tSize: " + std::to_string(out_block.second.size()));
-                // push new packet
-                fifo_out.push(out_block);
-                // wait a little bit
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-            }
-        }
-    }
-    
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -252,7 +209,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
-                    if (timer_count > 1.0) { // more than 2s has elapsed
+                    if (timer_count > 0.2) { // more than 2s has elapsed
                         logger.log("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
