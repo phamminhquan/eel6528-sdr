@@ -205,10 +205,12 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     Block<std::complex<float>> out_block;
     Block<bool> ack_block;
     // create block counter
+    logger.log("Create S and R");
     int S = 0;
     int R = 0;
     bool first = true;
     // set up timer
+    logger.log("Create timer");
     Timer timer;
     
     while (not stop_signal_called) {
@@ -1681,23 +1683,23 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
             rx_channel_nums, std::ref(fifo_in));
         
         // FEED FORWARD TX STREAM
+        // call function to read in payload file
+        read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
+        // spawn error control thread
+        ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_payload_fifo),
+                std::ref(ecc_fifo), payload_len);
+        // spawn modulation thread
+        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+                std::ref(mod_fifo), 16+payload_len+32+post_payload_len,
+                ff_tx_packet_len);
+        // instantiate pulse shaping filter as multirate filter
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, ff_tx_packet_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
         // spawn thread for source arq scheduler
-        //src_arq_schedule_t = std::thread(&src_arq_schedule,
-        //        std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
-        //        std::ref(ack_fifo));
-        //// instantiate pulse shaping filter as multirate filter
-        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, ff_tx_packet_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
-        //// spawn modulation thread
-        //modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-        //        std::ref(mod_fifo), 16+payload_len+32+post_payload_len,
-        //        ff_tx_packet_len);
-        //// spawn error control thread
-        //ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_payload_fifo),
-        //        std::ref(ecc_fifo), payload_len);
-        //// call function to read in payload file
-        //read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
+        src_arq_schedule_t = std::thread(&src_arq_schedule,
+                std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
+                std::ref(ack_fifo));
             
         // call tx worker function as main thread
         transmit_worker(ff_tx_packet_len*tx_U/tx_D, tx_stream,
