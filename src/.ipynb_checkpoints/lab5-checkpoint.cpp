@@ -259,7 +259,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
-                    if (timer_count > 2.0) { // more than 2s has elapsed
+                    if (timer_count > 10.0) { // more than 2s has elapsed
                         logger.log("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
