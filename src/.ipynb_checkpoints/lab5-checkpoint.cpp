@@ -350,7 +350,7 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
     // create dummy block
     Block<bool> in_block;
     Block<bool> out_block;
-    out_block.second.resize(payload_len);
+    out_block.second.resize(payload_size-16);
     std::vector<unsigned char> payload_char_vec;
     std::vector<bool> rx_crc_vec;
     std::bitset<32> rx_crc_bitset;
@@ -1194,7 +1194,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     double rx_rate, fb_freq, rx_gain, rx_bw, rx_freq;
     double settling;
     int rx_D, rx_mf_U, ff_rx_cap_len, fb_rx_cap_len, rx_pre_cap_len, rx_post_cap_len;
-    float alpha, iir_threshold, acq_threshold;
+    float alpha, ff_iir_threshold, ff_acq_threshold, fb_iir_threshold, fb_acq_threshold;
     //std::string taps_filename;
 
     // other variables
@@ -1239,8 +1239,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("iir-thresh,iir-threshold", po::value<float>(&iir_threshold)->default_value(0.001), "Threshold for energy detector")
-        ("acq-thresh,acq-threshold", po::value<float>(&acq_threshold)->default_value(15), "Threshold for correlation in acquisition")
+        ("ff-iir-thresh,ff-iir-threshold", po::value<float>(&ff_iir_threshold)->default_value(0.001), "Threshold for energy detector")
+        ("ff-acq-thresh,ff-acq-threshold", po::value<float>(&ff_acq_threshold)->default_value(15), "Threshold for correlation in acquisition")
+        ("fb-iir-thresh,fb-iir-threshold", po::value<float>(&fb_iir_threshold)->default_value(0.01), "Threshold for energy detector")
+        ("fb-acq-thresh,fb-acq-threshold", po::value<float>(&fb_acq_threshold)->default_value(15), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
         ("n-pa-threads", po::value<size_t>(&num_pa_threads)->default_value(1), "number of threads for power averaging")
@@ -1591,7 +1593,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //// create thread for energy detector
         //energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
         //        std::ref(energy_detector_out_fifo), rx_spb,
-        //        iir_threshold, ff_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+        //        ff_iir_threshold, ff_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
         //// create thread for multirate filtering
         //mf_worker_t = std::thread(&filter, 1, rx_mf_U,
         //        ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
@@ -1605,7 +1607,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
         //        (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
         //        rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
-        //        acq_threshold);
+        //        ff_acq_threshold);
         //// create thread for demodulation
         //demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
         //        std::ref(per_fifo), payload_len+16+32, payload_len+32);
@@ -1651,7 +1653,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for energy detector
         energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
                 std::ref(energy_detector_out_fifo), rx_spb,
-                iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+                fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
         // create thread for multirate filtering
         mf_worker_t = std::thread(&filter, 1, rx_mf_U,
                 fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
@@ -1664,11 +1666,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for acquistion
         acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
                 (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-                rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
-                acq_threshold);
+                rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
+                fb_acq_threshold);
         // create thread for demodulation
         demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                std::ref(per_fifo), 0+16+32, payload_len+32);
+                std::ref(per_fifo), 0+16+32, 0+32);
         // create thread for ecc decode
         ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
                 std::ref(ack_fifo), 0+16);
