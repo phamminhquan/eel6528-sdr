@@ -1521,22 +1521,22 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> arq_test_fifo;
         
         // FEEDBACK TX STREAM
-        // spawn transmit worker thread
-        tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
-                std::ref(tx_stream), std::ref(arq_fifo));
-        // instantiate pulse shaping filter as multirate filter
-        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+        // call function to prep all ack packets, assume number of packets is known
+        ack_prepare(ack_fifo, 1082);
+        // spawn error control thread
+        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
+                std::ref(ecc_fifo), 0);
         // spawn modulation thread
         modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
                 std::ref(mod_fifo), 16+32+post_payload_len,
                 fb_tx_packet_len);
-        // spawn error control thread
-        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
-                std::ref(ecc_fifo), 0);
-        // call function to prep all ack packets, assume number of packets is known
-        ack_prepare(ack_fifo, 1082);
+        // instantiate pulse shaping filter as multirate filter
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+        // spawn transmit worker thread
+        tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
+                std::ref(tx_stream), std::ref(arq_fifo));
         
         // FEED FORWARD RX STREAM
         // create thread for power averager
