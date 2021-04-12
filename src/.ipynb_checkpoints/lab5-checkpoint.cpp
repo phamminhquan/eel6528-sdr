@@ -82,20 +82,13 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     out_block.second.resize(payload_size);
     Block<std::complex<float>> ack_block;
     // create block counter
+    logger.log("Create S and R");
     int S = 0;
     int R = 0;
     bool first = true;
     // set up timer
+    logger.log("Create timer");
     Timer timer;
-    
-    //while (not stop_signal_called) {
-    //    if (ack_fifo_in.size() != 0) {
-    //        ack_fifo_in.pop(ack_block);
-    //        ack_fifo_out.push(ack_block);
-    //        //logger.log("Sending ACK: " + std::to_string(ack_block.first));
-    //        std::this_thread::sleep_for(std::chrono::seconds(1));
-    //    }
-    //}
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
