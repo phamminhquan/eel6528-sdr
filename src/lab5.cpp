@@ -88,60 +88,60 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     // set up timer
     Timer timer;
     
-    while (not stop_signal_called) {
-        if (ack_fifo_in.size() != 0) {
-            ack_fifo_in.pop(ack_block);
-            ack_fifo_out.push(ack_block);
-            //logger.log("Sending ACK: " + std::to_string(ack_block.first));
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-        }
-    }
-    
     //while (not stop_signal_called) {
-    //    if (fifo_in.size() != 0) {
-    //        // receiving data so clear first flag
-    //        first = false;
-    //        // pop decoded info block
-    //        fifo_in.pop(in_block);
-    //        // S is contained in block.first
-    //        S = in_block.first;
-    //        // check R
-    //        if (R == S) {
-    //            // send ack first
-    //            // increment R
-    //            R++;
-    //            // push ack
-    //            ack_fifo_in.pop(ack_block);
-    //            logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
-    //            ack_fifo_out.push(ack_block);
-    //            // grab data
-    //            out_block = in_block;
-    //            fifo_out.push(out_block);
-    //            // log for debug
-    //            logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
-    //        } else {
-    //            // received packet is out of order, resend request
-    //            ack_fifo_out.push(ack_block);
-    //            // log for debug
-    //            logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
-    //        }
-    //        // reset timer to now
-    //        timer.reset();
-    //    } else {
-    //        if (!first) { // waiting for first packet should not be time out
-    //            // calculate time elapsed from packet transmitted (in seconds)
-    //            double timer_count = timer.elapse();
-    //            if (timer_count > 5.0) { // more than 2s has elapsed
-    //                // resend request at time out
-    //                ack_fifo_out.push(ack_block);
-    //                // log for debug
-    //                logger.log("Time out: " + std::to_string(timer_count) +
-    //                           "\tACK FIFO size: " + std::to_string(ack_fifo_out.size()));
-    //                timer.reset();
-    //            }
-    //        }
+    //    if (ack_fifo_in.size() != 0) {
+    //        ack_fifo_in.pop(ack_block);
+    //        ack_fifo_out.push(ack_block);
+    //        //logger.log("Sending ACK: " + std::to_string(ack_block.first));
+    //        std::this_thread::sleep_for(std::chrono::seconds(1));
     //    }
     //}
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0) {
+            // receiving data so clear first flag
+            first = false;
+            // pop decoded info block
+            fifo_in.pop(in_block);
+            // S is contained in block.first
+            S = in_block.first;
+            // check R
+            if (R == S) {
+                // send ack first
+                // increment R
+                R++;
+                // push ack
+                ack_fifo_in.pop(ack_block);
+                logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
+                ack_fifo_out.push(ack_block);
+                // grab data
+                out_block = in_block;
+                fifo_out.push(out_block);
+                // log for debug
+                logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
+            } else {
+                // received packet is out of order, resend request
+                ack_fifo_out.push(ack_block);
+                // log for debug
+                logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
+            }
+            // reset timer to now
+            timer.reset();
+        } else {
+            if (!first) { // waiting for first packet should not be time out
+                // calculate time elapsed from packet transmitted (in seconds)
+                double timer_count = timer.elapse();
+                if (timer_count > 5.0) { // more than 2s has elapsed
+                    // resend request at time out
+                    ack_fifo_out.push(ack_block);
+                    // log for debug
+                    logger.log("Time out: " + std::to_string(timer_count) +
+                               "\tACK FIFO size: " + std::to_string(ack_fifo_out.size()));
+                    timer.reset();
+                }
+            }
+        }
+    }
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -232,7 +232,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
             } else {
                 if (ack_fifo.size() != 0) {
                     // log to see arrival queue length should be a lot
-                    logger.log("ARQ input fifo size: " + std::to_string(fifo_in.size()));
+                    logger.logf("ARQ input fifo size: " + std::to_string(fifo_in.size()));
                     // pop ack
                     ack_fifo.pop(ack_block);
                     // check ack content to get R
@@ -246,7 +246,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         S++;
                         out_block = in_block;
                         logger.log("S: " + std::to_string(S) +
-                                   "\tSize: " + std::to_string(out_block.second.size()));
+                                   "\tR: " + std::to_string(R));
                         // push new packet
                         fifo_out.push(out_block);
                     } else {
@@ -1590,33 +1590,33 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         
         // FEED FORWARD RX STREAM
         // create thread for power averager
-        //iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
-        //        std::ref(iir_out_fifo), rx_spb, alpha);
-        //// create thread for energy detector
-        //energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
-        //        std::ref(energy_detector_out_fifo), rx_spb,
-        //        ff_iir_threshold, ff_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
-        //// create thread for multirate filtering
-        //mf_worker_t = std::thread(&filter, 1, rx_mf_U,
-        //        ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
-        //// create thread for agc
-        //agc_t = std::thread(&agc, std::ref(mf_out_fifo),
-        //        std::ref(agc_out_fifo),
-        //        (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
-        //// create thread for acquistion
-        //acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
-        //        (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-        //        rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
-        //        ff_acq_threshold);
-        //// create thread for demodulation
-        //demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-        //        std::ref(per_fifo), payload_len+16+32, payload_len+32);
-        //// create thread for ecc decode
-        //ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
-        //        std::ref(decode_out_fifo), payload_len+16);
-        //// spawn thread for sink arq scheduler
+        iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
+                std::ref(iir_out_fifo), rx_spb, alpha);
+        // create thread for energy detector
+        energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
+                std::ref(energy_detector_out_fifo), rx_spb,
+                ff_iir_threshold, ff_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+        // create thread for multirate filtering
+        mf_worker_t = std::thread(&filter, 1, rx_mf_U,
+                ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
+        // create thread for agc
+        agc_t = std::thread(&agc, std::ref(mf_out_fifo),
+                std::ref(agc_out_fifo),
+                (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
+        // create thread for acquistion
+        acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
+                (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
+                rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
+                ff_acq_threshold);
+        // create thread for demodulation
+        demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
+                std::ref(per_fifo), payload_len+16+32, payload_len+32);
+        // create thread for ecc decode
+        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
+                std::ref(decode_out_fifo), payload_len+16);
+        // spawn thread for sink arq scheduler
         snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
                 std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
                 std::ref(arq_fifo), payload_len);
