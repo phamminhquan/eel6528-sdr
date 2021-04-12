@@ -131,7 +131,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             if (!first) { // waiting for first packet should not be time out
                 // calculate time elapsed from packet transmitted (in seconds)
                 double timer_count = timer.elapse();
-                if (timer_count > 5.0) { // more than 2s has elapsed
+                if (timer_count > 1.0) { // more than 2s has elapsed
                     // resend request at time out
                     ack_fifo_out.push(ack_block);
                     // log for debug
@@ -259,7 +259,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
-                    if (timer_count > 10.0) { // more than 2s has elapsed
+                    if (timer_count > 1.0) { // more than 2s has elapsed
                         logger.log("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
@@ -386,11 +386,11 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                                             payload_vec.begin()+16+payload_len);
                 out_block.first = header.to_ulong();
                 out_block.second = info_vec;
-                logger.log("Header: " + std::to_string(out_block.first) +
+                logger.logf("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
                 fifo_out.push(out_block);
             } else { // checksum are different, drop packet if so
-                logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
+                logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
         }
