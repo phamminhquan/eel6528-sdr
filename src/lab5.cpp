@@ -89,10 +89,10 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     Timer timer;
     
     while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
+        if (ack_fifo_in.size() != 0) {
             ack_fifo_in.pop(ack_block);
             ack_fifo_out.push(ack_block);
-            logger.log("Sending ACK: " + std::to_string(ack_block.first));
+            //logger.log("Sending ACK: " + std::to_string(ack_block.first));
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
