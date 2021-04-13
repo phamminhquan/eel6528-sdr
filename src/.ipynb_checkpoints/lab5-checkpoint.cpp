@@ -337,11 +337,11 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                                             payload_vec.begin()+16+payload_len);
                 out_block.first = header.to_ulong();
                 out_block.second = info_vec;
-                logger.logf("Header: " + std::to_string(out_block.first) +
+                logger.log("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
                 fifo_out.push(out_block);
             } else { // checksum are different, drop packet if so
-                logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
+                logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
         }
@@ -1473,10 +1473,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for ecc decode
         ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
                 std::ref(decode_out_fifo), payload_len+16);
-        // call receive function
-        //recv_to_fifo(rx_usrp, "fc32", otw, file,
-        //    rx_spb, total_num_samps, settling,
-        //    rx_channel_nums, fifo_in);
         rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
             "fc32", std::ref(otw), std::ref(file),
             rx_spb, total_num_samps, settling,
@@ -1502,8 +1498,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
                 std::ref(arq_fifo), payload_len, arq_timeout);
         // spawn transmit worker thread
-        //tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
-        //        std::ref(tx_stream), std::ref(arq_fifo));
         transmit_worker(fb_tx_packet_len*tx_U/tx_D, tx_stream,
                         arq_fifo);
         
