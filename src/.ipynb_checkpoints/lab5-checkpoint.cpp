@@ -414,73 +414,12 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
 
 
 /***********************************************************************
- * demodulation
- **********************************************************************/
-void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
-            tsFIFO<Block<bool>>& fifo_out,
-            tsFIFO<std::pair<int, float>>& per_out,
-            size_t demod_len,
-            size_t payload_size)
-{
-    // create logger
-    Logger logger("DEMOD", "./demod.log");
-    logger.logf("Demod length: " + std::to_string(demod_len));
-    // create file to log demodulated packet
-    std::ofstream out_file ("demod_out.dat", std::ofstream::binary);
-    // create dummy block
-    Block<std::complex<float>> in_block;
-    Block<bool> out_block;
-    out_block.first = 0;
-    //out_block.second.resize(payload_size);
-    out_block.second.resize(demod_len);
-    bool demod_bit;
-    float angle_cur = 0;
-    float angle_pre = 0;
-    float m_hat_0 = 0;
-    float m_hat_1 = 0;
-    //std::bitset<16> header;
-    int ham_dist = 0;
-    float ber = 0;
-    std::pair<int, float> temp_per;
-    while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
-            // print out fifo size to check
-            //if (fifo_in.size() != 1)
-            //    logger.logf("Demodulator input FIFO size: " + std::to_string(fifo_in.size()));
-            //if (fifo_out.size() != 0)
-            //    logger.logf("Demodulator output FIFO size: " + std::to_string(fifo_out.size()));
-            // pop input block from fifo
-            fifo_in.pop(in_block);
-            // non-coherent demodulation 
-            for (size_t i=0; i<demod_len; i++) {
-                angle_cur = std::arg(in_block.second[i+1]);
-                angle_pre = std::arg(in_block.second[i]);
-                m_hat_0 = std::cos(angle_cur-angle_pre);
-                m_hat_1 = std::cos(angle_cur-angle_pre-M_PI);
-                if (m_hat_0 > m_hat_1)
-                    demod_bit = 0;
-                else
-                    demod_bit = 1;
-                out_block.second[i] = demod_bit;
-            }
-            fifo_out.push(out_block);
-        }
-    }
-    // close output file
-    out_file.close();
-    // notify user that processing thread is done
-    logger.log("Closing");
-}
-
-
-/***********************************************************************
  * acquisition
  **********************************************************************/
-void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
-          tsFIFO<Block<std::complex<float>>>& fifo_out,
-          size_t input_block_len, size_t post_cap_len,
-          size_t sym_per, size_t acq_len,
-          float thresh)
+void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
+                tsFIFO<Block<bool>>& fifo_out,
+                size_t input_block_len, size_t post_cap_len,
+                size_t sym_per, size_t acq_len, float thresh)
 {
     // create logger
     Logger logger("ACQ", "./acq.log");
@@ -492,8 +431,10 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
         sig_seq_vec[i] = sig_seq[i];
     // create dummy block
     Block<std::complex<float>> in_block;
-    Block<std::complex<float>> out_block;
-    out_block.second.resize(acq_len+1);
+    Block<std::complex<float>> acq_block;
+    acq_block.second.resize(acq_len+1);
+    Block<bool> demod_block;
+    demod_block.second.resize(acq_len);
     // initialize parameters and temporary vectors
     size_t tao_end = input_block_len - acq_len * sym_per - post_cap_len;
     size_t tao_star = 0;
@@ -504,6 +445,12 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
     temp.resize(sig_seq_len);
     std::vector<float> corr_vec;
     corr_vec.resize(tao_end);
+    // variables for demodulation
+    bool demod_bit;
+    float angle_cur = 0;
+    float angle_pre = 0;
+    float m_hat_0 = 0;
+    float m_hat_1 = 0;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out fifo size to check
@@ -511,9 +458,11 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
             //    logger.logf("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
             //if (fifo_out.size() != 0)
             //    logger.logf("ACQ output FIFO size: " + std::to_string(fifo_out.size()));
+            // ACQ
             // pop input block from fifo
             fifo_in.pop(in_block);
-            out_block.first = in_block.first;
+            acq_block.first = in_block.first;
+            demod_block.first = in_block.first;
             // fine symbol synchronization, i.e. find tao_star
             for (size_t t=0; t<tao_end; t++) {
                 // get temp sequence r[n] = r(nT + tao)
@@ -530,11 +479,21 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 packet_start = tao_star + 30*sym_per;
                 //logger.logf("Packet start: " + std::to_string(packet_start));
                 for (size_t i=0; i<acq_len+1; i++)
-                    out_block.second[i] = in_block.second[packet_start+i*sym_per];
-
-                // push demod output to fifo
-                fifo_out.push(out_block);
+                    acq_block.second[i] = in_block.second[packet_start+i*sym_per];
             }
+            // DEMOD
+            for (size_t i=0; i<acq_len; i++) {
+                angle_cur = std::arg(acq_block.second[i+1]);
+                angle_pre = std::arg(acq_block.second[i]);
+                m_hat_0 = std::cos(angle_cur-angle_pre);
+                m_hat_1 = std::cos(angle_cur-angle_pre-M_PI);
+                if (m_hat_0 > m_hat_1)
+                    demod_bit = 0;
+                else
+                    demod_bit = 1;
+                demod_block.second[i] = demod_bit;
+            }
+            fifo_out.push(demod_block);
         }
     }
     // notify user that processing thread is done
@@ -1129,7 +1088,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-post-cap-len", po::value<int>(&rx_post_cap_len)->default_value(200), "Back extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
         ("payload", po::value<std::string>(&payload_filename)->default_value("payload.jpeg"), "File to transmit")
-        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(0.5), "ARQ timer timeout duration")
+        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(1), "ARQ timer timeout duration")
     ;
 
     // clang-format on
@@ -1396,7 +1355,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread energy_detector_t;
     std::thread power_average_worker_t[num_pa_threads];
     std::thread agc_t;
-    std::thread acq_t;
+    std::thread acq_demod_t;
     std::thread demod_t;
     std::thread per_count_t;
     std::thread captured_block_count_t;
@@ -1463,13 +1422,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 std::ref(agc_out_fifo),
                 (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
         // create thread for acquistion
-        acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
+        acq_demod_t = std::thread(&acq_demod, std::ref(agc_out_fifo), std::ref(demod_out_fifo),
                 (ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
                 rx_post_cap_len, rx_mf_U*5/4, payload_len+16+32,
                 ff_acq_threshold);
-        // create thread for demodulation
-        demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                std::ref(per_fifo), payload_len+16+32, payload_len+32);
         // create thread for ecc decode
         ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
                 std::ref(decode_out_fifo), payload_len+16);
@@ -1480,23 +1436,23 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         
         // FEEDBACK TX STREAM
         // call function to prep all ack packets, assume number of packets is known
-        //ack_prepare(ack_fifo, 1082);
-        //// spawn error control thread
-        //ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
-        //        std::ref(ecc_fifo), 0);
-        //// spawn modulation thread
-        //modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-        //        std::ref(mod_fifo), 16+32+post_payload_len,
-        //        fb_tx_packet_len);
-        //// instantiate pulse shaping filter as multirate filter
-        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
-        //        "PulseShape", "pulse-shape.log");
-        //// spawn thread for sink arq scheduler
-        //snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
-        //        std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
-        //        std::ref(arq_fifo), payload_len, arq_timeout);
+        ack_prepare(ack_fifo, 1082);
+        // spawn error control thread
+        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
+                std::ref(ecc_fifo), 0);
+        // spawn modulation thread
+        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+                std::ref(mod_fifo), 16+32+post_payload_len,
+                fb_tx_packet_len);
+        // instantiate pulse shaping filter as multirate filter
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
+                "PulseShape", "pulse-shape.log");
+        // spawn thread for sink arq scheduler
+        snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
+                std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
+                std::ref(arq_fifo), payload_len, arq_timeout);
         // spawn transmit worker thread
         transmit_worker(fb_tx_packet_len*tx_U/tx_D, tx_stream,
                         arq_fifo);
@@ -1527,38 +1483,35 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         
         // FEED BACK RX STREAM
         // create thread for power averager
-        //iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
-        //        std::ref(iir_out_fifo), rx_spb, alpha);
-        //// create thread for energy detector
-        //energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
-        //        std::ref(energy_detector_out_fifo), rx_spb,
-        //        fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
-        //// create thread for multirate filtering
-        //mf_worker_t = std::thread(&filter, 1, rx_mf_U,
-        //        fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
-        //        "MF", "mf.log");
-        //// create thread for agc
-        //agc_t = std::thread(&agc, std::ref(mf_out_fifo),
-        //        std::ref(agc_out_fifo),
-        //        (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
-        //// create thread for acquistion
-        //acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
-        //        (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-        //        rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
-        //        fb_acq_threshold);
-        //// create thread for demodulation
-        //demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-        //        std::ref(per_fifo), 0+16+32, 0+32);
-        //// create thread for ecc decode
-        //ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
-        //        std::ref(ack_fifo), 0+16);
-        //// call receive function
-        //rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
-        //    "fc32", std::ref(otw), std::ref(file),
-        //    rx_spb, total_num_samps, settling,
-        //    rx_channel_nums, std::ref(fifo_in));
+        iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
+                std::ref(iir_out_fifo), rx_spb, alpha);
+        // create thread for energy detector
+        energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
+                std::ref(energy_detector_out_fifo), rx_spb,
+                fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+        // create thread for multirate filtering
+        mf_worker_t = std::thread(&filter, 1, rx_mf_U,
+                fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
+                "MF", "mf.log");
+        // create thread for agc
+        agc_t = std::thread(&agc, std::ref(mf_out_fifo),
+                std::ref(agc_out_fifo),
+                (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
+        // create thread for acquistion
+        acq_demod_t = std::thread(&acq_demod, std::ref(agc_out_fifo), std::ref(demod_out_fifo),
+                (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
+                rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
+                fb_acq_threshold);
+        // create thread for ecc decode
+        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
+                std::ref(ack_fifo), 0+16);
+        // call receive function
+        rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
+            "fc32", std::ref(otw), std::ref(file),
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, std::ref(fifo_in));
         
         // FEED FORWARD TX STREAM
         // call function to read in payload file
