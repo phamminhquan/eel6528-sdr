@@ -72,7 +72,8 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                        tsFIFO<Block<std::complex<float>>>& ack_fifo_in,
                        tsFIFO<Block<bool>>& fifo_out,
                        tsFIFO<Block<std::complex<float>>>& ack_fifo_out,
-                       size_t payload_size)
+                       size_t payload_size,
+                       float timeout)
 {
     // create logger
     Logger logger("ARQ", "./arq.log");
@@ -89,7 +90,6 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     // set up timer
     logger.log("Create timer");
     Timer timer;
-    
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -125,7 +125,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             if (!first) { // waiting for first packet should not be time out
                 // calculate time elapsed from packet transmitted (in seconds)
                 double timer_count = timer.elapse();
-                if (timer_count > 0.2) { // more than 2s has elapsed
+                if (timer_count > timeout) { // more than 2s has elapsed
                     // resend request at time out
                     ack_fifo_out.push(ack_block);
                     // log for debug
@@ -146,7 +146,8 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
  **********************************************************************/
 void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                        tsFIFO<Block<std::complex<float>>>& fifo_out,
-                       tsFIFO<Block<bool>>& ack_fifo)
+                       tsFIFO<Block<bool>>& ack_fifo,
+                       float timeout)
 {
     // create logger
     Logger logger("ARQ", "./arq.log");
@@ -209,7 +210,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
-                    if (timer_count > 0.2) { // more than 2s has elapsed
+                    if (timer_count > timeout) { // more than 2s has elapsed
                         logger.log("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
@@ -544,44 +545,6 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
 /***********************************************************************
  * Automatic gain control by normalizing RMS value
  **********************************************************************/
-void per_count (tsFIFO<std::pair<int, float>>& fifo_in)
-{
-    // create logger
-    Logger logger("PERCount", "./per_count.log");
-    // create dummy block
-    std::pair<int, float> in_block;
-    size_t current_fifo_size = 0;
-    size_t running_block_count = 0;
-    size_t running_error_packet_count = 0;
-    float per=0;
-    while (not stop_signal_called) {
-        // checking fifo size
-        current_fifo_size = fifo_in.size();
-        logger.log("In Block size: " + std::to_string(current_fifo_size));
-        running_block_count += current_fifo_size;
-        for (size_t i=0; i<current_fifo_size; i++) {
-            fifo_in.pop(in_block);
-            if (in_block.second > 0.0)
-                running_error_packet_count++;
-        }
-        if (running_block_count != 0) {
-            per = (float)running_error_packet_count/running_block_count;
-            logger.log("Running packet count: " + std::to_string(running_block_count) +
-                       "  Running PER: " + std::to_string(per));
-        }
-        // clear the fifo
-        fifo_in.clear();
-        // wait 10 second
-        std::this_thread::sleep_for(std::chrono::seconds(10));
-    }
-    // notify user that processing thread is done
-    logger.log("Closing");
-}
-
-
-/***********************************************************************
- * Automatic gain control by normalizing RMS value
- **********************************************************************/
 void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
           tsFIFO<Block<std::complex<float>>>& fifo_out,
           size_t block_size)
@@ -799,7 +762,7 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
                             for (int j=0; j<edge_mid_ind; j++)  // take the first few samples
                                 cap_block.second[pre_cap_len+j] = in_block.second[i+j];
                             cap_block.first = cap_block_num++;  // assign, increment capture counter
-                            //logger.log("Detected a packet at edge");
+                            logger.logf("Detected a packet at edge");
                             break;
                         } else {    // if capture range in middle
                             for (int j=0; j<pre_cap_len; j++) // capture samples before packet
@@ -808,7 +771,7 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
                                 cap_block.second[pre_cap_len+j] = in_block.second[i+j];
                             cap_block.first = cap_block_num++; // assign, increment capture counter
                             fifo_out.push(cap_block);   // push captured block to fifo out
-                            //logger.log("Detected a packet in middle");
+                            logger.logf("Detected a packet in middle");
                         }
                     }
                 } else {
@@ -1152,6 +1115,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     // other variables
     bool tx_rx = false;
+    float arq_timeout;
     
     // program specific variables
     size_t num_pa_threads, num_filt_threads;
@@ -1207,6 +1171,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-post-cap-len", po::value<int>(&rx_post_cap_len)->default_value(200), "Back extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
         ("payload", po::value<std::string>(&payload_filename)->default_value("payload.jpeg"), "File to transmit")
+        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(0.5), "ARQ timer timeout duration")
     ;
 
     // clang-format on
@@ -1577,7 +1542,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // spawn thread for sink arq scheduler
         snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
                 std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
-                std::ref(arq_fifo), payload_len);
+                std::ref(arq_fifo), payload_len, arq_timeout);
         // spawn transmit worker thread
         //tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
         //        std::ref(tx_stream), std::ref(arq_fifo));
@@ -1661,7 +1626,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // spawn thread for source arq scheduler
         src_arq_schedule_t = std::thread(&src_arq_schedule,
                 std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
-                std::ref(ack_fifo));
+                std::ref(ack_fifo), arq_timeout);
             
         // call tx worker function as main thread
         transmit_worker(ff_tx_packet_len*tx_U/tx_D, tx_stream,
