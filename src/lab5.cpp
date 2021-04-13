@@ -337,11 +337,11 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                                             payload_vec.begin()+16+payload_len);
                 out_block.first = header.to_ulong();
                 out_block.second = info_vec;
-                logger.log("Header: " + std::to_string(out_block.first) +
+                logger.logf("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
                 fifo_out.push(out_block);
             } else { // checksum are different, drop packet if so
-                logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
+                logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
         }
@@ -396,8 +396,8 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             // get checksum and append to the end of payload
             boost::uint32_t crc_val = crc32.checksum();
             std::bitset<32> crc_bitset(crc32.checksum());
-            logger.logf("Block: " + std::to_string(out_block.first) +
-                       "\t TX Checksum: " + std::to_string(crc_val));
+            //logger.logf("Block: " + std::to_string(out_block.first) +
+            //           "\t TX Checksum: " + std::to_string(crc_val));
             // concatenate crc parity bits
             for (size_t i=0; i<32; i++)
                 out_block.second[16+payload_size+i] = crc_bitset[i];
@@ -424,7 +424,7 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
 {
     // create logger
     Logger logger("DEMOD", "./demod.log");
-    logger.log("Demod length: " + std::to_string(demod_len));
+    logger.logf("Demod length: " + std::to_string(demod_len));
     // create file to log demodulated packet
     std::ofstream out_file ("demod_out.dat", std::ofstream::binary);
     // create dummy block
@@ -445,10 +445,10 @@ void demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out fifo size to check
-            if (fifo_in.size() != 1)
-                logger.logf("Demodulator input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("Demodulator output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("Demodulator input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("Demodulator output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             // non-coherent demodulation 
@@ -498,7 +498,7 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
     size_t tao_end = input_block_len - acq_len * sym_per - post_cap_len;
     size_t tao_star = 0;
     size_t packet_start = 0;
-    logger.logf("Tao end at: " + std::to_string(tao_end));
+    //logger.logf("Tao end at: " + std::to_string(tao_end));
     std::pair<int, float> temp_pair;
     std::vector<std::complex<float>> temp;
     temp.resize(sig_seq_len);
@@ -507,10 +507,10 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out fifo size to check
-            if (fifo_in.size() != 1)
-                logger.logf("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("ACQ output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("ACQ output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -525,10 +525,10 @@ void acq (tsFIFO<Block<std::complex<float>>>& fifo_in,
             temp_pair = where_max(corr_vec);
             if (temp_pair.second > thresh) {
                 tao_star = temp_pair.first;
-                logger.logf("Tao_star: " + std::to_string(tao_star));
+                //logger.logf("Tao_star: " + std::to_string(tao_star));
                 // get decision statistic for demod
                 packet_start = tao_star + 30*sym_per;
-                logger.logf("Packet start: " + std::to_string(packet_start));
+                //logger.logf("Packet start: " + std::to_string(packet_start));
                 for (size_t i=0; i<acq_len+1; i++)
                     out_block.second[i] = in_block.second[packet_start+i*sym_per];
 
@@ -562,10 +562,10 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out fifo size to check
-            if (fifo_in.size() != 1)
-                logger.logf("AGC input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("AGC output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("AGC input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("AGC output FIFO size: " + std::to_string(fifo_out.size()));
             // pop input block from fifo
             fifo_in.pop(in_block);
             // set block counter
@@ -598,48 +598,6 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
 
 
 /***********************************************************************
- * Generate random bits as packets
- **********************************************************************/
-void payload_gen (tsFIFO<Block<bool>>& fifo,
-                 float p, size_t payload_size,
-                 size_t packet_rate)
-{
-    // create logger
-    Logger logger("PacketGen", "./payload_gen.log");
-    int idle_time_us = (int)(1/(float)packet_rate * 1e6);
-    logger.logf("Idle time: " + std::to_string(idle_time_us));
-    // create block counter
-    int block_counter = 0;
-    // create dummy block
-    Block<bool> block;
-    block.second.resize(payload_size+16);
-    while (not stop_signal_called) {
-        // create 16-bit packet number bitset
-        std::bitset<16> packet_num_b(block_counter);
-        // set block counter
-        block.first = block_counter++;
-        // push packet counter as 16-bit number
-        for (size_t i=0; i<16; i++) {
-            block.second[i] = packet_num_b[i];
-        }
-        // getting payload from payload.h
-        for (size_t i=0; i<payload_size; i++)
-            block.second[16+i] = payload[i];
-        //logger.log("Payload and header size: " + std::to_string(block.second.size()));
-        // push block to fifo
-        fifo.push(block);
-        // print out fifo size to check
-        if (fifo.size() != 1)
-            logger.logf("Packet generator output FIFO size: " + std::to_string(fifo.size()));
-        // wait
-        std::this_thread::sleep_for(std::chrono::microseconds(idle_time_us));
-    }
-    // notify user that processing thread is done
-    logger.log("Closing");
-}
-
-
-/***********************************************************************
  * Modulation (BDPSK)
  **********************************************************************/
 void modulate (tsFIFO<Block<bool>>& fifo_in,
@@ -651,8 +609,8 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // create filestream
     //std::ofstream in_file ("mod_in.dat", std::ofstream::binary);
     std::ofstream out_file ("mod_out.dat", std::ofstream::binary);
-    logger.log("Modulator input block size: " + std::to_string(in_block_size));
-    logger.log("Modulator output block size: " + std::to_string(out_block_size));
+    logger.logf("Modulator input block size: " + std::to_string(in_block_size));
+    logger.logf("Modulator output block size: " + std::to_string(out_block_size));
     // create dummy block
     Block<bool> in_block;
     Block<std::complex<float>> out_block;
@@ -660,7 +618,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // prepend preamble
     for (int i=0; i<preamble_len; i++)
         out_block.second[i] = preamble[i];
-    logger.logf("Preamble size: " + std::to_string(preamble_len));
+    //logger.logf("Preamble size: " + std::to_string(preamble_len));
     // prepend signature sequence
     for (int i=0; i<sig_seq_len; i++)
         out_block.second[i+preamble_len] = sig_seq[i];
@@ -673,10 +631,10 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out fifo size to check
-            if (fifo_in.size() != 1)
-                logger.logf("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("Modulator input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("Modulator output FIFO size: " + std::to_string(fifo_out.size()));
             // pop bit sequence from input fifo
             fifo_in.pop(in_block);
             out_block.first = in_block.first;
@@ -734,10 +692,10 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // check fifo sizes
-            if (fifo_in.size() != 1)
-                logger.logf("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("Energy detector output FIFO size: " + std::to_string(fifo_out.size()));
             // pop fifo in
             fifo_in.pop(in_pair);
             in_block = in_pair.first;
@@ -817,10 +775,10 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // check fifo sizes
-            if (fifo_in.size() != 1)
-                logger.logf("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("IIR filter output FIFO size: " + std::to_string(fifo_out.size()));
             // iir
             // pop block from fifo
             fifo_in.pop(in_block);
@@ -890,10 +848,10 @@ void filter(int D, int U, size_t in_len,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // check fifo sizes
-            if (fifo_in.size() != 1)
-                logger.logf("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
-            if (fifo_out.size() != 0)
-                logger.logf("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
+            //if (fifo_out.size() != 0)
+            //    logger.logf("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
             // pop block from fifo
             fifo_in.pop(in_block);
             // get input array
@@ -953,8 +911,8 @@ void transmit_worker (//size_t samp_per_buff,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // print out tx fifo size
-            if (fifo_in.size() != 1)
-                logger.logf("TX fifo size: " + std::to_string(fifo_in.size()));
+            //if (fifo_in.size() != 1)
+            //    logger.logf("TX fifo size: " + std::to_string(fifo_in.size()));
             // pop packet block
             fifo_in.pop(block);
             logger.log("Sending block: " + std::to_string(block.first));
