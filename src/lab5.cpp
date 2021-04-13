@@ -1480,23 +1480,23 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         
         // FEEDBACK TX STREAM
         // call function to prep all ack packets, assume number of packets is known
-        ack_prepare(ack_fifo, 1082);
-        // spawn error control thread
-        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
-                std::ref(ecc_fifo), 0);
-        // spawn modulation thread
-        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-                std::ref(mod_fifo), 16+32+post_payload_len,
-                fb_tx_packet_len);
-        // instantiate pulse shaping filter as multirate filter
-        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
-                "PulseShape", "pulse-shape.log");
-        // spawn thread for sink arq scheduler
-        snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
-                std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
-                std::ref(arq_fifo), payload_len, arq_timeout);
+        //ack_prepare(ack_fifo, 1082);
+        //// spawn error control thread
+        //ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
+        //        std::ref(ecc_fifo), 0);
+        //// spawn modulation thread
+        //modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+        //        std::ref(mod_fifo), 16+32+post_payload_len,
+        //        fb_tx_packet_len);
+        //// instantiate pulse shaping filter as multirate filter
+        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
+        //        std::ref(rrc_vec), num_filt_threads, false,
+        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
+        //        "PulseShape", "pulse-shape.log");
+        //// spawn thread for sink arq scheduler
+        //snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
+        //        std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
+        //        std::ref(arq_fifo), payload_len, arq_timeout);
         // spawn transmit worker thread
         transmit_worker(fb_tx_packet_len*tx_U/tx_D, tx_stream,
                         arq_fifo);
@@ -1527,38 +1527,38 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         
         // FEED BACK RX STREAM
         // create thread for power averager
-        iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
-                std::ref(iir_out_fifo), rx_spb, alpha);
-        // create thread for energy detector
-        energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
-                std::ref(energy_detector_out_fifo), rx_spb,
-                fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
-        // create thread for multirate filtering
-        mf_worker_t = std::thread(&filter, 1, rx_mf_U,
-                fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
-                std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
-                "MF", "mf.log");
-        // create thread for agc
-        agc_t = std::thread(&agc, std::ref(mf_out_fifo),
-                std::ref(agc_out_fifo),
-                (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
-        // create thread for acquistion
-        acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
-                (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-                rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
-                fb_acq_threshold);
-        // create thread for demodulation
-        demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
-                std::ref(per_fifo), 0+16+32, 0+32);
-        // create thread for ecc decode
-        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
-                std::ref(ack_fifo), 0+16);
-        // call receive function
-        rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
-            "fc32", std::ref(otw), std::ref(file),
-            rx_spb, total_num_samps, settling,
-            rx_channel_nums, std::ref(fifo_in));
+        //iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
+        //        std::ref(iir_out_fifo), rx_spb, alpha);
+        //// create thread for energy detector
+        //energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
+        //        std::ref(energy_detector_out_fifo), rx_spb,
+        //        fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+        //// create thread for multirate filtering
+        //mf_worker_t = std::thread(&filter, 1, rx_mf_U,
+        //        fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
+        //        std::ref(rrc_vec), num_filt_threads, false,
+        //        std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
+        //        "MF", "mf.log");
+        //// create thread for agc
+        //agc_t = std::thread(&agc, std::ref(mf_out_fifo),
+        //        std::ref(agc_out_fifo),
+        //        (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
+        //// create thread for acquistion
+        //acq_t = std::thread(&acq, std::ref(agc_out_fifo), std::ref(acq_out_fifo),
+        //        (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
+        //        rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
+        //        fb_acq_threshold);
+        //// create thread for demodulation
+        //demod_t = std::thread(&demod, std::ref(acq_out_fifo), std::ref(demod_out_fifo),
+        //        std::ref(per_fifo), 0+16+32, 0+32);
+        //// create thread for ecc decode
+        //ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
+        //        std::ref(ack_fifo), 0+16);
+        //// call receive function
+        //rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
+        //    "fc32", std::ref(otw), std::ref(file),
+        //    rx_spb, total_num_samps, settling,
+        //    rx_channel_nums, std::ref(fifo_in));
         
         // FEED FORWARD TX STREAM
         // call function to read in payload file
