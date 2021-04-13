@@ -4,7 +4,7 @@ set(CMAKE_C_COMPILER gcc)
 set(CMAKE_CXX_COMPILER g++)
 
 # set optmization flag
-set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "-O3 -g")
 
 # Add source directory
 file(GLOB SOURCES "src/*.cpp" "include/*.cpp")

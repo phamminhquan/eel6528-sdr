@@ -894,13 +894,15 @@ void filter(int D, int U, size_t in_len,
             std::vector<std::complex<float>>& filter_taps,
             size_t num_filt_threads, bool continuous,
             tsFIFO<Block<std::complex<float>>>& fifo_in,
-            tsFIFO<Block<std::complex<float>>>& fifo_out)
+            tsFIFO<Block<std::complex<float>>>& fifo_out,
+            std::string log_header,
+            std::string log_filename)
 {
     // create logger
-    Logger logger("Filter", "./filter.log");
+    Logger logger(log_header, log_filename);
     // create output filestream
-    std::ofstream in_file ("in_raw.dat", std::ofstream::binary);
-    std::ofstream out_file ("out_raw.dat", std::ofstream::binary); 
+    //std::ofstream in_file ("in_raw.dat", std::ofstream::binary);
+    //std::ofstream out_file ("out_raw.dat", std::ofstream::binary); 
     // print out down sampling and up sampling factors for debug
     logger.log("Down-sampling factor D: " + std::to_string(D));
     logger.log("Up-sampling factor U: " + std::to_string(U));
@@ -909,9 +911,9 @@ void filter(int D, int U, size_t in_len,
     std::complex<float>* h = &filter_taps[0];
     logger.log("Filter length: " + std::to_string(h_len));
     // print out taps for debug
-    //for (int i=0; i<h_len; i++) {
-    //    logger.logf("Tap: " + std::to_string(h[i].real()));
-    //} 
+    for (int i=0; i<h_len; i++) {
+        logger.logf("Tap: " + std::to_string(h[i].real()));
+    } 
     // test filter
     FilterPolyphase filt (U, D, in_len, h_len, h, num_filt_threads);
     int out_len = filt.out_len();
@@ -943,9 +945,8 @@ void filter(int D, int U, size_t in_len,
                 //logger.log("Continuous filtering: " + std::to_string(in_block.first==0));
             } else {
                 filt.set_head(true);
-                //logger.log("Burst filtering");
+                logger.logf("Burst filtering block: " + std::to_string(in_block.first));
             }
-            //filt.set_head(in_block.first == 0);
             filt.filter(in, out);
             // push filter output to fifo out
             out_block.first = in_block.first;
@@ -956,9 +957,9 @@ void filter(int D, int U, size_t in_len,
         }
     }
     // close ofstream
-    logger.log("Closing ofstream");
-    in_file.close();
-    out_file.close();
+    //logger.log("Closing ofstream");
+    //in_file.close();
+    //out_file.close();
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -1520,24 +1521,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> arq_fifo;
         tsFIFO<Block<std::complex<float>>> arq_test_fifo;
         
-        // FEEDBACK TX STREAM
-        // call function to prep all ack packets, assume number of packets is known
-        ack_prepare(ack_fifo, 1082);
-        // spawn error control thread
-        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
-                std::ref(ecc_fifo), 0);
-        // spawn modulation thread
-        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-                std::ref(mod_fifo), 16+32+post_payload_len,
-                fb_tx_packet_len);
-        // instantiate pulse shaping filter as multirate filter
-        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
-        // spawn transmit worker thread
-        tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
-                std::ref(tx_stream), std::ref(arq_fifo));
-        
         // FEED FORWARD RX STREAM
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
@@ -1550,7 +1533,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         mf_worker_t = std::thread(&filter, 1, rx_mf_U,
                 ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
                 std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
+                "MF", "mf.log");
         // create thread for agc
         agc_t = std::thread(&agc, std::ref(mf_out_fifo),
                 std::ref(agc_out_fifo),
@@ -1566,14 +1550,40 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for ecc decode
         ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
                 std::ref(decode_out_fifo), payload_len+16);
+        // call receive function
+        //recv_to_fifo(rx_usrp, "fc32", otw, file,
+        //    rx_spb, total_num_samps, settling,
+        //    rx_channel_nums, fifo_in);
+        rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
+            "fc32", std::ref(otw), std::ref(file),
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, std::ref(fifo_in));
+        
+        // FEEDBACK TX STREAM
+        // call function to prep all ack packets, assume number of packets is known
+        ack_prepare(ack_fifo, 1082);
+        // spawn error control thread
+        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
+                std::ref(ecc_fifo), 0);
+        // spawn modulation thread
+        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+                std::ref(mod_fifo), 16+32+post_payload_len,
+                fb_tx_packet_len);
+        // instantiate pulse shaping filter as multirate filter
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
+                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
+                "PulseShape", "pulse-shape.log");
         // spawn thread for sink arq scheduler
         snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
                 std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
                 std::ref(arq_fifo), payload_len);
-        // call receive function
-        recv_to_fifo(rx_usrp, "fc32", otw, file,
-            rx_spb, total_num_samps, settling,
-            rx_channel_nums, fifo_in);
+        // spawn transmit worker thread
+        //tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
+        //        std::ref(tx_stream), std::ref(arq_fifo));
+        transmit_worker(fb_tx_packet_len*tx_U/tx_D, tx_stream,
+                        arq_fifo);
+        
 
     } else {      // TX SIDE
         // fifo for feedforward stream
@@ -1610,7 +1620,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         mf_worker_t = std::thread(&filter, 1, rx_mf_U,
                 fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
                 std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo));
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
+                "MF", "mf.log");
         // create thread for agc
         agc_t = std::thread(&agc, std::ref(mf_out_fifo),
                 std::ref(agc_out_fifo),
@@ -1645,7 +1656,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // instantiate pulse shaping filter as multirate filter
         pulse_shaper_t = std::thread(&filter, tx_D, tx_U, ff_tx_packet_len,
                 std::ref(rrc_vec), num_filt_threads, false,
-                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo));
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
+                "PulseShape", "pulse-shape.log");
         // spawn thread for source arq scheduler
         src_arq_schedule_t = std::thread(&src_arq_schedule,
                 std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
