@@ -337,11 +337,11 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                                             payload_vec.begin()+16+payload_len);
                 out_block.first = header.to_ulong();
                 out_block.second = info_vec;
-                logger.logf("Header: " + std::to_string(out_block.first) +
+                logger.log("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
                 fifo_out.push(out_block);
             } else { // checksum are different, drop packet if so
-                logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
+                logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
         }
