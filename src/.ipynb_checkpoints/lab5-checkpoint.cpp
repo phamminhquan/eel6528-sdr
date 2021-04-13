@@ -1510,9 +1510,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
         //        "PulseShape", "pulse-shape.log");
         //// spawn thread for sink arq scheduler
-        //snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
-        //        std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
-        //        std::ref(arq_fifo), payload_len, arq_timeout);
+        snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
+                std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
+                std::ref(arq_fifo), payload_len, arq_timeout);
         //// spawn transmit worker thread
         //tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
         //                std::ref(tx_stream), std::ref(arq_fifo));
