@@ -59,7 +59,7 @@ void ack_prepare (tsFIFO<Block<bool>>& fifo_out)
     // packetize the complete fragments
     //while (num_packets == -1);
     //logger.log("Number of acks to prepare: " + std::to_string(num_packets));
-    for (size_t i=1; i<num_packets+1; i++) {
+    for (size_t i=1; i<1082+1; i++) {
         out_block.first = i;
         logger.logf("Pushing ACK Block: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
@@ -100,69 +100,32 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            if (first) {
-                // receiving data so clear first flag
-                first = false;
-                // pop decoded info block
-                fifo_in.pop(in_block);
-                // S is contained in block.first
-                S = in_block.first;
-                // check the first 32 bits of payload for number of packets
-                std::bitset<32> num_packets_bitset;
-                for (size_t i=0; i<32; i++)
-                    num_packets_bitset[i] = in_block.second[i];
-                num_packets = num_packets_bitset.to_ulong();
-                logger.log("Getting number of packets from first transmission: " + std::to_string(num_packets));
-                // check R
-                if (R == S) {
-                    // send ack first
-                    // increment R
-                    R++;
-                    // push ack
-                    ack_fifo_in.pop(ack_block);
-                    logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
-                    ack_fifo_out.push(ack_block);
-                    // grab data
-                    out_block = in_block;
-                    fifo_out.push(out_block);
-                    // log for debug
-                    logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
-                } else {
-                    // received packet is out of order, resend request
-                    ack_fifo_out.push(ack_block);
-                    // log for debug
-                    logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
-                }
-                // reset timer to now
-                timer.reset();
+            // pop decoded info block
+            fifo_in.pop(in_block);
+            // S is contained in block.first
+            S = in_block.first;
+            // check R
+            if (R == S) {
+                // send ack first
+                // increment R
+                R++;
+                // push ack
+                ack_fifo_in.pop(ack_block);
+                logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
+                ack_fifo_out.push(ack_block);
+                // grab data
+                out_block = in_block;
+                fifo_out.push(out_block);
+                // log for debug
+                logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
             } else {
-                // pop decoded info block
-                fifo_in.pop(in_block);
-                // S is contained in block.first
-                S = in_block.first;
-                // check R
-                if (R == S) {
-                    // send ack first
-                    // increment R
-                    R++;
-                    // push ack
-                    ack_fifo_in.pop(ack_block);
-                    logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
-                    ack_fifo_out.push(ack_block);
-                    // grab data
-                    out_block = in_block;
-                    fifo_out.push(out_block);
-                    // log for debug
-                    logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
-                } else {
-                    // received packet is out of order, resend request
-                    ack_fifo_out.push(ack_block);
-                    // log for debug
-                    logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
-                }
-                // reset timer to now
-                timer.reset();
+                // received packet is out of order, resend request
+                ack_fifo_out.push(ack_block);
+                // log for debug
+                logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
             }
+            // reset timer to now
+            timer.reset();
         } else {
             if (!first) { // waiting for first packet should not be time out
                 // calculate time elapsed from packet transmitted (in seconds)
@@ -409,7 +372,11 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                 logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
+            // yield to reschedule this thread for other threads to run
+            std::this_thread::yield();
         }
+        // yield to reschedule this thread for other threads to run
+        std::this_thread::yield();
     }
     // notify user that processing thread is done
     logger.log("Closing");
@@ -471,7 +438,11 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
                 out_block.second[16+payload_size+32+i] = 0;
             // push output block to fifo out
             fifo_out.push(out_block);
+            // yield to reschedule this thread for other threads to run
+            std::this_thread::yield();
         }
+        // yield to reschedule this thread for other threads to run
+        std::this_thread::yield();
     }
     // notify user that processing thread is done
     logger.log("Closing");
@@ -559,7 +530,11 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 demod_block.second[i] = demod_bit;
             }
             fifo_out.push(demod_block);
+            // yield to reschedule this thread for other threads to run
+            std::this_thread::yield();
         }
+        // yield to reschedule this thread for other threads to run
+        std::this_thread::yield();
     }
     // notify user that processing thread is done
     logger.log("Closing");
@@ -611,7 +586,11 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // store filter output to file to check with jupyter
             //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
             agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            // yield to reschedule this thread for other threads to run
+            std::this_thread::yield();
         }
+        // yield to reschedule this thread for other threads to run
+        std::this_thread::yield();
     }
     // close output file
     agc_out_file.close();
@@ -675,7 +654,11 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             fifo_out.push(out_block);
             // record samples to file
             //out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            // yield to reschedule this thread for other threads to run
+            std::this_thread::yield();
         }
+        // yield to reschedule this thread for other threads to run
+        std::this_thread::yield();
     }
     // close ofstream
     logger.log("Closing ofstream");
@@ -940,9 +923,11 @@ void transmit_worker (//size_t samp_per_buff,
             fifo_in.pop(block);
             logger.log("Sending block: " + std::to_string(block.first));
             tx_streamer->send(&block.second.front(), block_size, md);
-            // flush buffer
-            //tx_streamer->send(&zeros.front(), 300, md);
+            // yield to reschedule this thread for other threads to run
+            std::this_thread::yield();
         }
+        // yield to reschedule this thread for other threads to run
+        std::this_thread::yield();
     }
     // send a mini EOB packet
     logger.log("Closing");
@@ -1439,7 +1424,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::complex<float> rrc_h[rrc_len];
     // call root raised cosine function
     rrc_pulse(rrc_h, rrc_half_len, tx_U, tx_D);
-    std::vector<std::complex<float>> rrc_vec(rrc_h, rrc_h + rrc_len);
+    std::vector<std::complex<float>> ps_rrc_vec(rrc_h, rrc_h + rrc_len);
+    std::vector<std::complex<float>> mf_rrc_vec(rrc_h, rrc_h + rrc_len);
     // store rrc impulse in file
     std::ofstream rrc_file ("rrc.dat", std::ofstream::binary);
     rrc_file.write((const char*) rrc_h, rrc_len*sizeof(std::complex<float>));
@@ -1467,6 +1453,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<std::complex<float>>> arq_fifo;
         tsFIFO<Block<std::complex<float>>> arq_test_fifo;
         
+        // call function to prep all ack packets, assume number of packets is known
+        ack_prepare(ack_fifo);
+        
         // FEED FORWARD RX STREAM
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
@@ -1478,7 +1467,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for multirate filtering
         mf_worker_t = std::thread(&filter, 1, rx_mf_U,
                 ff_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
-                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(mf_rrc_vec), num_filt_threads, false,
                 std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
                 "MF", "mf.log");
         // create thread for agc
@@ -1493,33 +1482,38 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for ecc decode
         ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
                 std::ref(decode_out_fifo), payload_len+16);
+        // call receive function
+        rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
+            "fc32", std::ref(otw), std::ref(file),
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, std::ref(fifo_in));
         
         // FEEDBACK TX STREAM
-        // call function to prep all ack packets, assume number of packets is known
-        ack_prepare(ack_fifo);
-        //// spawn error control thread
-        //ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
-        //        std::ref(ecc_fifo), 0);
-        //// spawn modulation thread
-        //modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
-        //        std::ref(mod_fifo), 16+32+post_payload_len,
-        //        fb_tx_packet_len);
-        //// instantiate pulse shaping filter as multirate filter
-        //pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
-        //        "PulseShape", "pulse-shape.log");
-        //// spawn thread for sink arq scheduler
+        // spawn error control thread
+        ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
+                std::ref(ecc_fifo), 0);
+        // spawn modulation thread
+        modulator_t = std::thread(&modulate, std::ref(ecc_fifo),
+                std::ref(mod_fifo), 16+32+post_payload_len,
+                fb_tx_packet_len);
+        // instantiate pulse shaping filter as multirate filter
+        pulse_shaper_t = std::thread(&filter, tx_D, tx_U, fb_tx_packet_len,
+                std::ref(ps_rrc_vec), num_filt_threads, false,
+                std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
+                "PulseShape", "pulse-shape.log");
+        // spawn thread for sink arq scheduler
         snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
                 std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
                 std::ref(arq_fifo), payload_len, arq_timeout);
-        //// spawn transmit worker thread
+        // spawn transmit worker thread
         //tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
         //                std::ref(tx_stream), std::ref(arq_fifo));
         
-        recv_to_fifo(rx_usrp, "fc32", otw, file,
-            rx_spb, total_num_samps, settling,
-            rx_channel_nums, fifo_in);
+        transmit_worker(fb_tx_packet_len*tx_U/tx_D, tx_stream, arq_fifo);
+        
+        //recv_to_fifo(rx_usrp, "fc32", otw, file,
+        //    rx_spb, total_num_samps, settling,
+        //    rx_channel_nums, fifo_in);
         
 
     } else {      // TX SIDE
@@ -1545,37 +1539,40 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<std::pair<int, float>> per_fifo;
         tsFIFO<Block<bool>> empty_fifo;
         
+        // call function to read in payload file
+        read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
+        
         // FEED BACK RX STREAM
         // create thread for power averager
-        //iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
-        //        std::ref(iir_out_fifo), rx_spb, alpha);
-        //// create thread for energy detector
-        //energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
-        //        std::ref(energy_detector_out_fifo), rx_spb,
-        //        fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
-        //// create thread for multirate filtering
-        //mf_worker_t = std::thread(&filter, 1, rx_mf_U,
-        //        fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
-        //        std::ref(rrc_vec), num_filt_threads, false,
-        //        std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
-        //        "MF", "mf.log");
-        //// create thread for agc
-        //agc_t = std::thread(&agc, std::ref(mf_out_fifo),
-        //        std::ref(agc_out_fifo),
-        //        (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
-        //// create thread for acquistion
-        //acq_demod_t = std::thread(&acq_demod, std::ref(agc_out_fifo), std::ref(demod_out_fifo),
-        //        (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
-        //        rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
-        //        fb_acq_threshold);
-        //// create thread for ecc decode
-        //ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
-        //        std::ref(ack_fifo), 0+16);
+        iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
+                std::ref(iir_out_fifo), rx_spb, alpha);
+        // create thread for energy detector
+        energy_detector_t = std::thread(&energy_detector, std::ref(iir_out_fifo),
+                std::ref(energy_detector_out_fifo), rx_spb,
+                fb_iir_threshold, fb_rx_cap_len+rx_post_cap_len, rx_pre_cap_len);
+        // create thread for multirate filtering
+        mf_worker_t = std::thread(&filter, 1, rx_mf_U,
+                fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
+                std::ref(mf_rrc_vec), num_filt_threads, false,
+                std::ref(energy_detector_out_fifo), std::ref(mf_out_fifo),
+                "MF", "mf.log");
+        // create thread for agc
+        agc_t = std::thread(&agc, std::ref(mf_out_fifo),
+                std::ref(agc_out_fifo),
+                (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U);
+        // create thread for acquistion
+        acq_demod_t = std::thread(&acq_demod, std::ref(agc_out_fifo), std::ref(demod_out_fifo),
+                (fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len)*rx_mf_U,
+                rx_post_cap_len, rx_mf_U*5/4, 0+16+32,
+                fb_acq_threshold);
+        // create thread for ecc decode
+        ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
+                std::ref(ack_fifo), 0+16);
         // call receive function
-        //rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
-        //    "fc32", std::ref(otw), std::ref(file),
-        //    rx_spb, total_num_samps, settling,
-        //    rx_channel_nums, std::ref(fifo_in));
+        rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
+            "fc32", std::ref(otw), std::ref(file),
+            rx_spb, total_num_samps, settling,
+            rx_channel_nums, std::ref(fifo_in));
         
         // FEED FORWARD TX STREAM
         // spawn error control thread
@@ -1587,23 +1584,22 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                 ff_tx_packet_len);
         // instantiate pulse shaping filter as multirate filter
         pulse_shaper_t = std::thread(&filter, tx_D, tx_U, ff_tx_packet_len,
-                std::ref(rrc_vec), num_filt_threads, false,
+                std::ref(ps_rrc_vec), num_filt_threads, false,
                 std::ref(mod_fifo), std::ref(pulse_shape_out_fifo),
                 "PulseShape", "pulse-shape.log");
         // spawn thread for source arq scheduler
         src_arq_schedule_t = std::thread(&src_arq_schedule,
                 std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
                 std::ref(ack_fifo), arq_timeout);
-        
-        // call function to read in payload file
-        read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
         // call tx worker function as main thread
-        tx_worker_t = std::thread(&transmit_worker, ff_tx_packet_len*tx_U/tx_D,
-                std::ref(tx_stream), std::ref(arq_fifo));
+        //tx_worker_t = std::thread(&transmit_worker, ff_tx_packet_len*tx_U/tx_D,
+        //        std::ref(tx_stream), std::ref(arq_fifo));
         
-        recv_to_fifo(rx_usrp, "fc32", otw, file,
-            rx_spb, total_num_samps, settling,
-            rx_channel_nums, fifo_in);
+        transmit_worker(ff_tx_packet_len*tx_U/tx_D, tx_stream, arq_fifo);
+        
+        //recv_to_fifo(rx_usrp, "fc32", otw, file,
+        //    rx_spb, total_num_samps, settling,
+        //    rx_channel_nums, fifo_in);
     }
     
     // clean up transmit worker
