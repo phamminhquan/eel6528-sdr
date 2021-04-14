@@ -99,7 +99,9 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     Timer timer;
     
     while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
+        if (fifo_in.size() != 0 and ack_fifo_in.size() != 0) {
+            // clear first flag
+            first = false;
             // pop decoded info block
             fifo_in.pop(in_block);
             // S is contained in block.first
@@ -872,7 +874,7 @@ void filter(int D, int U, size_t in_len,
                 //logger.log("Continuous filtering: " + std::to_string(in_block.first==0));
             } else {
                 filt.set_head(true);
-                logger.logf("Burst filtering block: " + std::to_string(in_block.first));
+                //logger.logf("Burst filtering block: " + std::to_string(in_block.first));
             }
             filt.filter(in, out);
             // push filter output to fifo out
