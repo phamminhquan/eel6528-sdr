@@ -1430,7 +1430,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         FilterPolyphase ps_filt (tx_U, tx_D, fb_tx_packet_len,
                              rrc_len, ps_h, num_filt_threads);
         // call function to prep all ack packets, assume number of packets is known
-        ack_prepare(ack_fifo);
+        ack_prepare_t = std::thread(&ack_prepare, std::ref(ack_fifo));
         // FEED FORWARD RX STREAM
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
