@@ -110,7 +110,8 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                     current_num_packets++;
                     if (current_num_packets == num_packets)
                         last = true;
-                    logger.logf("Got packet: " + std::to_string(block.first));
+                    logger.logf("Got packet: " + std::to_string(block.first) +
+                               "\t Current total: " + std::to_string(current_num_packets));
                 }
             }
         } else {
@@ -626,7 +627,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("AGC", "./agc.log");
     // create output filestream
-    std::ofstream agc_out_file ("agc_out.dat", std::ofstream::binary);
+    //std::ofstream agc_out_file ("agc_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
     Block<std::complex<float>> out_block;
@@ -660,11 +661,11 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
             //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
         }
     }
     // close output file
-    agc_out_file.close();
+    //agc_out_file.close();
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -681,7 +682,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     Logger logger("Modulator", "./mod.log");
     // create filestream
     //std::ofstream in_file ("mod_in.dat", std::ofstream::binary);
-    std::ofstream out_file ("mod_out.dat", std::ofstream::binary);
+    //std::ofstream out_file ("mod_out.dat", std::ofstream::binary);
     logger.logf("Modulator input block size: " + std::to_string(in_block_size));
     logger.logf("Modulator output block size: " + std::to_string(out_block_size));
     // create dummy block
@@ -730,7 +731,7 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
     // close ofstream
     logger.log("Closing ofstream");
     //in_file.close();
-    out_file.close();
+    //out_file.close();
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -833,8 +834,8 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("IIRFilter", "./iir_filter.log");
     // create output filestream
-    std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
-    std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
+    //std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
+    //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
     // IIR filter param
@@ -868,14 +869,14 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             out_pair.second = iir_out_block;
             fifo_out.push(out_pair);
             // put value in file
-            iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
+            //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
+            //iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
         }
     }
     // close ofstream
     logger.log("Closing ofstream");
-    iir_in_file.close();
-    iir_out_file.close();
+    //iir_in_file.close();
+    //iir_out_file.close();
     // notify user that processing thread is done
     logger.log("Closing");
 }
