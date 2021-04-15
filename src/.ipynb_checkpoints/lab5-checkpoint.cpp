@@ -108,7 +108,7 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                         current_num_bits++;
                     }
                     current_num_packets++;
-                    if (current_num_packets == num_packets)
+                    if (current_num_packets == num_packets-1)
                         last = true;
                     logger.logf("Got packet: " + std::to_string(block.first) +
                                "\t Current total: " + std::to_string(current_num_packets));
