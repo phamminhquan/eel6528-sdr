@@ -180,7 +180,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 for (size_t i=0; i<32; i++)
                     num_bits_bitset[i] = in_block.second[i];
                 num_bits = num_bits_bitset.to_ulong();
-                num_packets = std::ceil((num_bits+32)/payload_size);
+                num_packets = std::ceil((float)(num_bits+32)/payload_size);
                 logger.log("Total number of bits: " + std::to_string(num_bits));
                 logger.log("Total number of packets: " + std::to_string(num_packets));
             }
