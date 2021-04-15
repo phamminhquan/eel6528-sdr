@@ -375,10 +375,10 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
             // yield to reschedule this thread for other threads to run
-            std::this_thread::yield();
+            //std::this_thread::yield();
         }
         // yield to reschedule this thread for other threads to run
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     // notify user that processing thread is done
     logger.log("Closing");
@@ -441,10 +441,10 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
             // push output block to fifo out
             fifo_out.push(out_block);
             // yield to reschedule this thread for other threads to run
-            std::this_thread::yield();
+            //std::this_thread::yield();
         }
         // yield to reschedule this thread for other threads to run
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     // notify user that processing thread is done
     logger.log("Closing");
@@ -533,10 +533,10 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
             fifo_out.push(demod_block);
             // yield to reschedule this thread for other threads to run
-            std::this_thread::yield();
+            //std::this_thread::yield();
         }
         // yield to reschedule this thread for other threads to run
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     // notify user that processing thread is done
     logger.log("Closing");
@@ -589,10 +589,10 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
             agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
             // yield to reschedule this thread for other threads to run
-            std::this_thread::yield();
+            //std::this_thread::yield();
         }
         // yield to reschedule this thread for other threads to run
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     // close output file
     agc_out_file.close();
@@ -657,10 +657,10 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             // record samples to file
             //out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
             // yield to reschedule this thread for other threads to run
-            std::this_thread::yield();
+            //std::this_thread::yield();
         }
         // yield to reschedule this thread for other threads to run
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     // close ofstream
     logger.log("Closing ofstream");
@@ -930,10 +930,10 @@ void transmit_worker (//size_t samp_per_buff,
             logger.log("Sending block: " + std::to_string(block.first));
             tx_streamer->send(&block.second.front(), block_size, md);
             // yield to reschedule this thread for other threads to run
-            std::this_thread::yield();
+            //std::this_thread::yield();
         }
         // yield to reschedule this thread for other threads to run
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     // send a mini EOB packet
     logger.log("Closing");
