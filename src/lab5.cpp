@@ -22,7 +22,6 @@
 #include <ctime>
 #include <ratio>
 #include <atomic>
-//#include <chrono>
 
 
 #include "utilities.h"
@@ -45,6 +44,72 @@ namespace po = boost::program_options;
 
 
 std::atomic<int> num_packets (-1);
+std::atomic<int> num_bits (-1);
+
+
+/***********************************************************************
+ * File reconstruction
+ **********************************************************************/
+void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
+                       size_t frag_size)
+{
+    // create logger
+    Logger logger("FileReconstruct", "./file_reconstruct.log");
+    // create temp blocks
+    Block<bool> block;
+    // check when first packet come in with number of packets
+    while (num_packets == -1);
+    while (num_bits == -1);
+    size_t current_num_packets = 0;
+    size_t current_num_bits = 0;
+    bool done = false;
+    bool first = true;
+    bool last = false;
+    std::vector<bool> file_bool_vec;
+    
+    while (not stop_signal_called) {
+        if (fifo_in.size() != 0 and not done) {
+            if (first) { // first packet
+                logger.logf("Getting first packet");
+                // clear first flag
+                first = false;
+                // pop packet
+                fifo_in.pop(block);
+                // push to vec
+                for (size_t i=32; i<block.second.size(); i++) {
+                    file_bool_vec.push_back(block.second[i]);
+                    current_num_bits++;
+                }
+                current_num_packets++;
+            } else if (last) { // last packet
+                logger.logf("Getting last packet");
+                // set done flag
+                done = true;
+                // pop packet
+                fifo_in.pop(block);
+                // push remaining bits to vec
+                size_t rem_num_bits = num_bits-current_num_bits;
+                for (size_t i=0; i<rem_num_bits; i++)
+                    file_bool_vec.push_back(block.second[i]);
+                // log the size of file in bits
+                logger.log("File size: " + std::to_string(file_bool_vec.size()) + " bits");
+            } else { // middle packet
+                // pop packet
+                fifo_in.pop(block);
+                // push to vec
+                for (size_t i=32; i<block.second.size(); i++) {
+                    file_bool_vec.push_back(block.second[i]);
+                    current_num_bits++;
+                }
+                current_num_packets++;
+                if (current_num_packets == num_packets)
+                    last = true;
+            }
+        }
+    }
+    // notify user that processing thread is done
+    logger.log("Closing");
+}
 
 
 /***********************************************************************
@@ -87,8 +152,6 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     Block<bool> out_block;
     out_block.second.resize(payload_size);
     Block<std::complex<float>> ack_block;
-    Block<bool> first_block;
-    out_block.second.resize(payload_size-32);
     // create block counter
     logger.log("Create S and R");
     int S = 0;
@@ -113,10 +176,12 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 // S is contained in block.first
                 S = in_block.first;
                 // get the number of packets
-                std::bitset<32> num_packets_bitset;
+                std::bitset<32> num_bits_bitset;
                 for (size_t i=0; i<32; i++)
-                    num_packets_bitset[i] = in_block.second[i];
-                num_packets = num_packets_bitset.to_ulong();
+                    num_bits_bitset[i] = in_block.second[i];
+                num_bits = num_bits_bitset.to_ulong();
+                num_packets = std::ceil((num_bits+32)/payload_size);
+                logger.log("Total number of bits: " + std::to_string(num_bits));
                 logger.log("Total number of packets: " + std::to_string(num_packets));
             }
             // check R
@@ -196,8 +261,6 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 out_block = in_block;
                 logger.log("First S: " + std::to_string(S) +
                            "\tSize: " + std::to_string(out_block.second.size()));
-                // wait for a little bit
-                //std::this_thread::sleep_for(std::chrono::seconds(1));
                 // push to fifo out
                 fifo_out.push(out_block);
                 // start timer after first packet is pushed
@@ -285,7 +348,7 @@ void read_payload (std::string filename,
     size_t total_num_frag = num_frag;
     if (rem_num_bits != 0)
         total_num_frag++;
-    std::bitset<32> num_packets_bitset (total_num_frag);
+    std::bitset<32> num_packets_bitset (temp_file_bool_vec.size());
     for (size_t i=0; i<32; i++)
         file_bool_vec[i] = num_packets_bitset[i];
     for (size_t i=32; i<file_bool_vec.size(); i++)
@@ -1381,6 +1444,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::thread snk_arq_schedule_t;
     std::thread ack_prepare_t;
     std::thread rx_worker_t;
+    std::thread file_reconstruct_t;
     
     // init packet len
     size_t ff_tx_packet_len = preamble_len + sig_seq_len + 16 + payload_len + 32 + post_payload_len;
@@ -1429,6 +1493,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                              rrc_len, mf_h, num_filt_threads);
         FilterPolyphase ps_filt (tx_U, tx_D, fb_tx_packet_len,
                              rrc_len, ps_h, num_filt_threads);
+        // file reconstruction thread
+        file_reconstruct_t = std::thread(&file_reconstruct, std::ref(data_fifo), 1000);
         // call function to prep all ack packets, assume number of packets is known
         ack_prepare_t = std::thread(&ack_prepare, std::ref(ack_fifo));
         // FEED FORWARD RX STREAM
