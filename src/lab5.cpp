@@ -232,85 +232,74 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
 }
 
 
+
 /***********************************************************************
  * Read in payload file
  **********************************************************************/
 void read_payload (std::string filename,
-                   tsFIFO<Block<unsigned char>>& fifo_out,
-                   tsFIFO<Block<bool>>& temp_fifo_out,
+                   tsFIFO<Block<bool>>& fifo_out,
                    size_t frag_size)
 {
     // create logger
     Logger logger("ReadPayload", "./read_payload.log");
     logger.log("Payload filename: " + filename);
     logger.log("Fragmentation size: " + std::to_string(frag_size) + " bytes");
-    // Define file stream object, and open the file
+    // Define file stream object, and open the file, read as char vec
     std::ifstream file(filename, ios::binary);
-    // Prepare iterator pairs to iterate the file content!
-    std::istream_iterator<unsigned char> begin(file), end;
-    // Reading the file content using the iterator!
-    std::vector<unsigned char> buffer(begin,end);
-    logger.log("Total payload size: " + std::to_string(buffer.size()) + " bytes");
-    // fragment total payload into packets
-    Block<unsigned char> out_block;
-    out_block.second.resize(frag_size);
-    Block<bool> temp_out_block;
-    temp_out_block.second.resize(frag_size*8);
-    size_t num_frag = std::floor((buffer.size()+4)/frag_size);
-    logger.log("Floor number of fraqments: " + std::to_string(num_frag));
-    size_t rem_num_bytes = buffer.size()-num_frag*frag_size+4;
+    std::vector<unsigned char> file_char_vec;
+    unsigned char buf;
+    while(file.read(reinterpret_cast<char*>(&buf), 1)) {
+        file_char_vec.push_back(buf);
+    }
+    // convert char vec to bool vec
+    std::vector<bool> temp_file_bool_vec = to_bool_vec(file_char_vec);
+    logger.log("File size: " + std::to_string(file_char_vec.size()) + " bytes = " +
+               std::to_string(temp_file_bool_vec.size()) + " bits");
+    
+    // embed packet size into first 32 bits and make a new vector
+    std::vector<bool> file_bool_vec;
+    file_bool_vec.resize(temp_file_bool_vec.size()+32);
+    
+    // split the file into 1000 bits fragments
+    size_t num_frag = std::floor(file_bool_vec.size()/frag_size);
+    size_t rem_num_bits = file_bool_vec.size() - frag_size*num_frag;
+    logger.logf("Number of fragments: " + std::to_string(num_frag));
+    logger.logf("Remaining bits: " + std::to_string(rem_num_bits));
+    
+    // embed packet size into first 32 bits
     size_t total_num_frag = num_frag;
-    if (rem_num_bytes != 0)
+    if (rem_num_bits != 0)
         total_num_frag++;
-    // turn total number of packets into 4 bytes vector
-    std::vector<unsigned char> num_frag_char_vec;
-    std::bitset<32> num_frag_bitset (total_num_frag);
-    std::vector<bool> temp_vec;
-    temp_vec.resize(32);
+    std::bitset<32> num_packets_bitset (total_num_frag);
     for (size_t i=0; i<32; i++)
-        temp_vec[i] = num_frag_bitset[i];
-    num_frag_char_vec = to_uchar_vec(temp_vec);
-    // packetize firt fragment embedding the number of packets in the first 4 bytes
-    out_block.first = 0;
-    temp_out_block.first = out_block.first;
-    for (size_t k=0; k<4; k++)
-        out_block.second[k] = num_frag_char_vec[k];
-    for (size_t k=0; k<frag_size-4; k++)
-        out_block.second[k+4] = buffer[k];
-    temp_out_block.second = to_bool_vec(out_block.second);
-    logger.logf("Pushing fragment: " + std::to_string(out_block.first));
-    fifo_out.push(out_block);
-    temp_fifo_out.push(temp_out_block);
+        file_bool_vec[i] = num_packets_bitset[i];
+    for (size_t i=32; i<file_bool_vec.size(); i++)
+        file_bool_vec[i] = temp_file_bool_vec[i-32];
+    logger.log("File size + payload: " + std::to_string(file_bool_vec.size()));
     
     // packetize the complete fragments
-    for (size_t i=1; i<num_frag; i++) {
+    Block<bool> out_block;
+    out_block.second.resize(frag_size);
+    for (size_t i=0; i<num_frag; i++) {
         out_block.first = i;
-        temp_out_block.first = out_block.first;
         for (size_t k=0; k<frag_size; k++)
-            out_block.second[k] = buffer[i*(frag_size)+k-4];
-        temp_out_block.second = to_bool_vec(out_block.second);
+            out_block.second[k] = file_bool_vec[i*(frag_size)+k];
         logger.logf("Pushing fragment: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
-        temp_fifo_out.push(temp_out_block);
     }
     // packetize the last remaining bytes
-    if (rem_num_bytes != 0) {
+    if (rem_num_bits != 0) {
         out_block.first++;
-        temp_out_block.first = out_block.first;
         std::fill(out_block.second.begin(), out_block.second.end(), 0);
-        for (size_t k=0; k<rem_num_bytes; k++)
-            out_block.second[k] = buffer[num_frag*(frag_size)+k-4];
-        temp_out_block.second = to_bool_vec(out_block.second);
-        logger.logf("Pushing fragment: " + std::to_string(out_block.first));
+        for (size_t k=0; k<rem_num_bits; k++)
+            out_block.second[k] = file_bool_vec[num_frag*(frag_size)+k];
+        logger.logf("Pushing remaining " + std::to_string(rem_num_bits) +
+                    " fragment: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
-        temp_fifo_out.push(temp_out_block);
     }
-    
-    logger.log("Char block size: " + std::to_string(out_block.second.size()));
-    logger.log("Bit block size: " + std::to_string(temp_out_block.second.size()));
-    logger.log("Char FIFO size: " + std::to_string(fifo_out.size()));
-    logger.log("Bit FIFO size: " + std::to_string(temp_fifo_out.size()));
-    
+    logger.log("Block size: " + std::to_string(out_block.second.size()));
+    logger.log("FIFO size: " + std::to_string(fifo_out.size()));
+
     // close output file
     file.close();
     // notify user that processing thread is done
@@ -1489,7 +1478,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
 
     } else {      // TX SIDE
         // fifo for feedforward stream
-        tsFIFO<Block<unsigned char>> char_payload_fifo;
         tsFIFO<Block<bool>> bit_payload_fifo;
         tsFIFO<Block<bool>> ack_fifo;
         tsFIFO<Block<bool>> ecc_fifo;
@@ -1509,15 +1497,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         tsFIFO<Block<bool>> data_fifo;
         tsFIFO<std::pair<int, float>> per_fifo;
         tsFIFO<Block<bool>> empty_fifo;
-        
         FilterPolyphase mf_filt (rx_mf_U, 1, fb_rx_cap_len+rx_pre_cap_len+rx_post_cap_len,
                              rrc_len, mf_h, num_filt_threads);
         FilterPolyphase ps_filt (tx_U, tx_D, ff_tx_packet_len,
                              rrc_len, ps_h, num_filt_threads);
-        
         // call function to read in payload file 
-        read_payload(payload_filename, char_payload_fifo, bit_payload_fifo, 125);
-        
+        read_payload(payload_filename, bit_payload_fifo, 1000);
         // FEED BACK RX STREAM
         // create thread for power averager
         iir_filter_worker_t = std::thread(&iir_filter, std::ref(fifo_in),
@@ -1543,12 +1528,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         // create thread for ecc decode
         ecc_decode_t = std::thread(&ecc_decode, std::ref(demod_out_fifo),
                 std::ref(ack_fifo), 0+16);
-        // call receive function
-        //rx_worker_t = std::thread(&recv_to_fifo, std::ref(rx_usrp),
-        //    "fc32", std::ref(otw), std::ref(file),
-        //    rx_spb, total_num_samps, settling,
-        //    rx_channel_nums, std::ref(fifo_in));
-        
         // FEED FORWARD TX STREAM
         // spawn error control thread
         ecc_encode_t = std::thread(&ecc_encode, std::ref(bit_payload_fifo),
@@ -1565,13 +1544,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         src_arq_schedule_t = std::thread(&src_arq_schedule,
                 std::ref(pulse_shape_out_fifo), std::ref(arq_fifo),
                 std::ref(ack_fifo), arq_timeout);
-        
         // call tx worker function as main thread
         tx_worker_t = std::thread(&transmit_worker, ff_tx_packet_len*tx_U/tx_D,
                 std::ref(tx_stream), std::ref(arq_fifo));
-        
-        //transmit_worker(ff_tx_packet_len*tx_U/tx_D, tx_stream, arq_fifo);
-        
         recv_to_fifo(rx_usrp, "fc32", otw, file,
             rx_spb, total_num_samps, settling,
             rx_channel_nums, fifo_in);
