@@ -51,10 +51,13 @@ std::atomic<int> num_bits (-1);
  * File reconstruction
  **********************************************************************/
 void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
-                       size_t frag_size)
+                       size_t frag_size,
+                       std::string filename)
 {
     // create logger
     Logger logger("FileReconstruct", "./file_reconstruct.log");
+    // create output filestream
+    std::ofstream file(filename, ios::binary);
     // create temp blocks
     Block<bool> block;
     // check when first packet come in with number of packets
@@ -66,45 +69,60 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
     bool first = true;
     bool last = false;
     std::vector<bool> file_bool_vec;
+    std::vector<unsigned char> file_char_vec;
     
     while (not stop_signal_called) {
-        if (fifo_in.size() != 0 and not done) {
-            if (first) { // first packet
-                logger.logf("Getting first packet");
-                // clear first flag
-                first = false;
-                // pop packet
-                fifo_in.pop(block);
-                // push to vec
-                for (size_t i=32; i<block.second.size(); i++) {
-                    file_bool_vec.push_back(block.second[i]);
-                    current_num_bits++;
+        if (not done) {
+            if (fifo_in.size() != 0) {
+                if (first) { // first packet
+                    // clear first flag
+                    first = false;
+                    // pop packet
+                    fifo_in.pop(block);
+                    // push to vec
+                    for (size_t i=32; i<block.second.size(); i++) {
+                        file_bool_vec.push_back(block.second[i]);
+                        current_num_bits++;
+                    }
+                    current_num_packets++;
+                    logger.logf("Got packet: " + std::to_string(block.first));
+                } else if (last) {
+                    // last packet
+                    // set done flag
+                    done = true;
+                    // pop packet
+                    fifo_in.pop(block);
+                    // push remaining bits to vec
+                    size_t rem_num_bits = num_bits-current_num_bits;
+                    for (size_t i=0; i<rem_num_bits; i++)
+                        file_bool_vec.push_back(block.second[i]);
+                    // log the size of file in bits
+                    logger.logf("Got packet: " + std::to_string(block.first));
+                    logger.log("File size: " + std::to_string(file_bool_vec.size()) + " bits");
+                } else { // middle packet
+                    // pop packet
+                    fifo_in.pop(block);
+                    // push to vec
+                    for (size_t i=32; i<block.second.size(); i++) {
+                        file_bool_vec.push_back(block.second[i]);
+                        current_num_bits++;
+                    }
+                    current_num_packets++;
+                    if (current_num_packets == num_packets)
+                        last = true;
+                    logger.logf("Got packet: " + std::to_string(block.first));
                 }
-                current_num_packets++;
-            } else if (last) { // last packet
-                logger.logf("Getting last packet");
-                // set done flag
-                done = true;
-                // pop packet
-                fifo_in.pop(block);
-                // push remaining bits to vec
-                size_t rem_num_bits = num_bits-current_num_bits;
-                for (size_t i=0; i<rem_num_bits; i++)
-                    file_bool_vec.push_back(block.second[i]);
-                // log the size of file in bits
-                logger.log("File size: " + std::to_string(file_bool_vec.size()) + " bits");
-            } else { // middle packet
-                // pop packet
-                fifo_in.pop(block);
-                // push to vec
-                for (size_t i=32; i<block.second.size(); i++) {
-                    file_bool_vec.push_back(block.second[i]);
-                    current_num_bits++;
-                }
-                current_num_packets++;
-                if (current_num_packets == num_packets)
-                    last = true;
             }
+        } else {
+            // convert boolean vec to char vec
+            file_char_vec = to_uchar_vec(file_bool_vec);
+            // reconstruct file as binary output filestream
+            file.write(reinterpret_cast<char*>(file_char_vec.data()),
+                       file_bool_vec.size()/sizeof(unsigned char));
+            // close file
+            file.close();
+            // break out of while loop
+            break;
         }
     }
     // notify user that processing thread is done
@@ -124,7 +142,7 @@ void ack_prepare (tsFIFO<Block<bool>>& fifo_out)
     // packetize the complete fragments
     while (num_packets == -1);
     logger.log("Number of acks to prepare: " + std::to_string(num_packets));
-    for (size_t i=1; i<num_packets; i++) {
+    for (size_t i=1; i<num_packets+1; i++) {
         out_block.first = i;
         logger.logf("Pushing ACK Block: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
@@ -1494,7 +1512,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         FilterPolyphase ps_filt (tx_U, tx_D, fb_tx_packet_len,
                              rrc_len, ps_h, num_filt_threads);
         // file reconstruction thread
-        file_reconstruct_t = std::thread(&file_reconstruct, std::ref(data_fifo), 1000);
+        file_reconstruct_t = std::thread(&file_reconstruct, std::ref(data_fifo), 1000,
+                "reconstructed.jpeg");
         // call function to prep all ack packets, assume number of packets is known
         ack_prepare_t = std::thread(&ack_prepare, std::ref(ack_fifo));
         // FEED FORWARD RX STREAM
