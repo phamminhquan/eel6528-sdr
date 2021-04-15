@@ -99,13 +99,27 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     Timer timer;
     
     while (not stop_signal_called) {
-        if (fifo_in.size() != 0 and ack_fifo_in.size() != 0) {
-            // clear first flag
-            first = false;
+        if (fifo_in.size() != 0) {
             // pop decoded info block
             fifo_in.pop(in_block);
             // S is contained in block.first
             S = in_block.first;
+            // get number of packets from first payload
+            if (first) {
+                // clear first flag
+                first = false;
+                // pop decoded info block
+                fifo_in.pop(in_block);
+                // S is contained in block.first
+                S = in_block.first;
+                // get the number of packets
+                std::bitset<32> num_packets_bitset;
+                for (size_t i=0; i<32; i++)
+                    num_packets_bitset[i] = in_block.second[i];
+                num_packets = num_packets_bitset.to_ulong();
+                logger.log("Total number of packets: " + std::to_string(num_packets));
+            }
+            
             // check R
             if (R == S) {
                 // send ack first
