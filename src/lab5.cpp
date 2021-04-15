@@ -57,9 +57,9 @@ void ack_prepare (tsFIFO<Block<bool>>& fifo_out)
     // create dummy block
     Block<bool> out_block;
     // packetize the complete fragments
-    //while (num_packets == -1);
-    //logger.log("Number of acks to prepare: " + std::to_string(num_packets));
-    for (size_t i=1; i<1082+1; i++) {
+    while (num_packets == -1);
+    logger.log("Number of acks to prepare: " + std::to_string(num_packets));
+    for (size_t i=1; i<num_packets; i++) {
         out_block.first = i;
         logger.logf("Pushing ACK Block: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
@@ -119,12 +119,13 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 num_packets = num_packets_bitset.to_ulong();
                 logger.log("Total number of packets: " + std::to_string(num_packets));
             }
-            
             // check R
             if (R == S) {
                 // send ack first
                 // increment R
                 R++;
+                // check ack fifo empty
+                while(ack_fifo_in.size() == 0);
                 // push ack
                 ack_fifo_in.pop(ack_block);
                 logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
