@@ -267,6 +267,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     int S = 0;
     int R = 0;
     bool first = true;
+    bool last = false;
     // set up timer
     logger.log("Create timer");
     Timer timer;
@@ -294,6 +295,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     ack_fifo.pop(ack_block);
                     // check ack content to get R
                     R = ack_block.first;
+                    if (R == num_packets -1)
+                        last = true;
                     // check R
                     if (R > S) {
                         // push new packet
@@ -327,13 +330,34 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
         } else {
             if (!first) { // waiting for first packet should not be time out
-                // calculate time elapsed from packet transmitted (in seconds)
-                double timer_count = timer.elapse();
-                if (timer_count > timeout) { // more than 2s has elapsed
-                    logger.log("Time out: " + std::to_string(timer_count));
-                    // push same packet as last time
-                    fifo_out.push(out_block);
-                    timer.reset();
+                if (last) {
+                    //check ack fifo
+                    while (ack_fifo.size() == 0) { // wait for last ack
+                        // calculate time elapsed from packet transmitted (in seconds)
+                        double timer_count = timer.elapse();
+                        if (timer_count > timeout) { // more than 2s has elapsed
+                            logger.log("Waiting for last ACK Time out: " +
+                                       std::to_string(timer_count));
+                            // push same packet as last time
+                            fifo_out.push(out_block);
+                            timer.reset();
+                        }
+                    } 
+                    // pop ack
+                    ack_fifo.pop(ack_block);
+                    // check ack content to get R
+                    R = ack_block.first;
+                    if (R == num_packets) // Last ack successfull
+                        break;
+                } else {
+                    // calculate time elapsed from packet transmitted (in seconds)
+                    double timer_count = timer.elapse();
+                    if (timer_count > timeout) { // more than 2s has elapsed
+                        logger.log("Time out: " + std::to_string(timer_count));
+                        // push same packet as last time
+                        fifo_out.push(out_block);
+                        timer.reset();
+                    }
                 }
             }
         }
