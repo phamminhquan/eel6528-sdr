@@ -274,6 +274,10 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // set up timer
     logger.log("Create timer");
     Timer timer;
+    Timer packet_timer;
+    double ave_roundtrip = 0;
+    // set up retransmission counter
+    size_t retransmission_counter = 0;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -302,10 +306,13 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     R = ack_block.first;
                     // check R
                     if (R > S) {
+                        // check timer from last packet to this packet
+                        //logger.log("Round trip time: " + std::to_string(packet_timer.elapse()) +
+                        //           " seconds");
                         // push new packet
                         // getting payload from fifo
                         fifo_in.pop(in_block);
-                        logger.logf("Data fifo size: " + std::to_string(fifo_in.size()));
+                        //logger.logf("Data fifo size: " + std::to_string(fifo_in.size()));
                         // create 16-bit packet number bitset
                         S++;
                         out_block = in_block;
@@ -319,9 +326,12 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         logger.logf("ACK R is less than or equal to S");
                         // push same packet as last time
                         fifo_out.push(out_block);
+                        // increment retransmission counter
+                        retransmission_counter++;
                     }
                     // reset timer to now
                     timer.reset();
+                    packet_timer.reset();
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
@@ -330,6 +340,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         // push same packet as last time
                         fifo_out.push(out_block);
                         timer.reset();
+                        // increment retransmission counter
+                        retransmission_counter++;
                     }
                 }
             }
@@ -362,12 +374,16 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         // push same packet as last time
                         fifo_out.push(out_block);
                         timer.reset();
+                        // increment retransmission counter
+                        retransmission_counter++;
+                        
                     }
                 }
             }
         }
     }
-    
+    // print out the number of retransmission
+    logger.log("Total number of retransmission: " + std::to_string(retransmission_counter));
     // only break loop when entire file is transmitted
     double file_timer_count = file_timer.elapse();
     logger.log("Total time for entire file transmission: " +
@@ -1025,7 +1041,7 @@ void transmit_worker (//size_t samp_per_buff,
             //    logger.logf("TX fifo size: " + std::to_string(fifo_in.size()));
             // pop packet block
             fifo_in.pop(block);
-            logger.log("Sending block: " + std::to_string(block.first));
+            logger.logf("Sending block: " + std::to_string(block.first));
             tx_streamer->send(&block.second.front(), block_size, md);
         }
     }
