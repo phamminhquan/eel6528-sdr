@@ -85,7 +85,7 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                         current_num_bits++;
                     }
                     current_num_packets++;
-                    logger.logf("Got packet: " + std::to_string(block.first));
+                    logger.logf("Got first packet: " + std::to_string(block.first));
                 } else if (last) {
                     // last packet
                     // set done flag
@@ -97,8 +97,7 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                     for (size_t i=0; i<rem_num_bits; i++)
                         file_bool_vec.push_back(block.second[i]);
                     // log the size of file in bits
-                    logger.logf("Got packet: " + std::to_string(block.first));
-                    logger.log("File size: " + std::to_string(file_bool_vec.size()) + " bits");
+                    logger.logf("Got last packet: " + std::to_string(block.first));
                 } else { // middle packet
                     // pop packet
                     fifo_in.pop(block);
@@ -117,9 +116,10 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
         } else {
             // convert boolean vec to char vec
             file_char_vec = to_uchar_vec(file_bool_vec);
+            logger.log("File size: " + std::to_string(file_bool_vec.size()) + " bits = " +
+                       std::to_string(file_char_vec.size()) + " bytes");
             // reconstruct file as binary output filestream
-            file.write(reinterpret_cast<char*>(file_char_vec.data()),
-                       file_bool_vec.size()/sizeof(unsigned char));
+            file.write(reinterpret_cast<char*>(file_char_vec.data()), file_char_vec.size());
             // close file
             file.close();
             // break out of while loop
