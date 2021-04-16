@@ -295,8 +295,6 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     ack_fifo.pop(ack_block);
                     // check ack content to get R
                     R = ack_block.first;
-                    if (R == num_packets -1)
-                        last = true;
                     // check R
                     if (R > S) {
                         // push new packet
@@ -310,6 +308,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                                    "\tR: " + std::to_string(R));
                         // push new packet
                         fifo_out.push(out_block);
+                        if (R == num_packets -1)
+                            last = true;
                     } else {
                         logger.log("ACK R is less than or equal to S");
                         // push same packet as last time
@@ -342,7 +342,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                             fifo_out.push(out_block);
                             timer.reset();
                         }
-                    } 
+                    }
                     // pop ack
                     ack_fifo.pop(ack_block);
                     // check ack content to get R
@@ -405,6 +405,7 @@ void read_payload (std::string filename,
     size_t total_num_frag = num_frag;
     if (rem_num_bits != 0)
         total_num_frag++;
+    num_packets = total_num_frag;
     std::bitset<32> num_packets_bitset (temp_file_bool_vec.size());
     for (size_t i=0; i<32; i++)
         file_bool_vec[i] = num_packets_bitset[i];
