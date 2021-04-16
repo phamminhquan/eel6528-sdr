@@ -240,8 +240,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                     // resend request at time out
                     ack_fifo_out.push(ack_block);
                     // log for debug
-                    logger.logf("Time out: " + std::to_string(timer_count) +
-                               "\tACK FIFO size: " + std::to_string(ack_fifo_out.size()));
+                    logger.log("Time out: " + std::to_string(timer_count));
                     timer.reset();
                 }
             }
