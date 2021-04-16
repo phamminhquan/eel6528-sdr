@@ -273,6 +273,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 first = false;
                 // getting payload from fifo
                 fifo_in.pop(in_block);
+                logger.log("Data fifo size: " + std::to_string(fifo_in.size()));
                 out_block = in_block;
                 logger.log("First S: " + std::to_string(S) +
                            "\tSize: " + std::to_string(out_block.second.size()));
@@ -293,6 +294,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         // push new packet
                         // getting payload from fifo
                         fifo_in.pop(in_block);
+                        logger.log("Data fifo size: " + std::to_string(fifo_in.size()));
                         // create 16-bit packet number bitset
                         S++;
                         out_block = in_block;
