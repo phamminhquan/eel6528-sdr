@@ -45,6 +45,7 @@ namespace po = boost::program_options;
 
 std::atomic<int> num_packets (-1);
 std::atomic<int> num_bits (-1);
+Timer file_timer;
 
 
 /***********************************************************************
@@ -289,6 +290,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                            "\tSize: " + std::to_string(out_block.second.size()));
                 // push to fifo out
                 fifo_out.push(out_block);
+                // start the timer for time of entire file transmission
+                file_timer.reset();
                 // start timer after first packet is pushed
                 timer.reset();
             } else {
@@ -366,6 +369,10 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
             }
         }
     }
+    
+    // only break loop when entire file is transmitted
+    double file_timer_count = file_timer.elapse();
+    logger.log("Total time for entire file transmission: " + std::to_string(file_timer_count));
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -1513,7 +1520,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     size_t fb_tx_packet_len = preamble_len + sig_seq_len + 16 + 32 + post_payload_len;
     main_logger.log("Total data packet size: " + std::to_string(ff_tx_packet_len));
     main_logger.log("Total ack packet size: " + std::to_string(fb_tx_packet_len));
-    
     // make an array pointer to hold pulse shape filter
     size_t rrc_len = 2*rrc_half_len+1;
     std::complex<float> rrc_h[rrc_len];
@@ -1525,10 +1531,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     std::ofstream rrc_file ("rrc.dat", std::ofstream::binary);
     rrc_file.write((const char*) rrc_h, rrc_len*sizeof(std::complex<float>));
     rrc_file.close();
-    
     std::complex<float>* mf_h = mf_rrc_vec.data();
     std::complex<float>* ps_h = ps_rrc_vec.data();
-
     // recv to file as function
     if (!tx_rx) {      // RX SIDE        
         // fifo for feed forward stream
@@ -1590,7 +1594,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
             "fc32", std::ref(otw), std::ref(file),
             rx_spb, total_num_samps, settling,
             rx_channel_nums, std::ref(fifo_in));
-        
         // FEEDBACK TX STREAM
         // spawn error control thread
         ecc_encode_t = std::thread(&ecc_encode, std::ref(ack_fifo),
@@ -1607,19 +1610,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         snk_arq_schedule_t = std::thread(&snk_arq_schedule, std::ref(decode_out_fifo),
                 std::ref(pulse_shape_out_fifo), std::ref(data_fifo),
                 std::ref(arq_fifo), payload_len, arq_timeout);
-        
-        
-        // spawn transmit worker thread
-        //tx_worker_t = std::thread(&transmit_worker, fb_tx_packet_len*tx_U/tx_D,
-        //                std::ref(tx_stream), std::ref(arq_fifo));
-        
+        // call transmit worker
         transmit_worker(fb_tx_packet_len*tx_U/tx_D, tx_stream, arq_fifo);
-        
-        //recv_to_fifo(rx_usrp, "fc32", otw, file,
-        //    rx_spb, total_num_samps, settling,
-        //    rx_channel_nums, fifo_in);
-        
-
     } else {      // TX SIDE
         // fifo for feedforward stream
         tsFIFO<Block<bool>> bit_payload_fifo;
@@ -1698,24 +1690,40 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     
     // clean up transmit worker
     stop_signal_called = true;
+    if (read_payload_t.joinable())
+        read_payload_t.join();
+    if (src_arq_schedule_t.joinable())
+        src_arq_schedule_t.join();
+    if (src_arq_schedule_test_t.joinable())
+        src_arq_schedule_test_t.join();
+    if (ecc_encode_t.joinable())
+        ecc_encode_t.join();
+    if (pulse_shaper_t.joinable())
+        pulse_shaper_t.join();
+    if (modulator_t.joinable())
+        modulator_t.join();
+    if (tx_worker_t.joinable())
+        tx_worker_t.join();
     if (mf_worker_t.joinable())
         mf_worker_t.join();
     if (iir_filter_worker_t.joinable())
         iir_filter_worker_t.join();
+    if (energy_detector_t.joinable())
+        energy_detector_t.join();
     if (agc_t.joinable())
         agc_t.join();
-    if (captured_block_count_t.joinable())
-        captured_block_count_t.join();
-    for (int i=0; i<num_pa_threads; i++) {
-        if (power_average_worker_t[i].joinable())
-            power_average_worker_t[i].join();
-    }
-    if (read_payload_t.joinable())
-        read_payload_t.join();
-    if (modulator_t.joinable())
-        modulator_t.join();
-    if (pulse_shaper_t.joinable())
-        pulse_shaper_t.join();
+    if (acq_demod_t.joinable())
+        acq_demod_t.join();
+    if (ecc_decode_t.joinable())
+        ecc_decode_t.join();
+    if (snk_arq_schedule_t.joinable())
+        snk_arq_schedule_t.join();
+    if (ack_prepare_t.joinable())
+        ack_prepare_t.join();
+    if (rx_worker_t.joinable())
+        rx_worker_t.join();
+    if (file_reconstruct_t.joinable())
+        file_reconstruct_t.join();
     
     // finished
     std::cout << std::endl << "Done!" << std::endl << std::endl;
