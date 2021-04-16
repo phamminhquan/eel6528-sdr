@@ -489,10 +489,13 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
     std::vector<bool> rx_crc_vec;
     std::bitset<32> rx_crc_bitset;
     std::bitset<16> header;
+    Timer timer;
     
     int check_sum_diff = 0;
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            // start timer
+            timer.reset();
             // pop input block
             fifo_in.pop(in_block);
             // get the information and ecc part of the payload
@@ -525,6 +528,8 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                 logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
+            // log timer
+            logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // notify user that processing thread is done
@@ -632,8 +637,11 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     float angle_pre = 0;
     float m_hat_0 = 0;
     float m_hat_1 = 0;
+    Timer timer;
+    
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            timer.reset();
             // print out fifo size to check
             //if (fifo_in.size() != 1)
             //    logger.logf("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
@@ -675,6 +683,8 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 demod_block.second[i] = demod_bit;
             }
             fifo_out.push(demod_block);
+            // log timer
+            logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // notify user that processing thread is done
@@ -698,8 +708,11 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     Block<std::complex<float>> out_block;
     out_block.second.resize(block_size);
     float rms = 0;
+    Timer timer;
+    
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            timer.reset();
             // print out fifo size to check
             //if (fifo_in.size() != 1)
             //    logger.logf("AGC input FIFO size: " + std::to_string(fifo_in.size()));
@@ -727,6 +740,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // store filter output to file to check with jupyter
             //agc_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
             //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            // log timer
+            logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // close output file
@@ -827,9 +842,11 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
     out_block.second.resize(block_size);
     Block<std::complex<float>> cap_block;  // block of captured samples
     cap_block.second.resize(total_len);
+    Timer timer;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            timer.reset();
             // check fifo sizes
             //if (fifo_in.size() != 1)
             //    logger.logf("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
@@ -881,6 +898,8 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
                 // keep pre-capture queue updated
                 pre_cap.push(out_block.second[i]);
             }
+            // log timer
+            logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // notify user that processing thread is done
@@ -911,8 +930,11 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     std::pair<Block<std::complex<float>>, Block<float>> out_pair;
     Block<float> iir_out_block;
     iir_out_block.second.resize(block_size);
+    Timer timer;
+    
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            timer.reset();
             // check fifo sizes
             //if (fifo_in.size() != 1)
             //    logger.logf("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
@@ -936,6 +958,8 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // put value in file
             //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
             //iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
+            // log timer
+            logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // close ofstream
@@ -970,9 +994,11 @@ void filter(size_t in_len,
     // create dummy block and average variables
     Block<std::complex<float>> in_block;
     Block<std::complex<float>> out_block;
+    Timer timer;
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            timer.reset();
             // check fifo sizes
             //if (fifo_in.size() != 1)
             //    logger.logf("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
@@ -1001,6 +1027,8 @@ void filter(size_t in_len,
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
             //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
+            // log timer
+            logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // close ofstream
