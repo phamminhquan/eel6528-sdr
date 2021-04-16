@@ -215,7 +215,6 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 while(ack_fifo_in.size() == 0);
                 // push ack
                 ack_fifo_in.pop(ack_block);
-                logger.log("Pushing ACK Block: " + std::to_string(ack_block.first));
                 ack_fifo_out.push(ack_block);
                 // grab data
                 out_block = in_block;
@@ -229,7 +228,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 // received packet is out of order, resend request
                 ack_fifo_out.push(ack_block);
                 // log for debug
-                logger.log("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
+                logger.logf("Error: S = " + std::to_string(S) + "\tR = " + std::to_string(R));
             }
             // reset timer to now
             timer.reset();
@@ -241,7 +240,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                     // resend request at time out
                     ack_fifo_out.push(ack_block);
                     // log for debug
-                    logger.log("Time out: " + std::to_string(timer_count) +
+                    logger.logf("Time out: " + std::to_string(timer_count) +
                                "\tACK FIFO size: " + std::to_string(ack_fifo_out.size()));
                     timer.reset();
                 }
@@ -307,7 +306,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         // push new packet
                         // getting payload from fifo
                         fifo_in.pop(in_block);
-                        logger.log("Data fifo size: " + std::to_string(fifo_in.size()));
+                        logger.logf("Data fifo size: " + std::to_string(fifo_in.size()));
                         // create 16-bit packet number bitset
                         S++;
                         out_block = in_block;
@@ -318,7 +317,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         if (R == num_packets -1)
                             last = true;
                     } else {
-                        logger.log("ACK R is less than or equal to S");
+                        logger.logf("ACK R is less than or equal to S");
                         // push same packet as last time
                         fifo_out.push(out_block);
                     }
@@ -328,7 +327,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
                     if (timer_count > timeout) { // more than 2s has elapsed
-                        logger.log("Time out: " + std::to_string(timer_count));
+                        logger.logf("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
                         timer.reset();
@@ -343,7 +342,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         // calculate time elapsed from packet transmitted (in seconds)
                         double timer_count = timer.elapse();
                         if (timer_count > timeout) { // more than 2s has elapsed
-                            logger.log("Waiting for last ACK Time out: " +
+                            logger.logf("Waiting for last ACK Time out: " +
                                        std::to_string(timer_count));
                             // push same packet as last time
                             fifo_out.push(out_block);
@@ -372,7 +371,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     
     // only break loop when entire file is transmitted
     double file_timer_count = file_timer.elapse();
-    logger.log("Total time for entire file transmission: " + std::to_string(file_timer_count));
+    logger.log("Total time for entire file transmission: " +
+               std::to_string(file_timer_count) + " seconds");
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -503,11 +503,11 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                                             payload_vec.begin()+16+payload_len);
                 out_block.first = header.to_ulong();
                 out_block.second = info_vec;
-                logger.log("Header: " + std::to_string(out_block.first) +
+                logger.logf("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
                 fifo_out.push(out_block);
             } else { // checksum are different, drop packet if so
-                logger.log("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
+                logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
                            "\t Calculated Checksum: " + std::to_string(crc32.checksum()));
             }
         }
