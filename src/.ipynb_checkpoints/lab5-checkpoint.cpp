@@ -181,6 +181,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     int S = 0;
     int R = 0;
     bool first = true;
+    bool last = false;
     // set up timer
     logger.log("Create timer");
     Timer timer;
@@ -220,6 +221,9 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 fifo_out.push(out_block);
                 // log for debug
                 logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
+                // check last packet
+                if (R == num_packets)
+                    last = true;
             } else {
                 // received packet is out of order, resend request
                 ack_fifo_out.push(ack_block);
@@ -229,7 +233,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             // reset timer to now
             timer.reset();
         } else {
-            if (!first) { // waiting for first packet should not be time out
+            if (not first and not last) { // waiting for first packet should not be time out
                 // calculate time elapsed from packet transmitted (in seconds)
                 double timer_count = timer.elapse();
                 if (timer_count > timeout) { // more than 2s has elapsed
