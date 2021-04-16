@@ -82,7 +82,6 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                     // push to vec
                     for (size_t i=32; i<block.second.size(); i++) {
                         file_bool_vec.push_back(block.second[i]);
-                        logger.log("Bit: " + std::to_string(file_bool_vec[i]));
                         current_num_bits++;
                     }
                     current_num_packets++;
@@ -117,6 +116,10 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
         } else {
             // convert boolean vec to char vec
             file_char_vec = to_uchar_vec(file_bool_vec);
+            // log all the characters to see if they are correct
+            for (size_t i=0; i<file_char_vec.size(); i++)
+                logger.logf("Char " + std::to_string(i) +
+                            ": " + std::to_string(file_char_vec[i]));
             //logger.log("Check bytes 142561: " + std::to_string(file_char_vec[142560]));
             logger.log("File size: " + std::to_string(file_bool_vec.size()) + " bits = " +
                        std::to_string(file_char_vec.size()) + " bytes");
