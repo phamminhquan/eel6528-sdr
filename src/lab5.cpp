@@ -336,7 +336,7 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
                     if (timer_count > timeout) { // more than 2s has elapsed
-                        logger.logf("Time out: " + std::to_string(timer_count));
+                        logger.log("Time out: " + std::to_string(timer_count));
                         // push same packet as last time
                         fifo_out.push(out_block);
                         timer.reset();
@@ -1360,8 +1360,8 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     main_logger.log("Using RX Device: " + rx_usrp->get_pp_string());
     
     // set the transmit sample rate
-    if (not vm.count("tx-rate")) {
-        std::cerr << "Please specify the transmit sample rate with --tx-rate"
+    if (not vm.count("rate")) {
+        std::cerr << "Please specify the sample rate with --rate"
                   << std::endl;
         return ~0;
     }
@@ -1370,12 +1370,6 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     main_logger.log("Setting TX Rate: " + std::to_string(rate / 1e6) + "Msps");
     tx_usrp->set_tx_rate(rate);
     main_logger.log("Actual TX Rate: " + std::to_string(tx_usrp->get_tx_rate() / 1e6) + "Msps");
-    
-    // set the receive sample rate
-    if (not vm.count("rx-rate")) {
-        std::cerr << "Please specify the sample rate with --rx-rate" << std::endl;
-        return ~0;
-    }
     //main_logger.log("Setting RX Rate: " + std::to_string(rx_rate/1e6) + "Msps");
     //rx_usrp->set_rx_rate(rx_rate);
     main_logger.log("Setting RX Rate: " + std::to_string(rate/1e6) + "Msps");
