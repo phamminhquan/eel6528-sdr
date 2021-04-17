@@ -1208,7 +1208,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
     
     // tx variables
     std::string tx_args, tx_ant, tx_subdev, tx_channels, payload_filename;
-    double tx_rate, ff_freq, tx_gain, tx_bw, tx_freq;
+    double tx_rate, ff_freq, tx_gain, tx_bw, tx_freq, rate;
     int tx_D, tx_U;
     size_t rrc_half_len, packets_per_sec;
     size_t tx_packet_num_len;
@@ -1242,11 +1242,12 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         //("type", po::value<std::string>(&type)->default_value("float"), "sample type in file: double, float, or short")
         ("nsamps", po::value<size_t>(&total_num_samps)->default_value(0), "total number of samples to receive")
         ("settling", po::value<double>(&settling)->default_value(double(0.2)), "settling time (seconds) before receiving")
-        ("tx-rate", po::value<double>(&tx_rate)->default_value(1000000), "rate of transmit outgoing samples")
+        //("tx-rate", po::value<double>(&tx_rate)->default_value(1000000), "rate of transmit outgoing samples")
+        ("rate", po::value<double>(&rate)->default_value(1000000), "rate of transmit outgoing samples")
         ("ff-freq", po::value<double>(&ff_freq)->default_value(915000000), "Feedforward channel center frequency in Hz")
         ("tx-gain", po::value<double>(&tx_gain)->default_value(20), "gain for the transmit RF chain")
         ("rx-spb", po::value<size_t>(&rx_spb)->default_value(10000), "samples per buffer")
-        ("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
+        //("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
         ("fb-freq", po::value<double>(&fb_freq)->default_value(2412000000), "Feedback channel center frequency in Hz")
         ("rx-gain", po::value<double>(&rx_gain)->default_value(20), "gain for the receive RF chain")
         ("tx-ant", po::value<std::string>(&tx_ant), "transmit antenna selection")
@@ -1364,8 +1365,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
                   << std::endl;
         return ~0;
     }
-    main_logger.log("Setting TX Rate: " + std::to_string(tx_rate / 1e6) + "Msps");
-    tx_usrp->set_tx_rate(tx_rate);
+    //main_logger.log("Setting TX Rate: " + std::to_string(tx_rate / 1e6) + "Msps");
+    //tx_usrp->set_tx_rate(tx_rate);
+    main_logger.log("Setting TX Rate: " + std::to_string(rate / 1e6) + "Msps");
+    tx_usrp->set_tx_rate(rate);
     main_logger.log("Actual TX Rate: " + std::to_string(tx_usrp->get_tx_rate() / 1e6) + "Msps");
     
     // set the receive sample rate
@@ -1373,8 +1376,10 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         std::cerr << "Please specify the sample rate with --rx-rate" << std::endl;
         return ~0;
     }
-    main_logger.log("Setting RX Rate: " + std::to_string(rx_rate/1e6) + "Msps");
-    rx_usrp->set_rx_rate(rx_rate);
+    //main_logger.log("Setting RX Rate: " + std::to_string(rx_rate/1e6) + "Msps");
+    //rx_usrp->set_rx_rate(rx_rate);
+    main_logger.log("Setting RX Rate: " + std::to_string(rate/1e6) + "Msps");
+    rx_usrp->set_rx_rate(rate);
     main_logger.log("Actual RX Rate: " + std::to_string(rx_usrp->get_rx_rate()/1e6) + "Msps");
 
     // set the feedforward center frequency
