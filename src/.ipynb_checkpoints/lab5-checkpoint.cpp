@@ -918,8 +918,8 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("IIRFilter", "./iir_filter.log");
     // create output filestream
-    //std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
-    //std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
+    std::ofstream iir_in_file ("iir_in.dat", std::ofstream::binary);
+    std::ofstream iir_out_file ("iir_out.dat", std::ofstream::binary);
     // create dummy block
     Block<std::complex<float>> in_block;
     // IIR filter param
@@ -956,16 +956,16 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             out_pair.second = iir_out_block;
             fifo_out.push(out_pair);
             // put value in file
-            //iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
-            //iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
+            iir_in_file.write((const char*)& in_block.second[0], block_size*sizeof(std::complex<float>));
+            iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
         }
     }
     // close ofstream
     logger.log("Closing ofstream");
-    //iir_in_file.close();
-    //iir_out_file.close();
+    iir_in_file.close();
+    iir_out_file.close();
     // notify user that processing thread is done
     logger.log("Closing");
 }
@@ -1244,11 +1244,11 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("settling", po::value<double>(&settling)->default_value(double(0.2)), "settling time (seconds) before receiving")
         //("tx-rate", po::value<double>(&tx_rate)->default_value(1000000), "rate of transmit outgoing samples")
         ("rate", po::value<double>(&rate)->default_value(1000000), "rate of transmit outgoing samples")
-        ("ff-freq", po::value<double>(&ff_freq)->default_value(915000000), "Feedforward channel center frequency in Hz")
+        ("ff-freq", po::value<double>(&ff_freq)->default_value(2412000000), "Feedforward channel center frequency in Hz")
         ("tx-gain", po::value<double>(&tx_gain)->default_value(20), "gain for the transmit RF chain")
         ("rx-spb", po::value<size_t>(&rx_spb)->default_value(10000), "samples per buffer")
         //("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
-        ("fb-freq", po::value<double>(&fb_freq)->default_value(2412000000), "Feedback channel center frequency in Hz")
+        ("fb-freq", po::value<double>(&fb_freq)->default_value(915000000), "Feedback channel center frequency in Hz")
         ("rx-gain", po::value<double>(&rx_gain)->default_value(20), "gain for the receive RF chain")
         ("tx-ant", po::value<std::string>(&tx_ant), "transmit antenna selection")
         ("rx-ant", po::value<std::string>(&rx_ant), "receive antenna selection")
@@ -1267,9 +1267,9 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-D,rx-d", po::value<int>(&rx_D)->default_value(1), "Rx side down-sampling factor")
         ("rx-mf-U", po::value<int>(&rx_mf_U)->default_value(4), "Rx side match filter up-sampling factor")
         ("alpha", po::value<float>(&alpha)->default_value(0.3), "IIR smoothing coefficient")
-        ("ff-iir-thresh,ff-iir-threshold", po::value<float>(&ff_iir_threshold)->default_value(0.001), "Threshold for energy detector")
+        ("ff-iir-thresh,ff-iir-threshold", po::value<float>(&ff_iir_threshold)->default_value(0.01), "Threshold for energy detector")
         ("ff-acq-thresh,ff-acq-threshold", po::value<float>(&ff_acq_threshold)->default_value(15), "Threshold for correlation in acquisition")
-        ("fb-iir-thresh,fb-iir-threshold", po::value<float>(&fb_iir_threshold)->default_value(0.01), "Threshold for energy detector")
+        ("fb-iir-thresh,fb-iir-threshold", po::value<float>(&fb_iir_threshold)->default_value(0.001), "Threshold for energy detector")
         ("fb-acq-thresh,fb-acq-threshold", po::value<float>(&fb_acq_threshold)->default_value(15), "Threshold for correlation in acquisition")
         //("taps-file", po::value<std::string>(&taps_filename), "filepath of filter taps file")
         ("n-filt-threads", po::value<size_t>(&num_filt_threads)->default_value(1), "number of threads for filtering")
@@ -1282,7 +1282,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-post-cap-len", po::value<int>(&rx_post_cap_len)->default_value(200), "Back extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
         ("payload", po::value<std::string>(&payload_filename)->default_value("payload.jpeg"), "File to transmit")
-        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(1), "ARQ timer timeout duration")
+        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(0.5), "ARQ timer timeout duration")
     ;
 
     // clang-format on
