@@ -192,9 +192,9 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // pop decoded info block
-            fifo_in.pop(in_block);
+            fifo_in.pop(out_block);
             // S is contained in block.first
-            S = in_block.first;
+            S = out_block.first;
             // get number of packets from first payload
             if (first) {
                 // clear first flag
@@ -202,7 +202,7 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 // get the number of packets
                 std::bitset<32> num_bits_bitset;
                 for (size_t i=0; i<32; i++)
-                    num_bits_bitset[i] = in_block.second[i];
+                    num_bits_bitset[i] = out_block.second[i];
                 num_bits = num_bits_bitset.to_ulong();
                 num_packets = std::ceil((float)(num_bits+32)/payload_size);
                 logger.log("Total number of bits: " + std::to_string(num_bits));
@@ -219,7 +219,6 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                 ack_fifo_in.pop(ack_block);
                 ack_fifo_out.push(ack_block);
                 // grab data
-                out_block = in_block;
                 fifo_out.push(out_block);
                 // log for debug
                 logger.log("S = " + std::to_string(S) + "\tR = " + std::to_string(R));
@@ -268,7 +267,6 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // create logger
     Logger logger("ARQ", "./arq.log");
     // create temp blocks
-    Block<std::complex<float>> in_block;
     Block<std::complex<float>> out_block;
     Block<bool> ack_block;
     // create block counter
@@ -303,7 +301,6 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 while(fifo_in.size() == 0);
                 fifo_in.pop(out_block);
                 fifo_out.push(out_block);
-                //out_block = in_block;
                 logger.log("S = " + std::to_string(S) + "\tR =  " + std::to_string(R));
                 if (S == num_packets -1)
                     last = true;
@@ -383,156 +380,6 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     // notify user that processing thread is done
     logger.log("Closing");
 }
-
-
-/***********************************************************************
- * Source ARQ scheduler
- **********************************************************************/
-/*void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
-                       tsFIFO<Block<std::complex<float>>>& fifo_out,
-                       tsFIFO<Block<bool>>& ack_fifo,
-                       float timeout)
-{
-    // create logger
-    Logger logger("ARQ", "./arq.log");
-    // create temp blocks
-    Block<std::complex<float>> in_block;
-    Block<std::complex<float>> out_block;
-    Block<bool> ack_block;
-    // create block counter
-    logger.log("Create S and R");
-    int S = 0;
-    int R = 0;
-    bool first = true;
-    bool last = false;
-    // set up timer
-    logger.log("Create timer");
-    Timer timer;
-    Timer packet_timer;
-    double ave_roundtrip = 0;
-    // set up retransmission counter
-    size_t retransmission_counter = 0;
-    
-    while (not stop_signal_called) {
-        if (fifo_in.size() != 0) {
-            if (first) {
-                // clear first packet flag
-                first = false;
-                // getting payload from fifo
-                fifo_in.pop(in_block);
-                logger.log("Data fifo size: " + std::to_string(fifo_in.size()));
-                out_block = in_block;
-                logger.log("First S: " + std::to_string(S) +
-                           "\tSize: " + std::to_string(out_block.second.size()));
-                // push to fifo out
-                fifo_out.push(out_block);
-                // start the timer for time of entire file transmission
-                file_timer.reset();
-                // start timer after first packet is pushed
-                timer.reset();
-                // yield after grabbing block
-                std::this_thread::yield();
-            } else {
-                if (ack_fifo.size() != 0) {
-                    // log to see arrival queue length should be a lot
-                    logger.logf("ARQ input fifo size: " + std::to_string(fifo_in.size()));
-                    // pop ack
-                    ack_fifo.pop(ack_block);
-                    // check ack content to get R
-                    R = ack_block.first;
-                    // check R
-                    if (R > S) {
-                        // check timer from last packet to this packet
-                        //logger.log("Round trip time: " + std::to_string(packet_timer.elapse()) +
-                        //           " seconds");
-                        // push new packet
-                        // getting payload from fifo
-                        fifo_in.pop(in_block);
-                        //logger.logf("Data fifo size: " + std::to_string(fifo_in.size()));
-                        // create 16-bit packet number bitset
-                        S++;
-                        out_block = in_block;
-                        logger.log("S: " + std::to_string(S) +
-                                   "\tR: " + std::to_string(R));
-                        // push new packet
-                        fifo_out.push(out_block);
-                        if (R == num_packets -1)
-                            last = true;
-                    } else {
-                        logger.logf("ACK R is less than or equal to S");
-                        // push same packet as last time
-                        fifo_out.push(out_block);
-                        // increment retransmission counter
-                        retransmission_counter++;
-                    }
-                    // reset timer to now
-                    timer.reset();
-                    packet_timer.reset();
-                    // yield after grabbing block
-                    std::this_thread::yield();
-                } else {
-                    // calculate time elapsed from packet transmitted (in seconds)
-                    double timer_count = timer.elapse();
-                    if (timer_count > timeout) { // more than 2s has elapsed
-                        logger.log("Time out: " + std::to_string(timer_count));
-                        // push same packet as last time
-                        fifo_out.push(out_block);
-                        timer.reset();
-                        // increment retransmission counter
-                        retransmission_counter++;
-                        // yield after grabbing block
-                        std::this_thread::yield();
-                    }
-                }
-            }
-        } else {
-            if (!first) { // waiting for first packet should not be time out
-                if (last) {
-                    //check ack fifo
-                    while (ack_fifo.size() == 0) { // wait for last ack
-                        // calculate time elapsed from packet transmitted (in seconds)
-                        double timer_count = timer.elapse();
-                        if (timer_count > timeout) { // more than 2s has elapsed
-                            logger.logf("Waiting for last ACK Time out: " +
-                                       std::to_string(timer_count));
-                            // push same packet as last time
-                            fifo_out.push(out_block);
-                            timer.reset();
-                        }
-                    }
-                    // pop ack
-                    ack_fifo.pop(ack_block);
-                    // check ack content to get R
-                    R = ack_block.first;
-                    if (R == num_packets) // Last ack successfull
-                        break;
-                } else {
-                    // calculate time elapsed from packet transmitted (in seconds)
-                    double timer_count = timer.elapse();
-                    if (timer_count > timeout) { // more than 2s has elapsed
-                        logger.log("Time out: " + std::to_string(timer_count));
-                        // push same packet as last time
-                        fifo_out.push(out_block);
-                        timer.reset();
-                        // increment retransmission counter
-                        retransmission_counter++;
-                        // yield after grabbing block
-                        std::this_thread::yield();
-                    }
-                }
-            }
-        }
-    }
-    // print out the number of retransmission
-    logger.log("Total number of retransmission: " + std::to_string(retransmission_counter));
-    // only break loop when entire file is transmitted
-    double file_timer_count = file_timer.elapse();
-    logger.log("Total time for entire file transmission: " +
-               std::to_string(file_timer_count) + " seconds");
-    // notify user that processing thread is done
-    logger.log("Closing");
-}
-*/
 
 
 /***********************************************************************
@@ -631,8 +478,10 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
     std::bitset<32> rx_crc_bitset;
     std::bitset<16> header;
     Timer timer;
-    
+    size_t current_num_blocks = 0;
+    double total_time;
     int check_sum_diff = 0;
+    
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // start timer
@@ -671,6 +520,9 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             }
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            current_num_blocks++;
+            total_time += timer.elapse();
+            logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -783,6 +635,8 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     float m_hat_0 = 0;
     float m_hat_1 = 0;
     Timer timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -830,6 +684,9 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             fifo_out.push(demod_block);
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            current_num_blocks++;
+            total_time += timer.elapse();
+            logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -856,6 +713,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     out_block.second.resize(block_size);
     float rms = 0;
     Timer timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -889,6 +748,9 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            current_num_blocks++;
+            total_time += timer.elapse();
+            logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -994,6 +856,8 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
     Block<std::complex<float>> cap_block;  // block of captured samples
     cap_block.second.resize(total_len);
     Timer timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -1051,6 +915,9 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
             }
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            current_num_blocks++;
+            total_time += timer.elapse();
+            logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -1084,10 +951,12 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
     Block<float> iir_out_block;
     iir_out_block.second.resize(block_size);
     Timer timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            //timer.reset();
+            timer.reset();
             // check fifo sizes
             //if (fifo_in.size() != 1)
             //    logger.logf("IIR filter input FIFO size: " + std::to_string(fifo_in.size()));
@@ -1113,6 +982,9 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            current_num_blocks++;
+            total_time += timer.elapse();
+            logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -1150,6 +1022,8 @@ void filter(size_t in_len,
     Block<std::complex<float>> in_block;
     Block<std::complex<float>> out_block;
     Timer timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
@@ -1184,6 +1058,9 @@ void filter(size_t in_len,
             //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            current_num_blocks++;
+            total_time += timer.elapse();
+            logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         }
