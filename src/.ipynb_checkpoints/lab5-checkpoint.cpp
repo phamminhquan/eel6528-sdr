@@ -234,6 +234,8 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             }
             // reset timer to now
             timer.reset();
+            // yield after grabbing block
+            std::this_thread::yield();
         } else {
             if (not first and not last) { // waiting for first packet should not be time out
                 // calculate time elapsed from packet transmitted (in seconds)
@@ -244,6 +246,8 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
                     // log for debug
                     logger.log("Time out: " + std::to_string(timer_count));
                     timer.reset();
+                    // yield after grabbing block
+                    std::this_thread::yield();
                 }
             }
         }
@@ -298,6 +302,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 file_timer.reset();
                 // start timer after first packet is pushed
                 timer.reset();
+                // yield after grabbing block
+                std::this_thread::yield();
             } else {
                 if (ack_fifo.size() != 0) {
                     // log to see arrival queue length should be a lot
@@ -334,6 +340,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     // reset timer to now
                     timer.reset();
                     packet_timer.reset();
+                    // yield after grabbing block
+                    std::this_thread::yield();
                 } else {
                     // calculate time elapsed from packet transmitted (in seconds)
                     double timer_count = timer.elapse();
@@ -344,6 +352,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         timer.reset();
                         // increment retransmission counter
                         retransmission_counter++;
+                        // yield after grabbing block
+                        std::this_thread::yield();
                     }
                 }
             }
@@ -378,7 +388,8 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
                         timer.reset();
                         // increment retransmission counter
                         retransmission_counter++;
-                        
+                        // yield after grabbing block
+                        std::this_thread::yield();
                     }
                 }
             }
@@ -912,6 +923,8 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
             }
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // notify user that processing thread is done
@@ -972,6 +985,8 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             iir_out_file.write((const char*)& iir_out_block.second[0], block_size*sizeof(float));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // close ofstream
@@ -1041,6 +1056,8 @@ void filter(size_t in_len,
             //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // close ofstream
