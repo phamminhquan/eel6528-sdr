@@ -113,6 +113,8 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                     logger.logf("Got packet: " + std::to_string(block.first) +
                                "\t Current total: " + std::to_string(current_num_packets));
                 }
+                // yield after grabbing block
+                std::this_thread::yield();
             }
         } else {
             // convert boolean vec to char vec
@@ -530,6 +532,8 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             }
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // notify user that processing thread is done
@@ -592,6 +596,8 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
                 out_block.second[16+payload_size+32+i] = 0;
             // push output block to fifo out
             fifo_out.push(out_block);
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // notify user that processing thread is done
@@ -685,6 +691,8 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             fifo_out.push(demod_block);
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // notify user that processing thread is done
@@ -742,6 +750,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             //agc_out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // close output file
@@ -806,6 +816,8 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             fifo_out.push(out_block);
             // record samples to file
             //out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            // yield after grabbing block
+            std::this_thread::yield();
         }
     }
     // close ofstream
