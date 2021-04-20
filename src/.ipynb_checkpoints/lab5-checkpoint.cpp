@@ -1027,7 +1027,7 @@ void filter(size_t in_len,
     // check ctrl-c and fifo empty
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            //timer.reset();
+            timer.reset();
             // check fifo sizes
             //if (fifo_in.size() != 1)
             //    logger.logf("Multirate filter input FIFO size: " + std::to_string(fifo_in.size()));
