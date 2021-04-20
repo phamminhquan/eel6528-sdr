@@ -485,7 +485,7 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
             // start timer
-            //timer.reset();
+            timer.reset();
             // pop input block
             fifo_in.pop(in_block);
             // get the information and ecc part of the payload
@@ -640,7 +640,7 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            //timer.reset();
+            timer.reset();
             // print out fifo size to check
             //if (fifo_in.size() != 1)
             //    logger.logf("ACQ input FIFO size: " + std::to_string(fifo_in.size()));
@@ -718,7 +718,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            //timer.reset();
+            timer.reset();
             // print out fifo size to check
             //if (fifo_in.size() != 1)
             //    logger.logf("AGC input FIFO size: " + std::to_string(fifo_in.size()));
@@ -861,7 +861,7 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
-            //timer.reset();
+            timer.reset();
             // check fifo sizes
             //if (fifo_in.size() != 1)
             //    logger.logf("Energy detector input FIFO size: " + std::to_string(fifo_in.size()));
