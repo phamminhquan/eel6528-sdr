@@ -188,9 +188,13 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
     // set up timer
     logger.log("Create timer");
     Timer timer;
+    Timer block_timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     
     while (not stop_signal_called) {
         if (fifo_in.size() != 0) {
+            block_timer.reset();
             // pop decoded info block
             fifo_in.pop(out_block);
             // S is contained in block.first
@@ -233,6 +237,11 @@ void snk_arq_schedule (tsFIFO<Block<bool>>& fifo_in,
             }
             // reset timer to now
             timer.reset();
+            // time processing time
+            current_num_blocks++;
+            total_time += block_timer.elapse();
+            logger.logf("Average processing time: " +
+                        std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
             std::this_thread::yield();
         } else {
@@ -282,9 +291,14 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     double ave_roundtrip = 0;
     // set up retransmission counter
     size_t retransmission_counter = 0;
+    // processing timer
+    Timer block_timer;
+    size_t current_num_blocks = 0;
+    double total_time;
     
     while (not stop_signal_called) {
         if (ack_fifo.size() != 0) {
+            block_timer.reset();
             // pop ack
             ack_fifo.pop(ack_block);
             // check ack content to get R
@@ -316,6 +330,11 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
             packet_timer.reset();
             // yield after grabbing block
             std::this_thread::yield();
+            // time processing time
+            current_num_blocks++;
+            total_time += block_timer.elapse();
+            logger.logf("Average processing time: " +
+                        std::to_string(total_time/current_num_blocks));
         } else {
             if (first) {
                 // clear first packet flag

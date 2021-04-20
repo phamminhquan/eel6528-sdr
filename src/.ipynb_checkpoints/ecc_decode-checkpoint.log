@@ -1,0 +1,2944 @@
+[1618937109342363] [EccDecode] Status: Started new logger at ./ecc_decode.log
+[1618937109342406] [EccDecode] Payload size: 16
+[1618937109695495] [EccDecode] Header: 1	 CRC checked: No error
+[1618937109695508] [EccDecode] Average processing time: 0.000021
+[1618937109753336] [EccDecode] Header: 2	 CRC checked: No error
+[1618937109753346] [EccDecode] Average processing time: 0.000018
+[1618937109824482] [EccDecode] Header: 3	 CRC checked: No error
+[1618937109824494] [EccDecode] Average processing time: 0.000018
+[1618937109885204] [EccDecode] Header: 4	 CRC checked: No error
+[1618937109885213] [EccDecode] Average processing time: 0.000017
+[1618937109916927] [EccDecode] Header: 4	 CRC checked: No error
+[1618937109916937] [EccDecode] Average processing time: 0.000016
+[1618937109947601] [EccDecode] Header: 5	 CRC checked: No error
+[1618937109947610] [EccDecode] Average processing time: 0.000016
+[1618937109992155] [EccDecode] Header: 6	 CRC checked: No error
+[1618937109992164] [EccDecode] Average processing time: 0.000016
+[1618937110048395] [EccDecode] Header: 7	 CRC checked: No error
+[1618937110048402] [EccDecode] Average processing time: 0.000015
+[1618937110136155] [EccDecode] Header: 8	 CRC checked: No error
+[1618937110136164] [EccDecode] Average processing time: 0.000015
+[1618937110212154] [EccDecode] Header: 9	 CRC checked: No error
+[1618937110212165] [EccDecode] Average processing time: 0.000015
+[1618937110276164] [EccDecode] Header: 10	 CRC checked: No error
+[1618937110276172] [EccDecode] Average processing time: 0.000015
+[1618937110344414] [EccDecode] Header: 11	 CRC checked: No error
+[1618937110344427] [EccDecode] Average processing time: 0.000015
+[1618937110432155] [EccDecode] Header: 12	 CRC checked: No error
+[1618937110432164] [EccDecode] Average processing time: 0.000015
+[1618937110491086] [EccDecode] Header: 12	 CRC checked: No error
+[1618937110491098] [EccDecode] Average processing time: 0.000016
+[1618937110576154] [EccDecode] Header: 13	 CRC checked: No error
+[1618937110576162] [EccDecode] Average processing time: 0.000015
+[1618937110648155] [EccDecode] Header: 14	 CRC checked: No error
+[1618937110648167] [EccDecode] Average processing time: 0.000016
+[1618937110712154] [EccDecode] Header: 15	 CRC checked: No error
+[1618937110712163] [EccDecode] Average processing time: 0.000015
+[1618937110760153] [EccDecode] Header: 15	 CRC checked: No error
+[1618937110768157] [EccDecode] Average processing time: 0.000460
+[1618937110832153] [EccDecode] Header: 16	 CRC checked: No error
+[1618937110832161] [EccDecode] Average processing time: 0.000436
+[1618937110928155] [EccDecode] Header: 17	 CRC checked: No error
+[1618937110928164] [EccDecode] Average processing time: 0.000415
+[1618937110984426] [EccDecode] Header: 18	 CRC checked: No error
+[1618937110984435] [EccDecode] Average processing time: 0.000396
+[1618937111032414] [EccDecode] Header: 19	 CRC checked: No error
+[1618937111032422] [EccDecode] Average processing time: 0.000379
+[1618937111092483] [EccDecode] Header: 20	 CRC checked: No error
+[1618937111108157] [EccDecode] Average processing time: 0.001044
+[1618937111164155] [EccDecode] Header: 20	 CRC checked: No error
+[1618937111164164] [EccDecode] Average processing time: 0.001001
+[1618937111212483] [EccDecode] Header: 21	 CRC checked: No error
+[1618937111212494] [EccDecode] Average processing time: 0.000962
+[1618937111260454] [EccDecode] Header: 22	 CRC checked: No error
+[1618937111260462] [EccDecode] Average processing time: 0.000925
+[1618937111328408] [EccDecode] Header: 23	 CRC checked: No error
+[1618937111328420] [EccDecode] Average processing time: 0.000892
+[1618937111384396] [EccDecode] Header: 24	 CRC checked: No error
+[1618937111384405] [EccDecode] Average processing time: 0.000860
+[1618937111440392] [EccDecode] Header: 25	 CRC checked: No error
+[1618937111448050] [EccDecode] Average processing time: 0.001095
+[1618937111516168] [EccDecode] Header: 26	 CRC checked: No error
+[1618937111520161] [EccDecode] Average processing time: 0.001192
+[1618937111576409] [EccDecode] Header: 26	 CRC checked: No error
+[1618937111576417] [EccDecode] Average processing time: 0.001154
+[1618937111628392] [EccDecode] Header: 26	 CRC checked: No error
+[1618937111628401] [EccDecode] Average processing time: 0.001118
+[1618937111688172] [EccDecode] Header: 27	 CRC checked: No error
+[1618937111688184] [EccDecode] Average processing time: 0.001085
+[1618937111776157] [EccDecode] Header: 28	 CRC checked: No error
+[1618937111776165] [EccDecode] Average processing time: 0.001053
+[1618937111832155] [EccDecode] Header: 29	 CRC checked: No error
+[1618937111832165] [EccDecode] Average processing time: 0.001023
+[1618937111888467] [EccDecode] Header: 30	 CRC checked: No error
+[1618937111896160] [EccDecode] Average processing time: 0.001209
+[1618937111951469] [EccDecode] Header: 31	 CRC checked: No error
+[1618937111951487] [EccDecode] Average processing time: 0.001177
+[1618937112000829] [EccDecode] Header: 31	 CRC checked: No error
+[1618937112000841] [EccDecode] Average processing time: 0.001146
+[1618937112108415] [EccDecode] Header: 32	 CRC checked: No error
+[1618937112108424] [EccDecode] Average processing time: 0.001117
+[1618937112149957] [EccDecode] Header: 33	 CRC checked: No error
+[1618937112149972] [EccDecode] Average processing time: 0.001090
+[1618937112196097] [EccDecode] Header: 34	 CRC checked: No error
+[1618937112196107] [EccDecode] Average processing time: 0.001064
+[1618937112219662] [EccDecode] Header: 35	 CRC checked: No error
+[1618937112219677] [EccDecode] Average processing time: 0.001039
+[1618937112239618] [EccDecode] Header: 36	 CRC checked: No error
+[1618937112239627] [EccDecode] Average processing time: 0.001015
+[1618937112295521] [EccDecode] Header: 37	 CRC checked: No error
+[1618937112295531] [EccDecode] Average processing time: 0.000992
+[1618937112401243] [EccDecode] Header: 37	 CRC checked: No error
+[1618937112401252] [EccDecode] Average processing time: 0.000971
+[1618937112452470] [EccDecode] Header: 38	 CRC checked: No error
+[1618937112452482] [EccDecode] Average processing time: 0.000950
+[1618937112513338] [EccDecode] Header: 39	 CRC checked: No error
+[1618937112513347] [EccDecode] Average processing time: 0.000930
+[1618937112573291] [EccDecode] Header: 40	 CRC checked: No error
+[1618937112573301] [EccDecode] Average processing time: 0.000911
+[1618937112649103] [EccDecode] Header: 41	 CRC checked: No error
+[1618937112649114] [EccDecode] Average processing time: 0.000893
+[1618937112732092] [EccDecode] Header: 42	 CRC checked: No error
+[1618937112732101] [EccDecode] Average processing time: 0.001113
+[1618937112772174] [EccDecode] Header: 43	 CRC checked: No error
+[1618937112772188] [EccDecode] Average processing time: 0.001092
+[1618937112833232] [EccDecode] Header: 43	 CRC checked: No error
+[1618937112833241] [EccDecode] Average processing time: 0.001071
+[1618937112879241] [EccDecode] Header: 44	 CRC checked: No error
+[1618937112879250] [EccDecode] Average processing time: 0.001051
+[1618937112940156] [EccDecode] Header: 44	 CRC checked: No error
+[1618937112940166] [EccDecode] Average processing time: 0.001032
+[1618937112980155] [EccDecode] Header: 45	 CRC checked: No error
+[1618937112980167] [EccDecode] Average processing time: 0.001014
+[1618937113064157] [EccDecode] Header: 46	 CRC checked: No error
+[1618937113064167] [EccDecode] Average processing time: 0.000996
+[1618937113116156] [EccDecode] Header: 47	 CRC checked: No error
+[1618937113116166] [EccDecode] Average processing time: 0.000979
+[1618937113204156] [EccDecode] Header: 48	 CRC checked: No error
+[1618937113216158] [EccDecode] Average processing time: 0.001169
+[1618937113272156] [EccDecode] Header: 49	 CRC checked: No error
+[1618937113272165] [EccDecode] Average processing time: 0.001149
+[1618937113304698] [EccDecode] Header: 50	 CRC checked: No error
+[1618937113304711] [EccDecode] Average processing time: 0.001130
+[1618937113361684] [EccDecode] Header: 51	 CRC checked: No error
+[1618937113361692] [EccDecode] Average processing time: 0.001112
+[1618937113408871] [EccDecode] Header: 52	 CRC checked: No error
+[1618937113408889] [EccDecode] Average processing time: 0.001095
+[1618937113429207] [EccDecode] Header: 53	 CRC checked: No error
+[1618937113429221] [EccDecode] Average processing time: 0.001077
+[1618937113496157] [EccDecode] Header: 53	 CRC checked: No error
+[1618937113496172] [EccDecode] Average processing time: 0.001061
+[1618937113551529] [EccDecode] Header: 54	 CRC checked: No error
+[1618937113551542] [EccDecode] Average processing time: 0.001045
+[1618937113591256] [EccDecode] Header: 55	 CRC checked: No error
+[1618937113591271] [EccDecode] Average processing time: 0.001029
+[1618937113660175] [EccDecode] Header: 56	 CRC checked: No error
+[1618937113660182] [EccDecode] Average processing time: 0.001014
+[1618937113758908] [EccDecode] Header: 57	 CRC checked: No error
+[1618937113758919] [EccDecode] Average processing time: 0.001058
+[1618937113812526] [EccDecode] Header: 58	 CRC checked: No error
+[1618937113812534] [EccDecode] Average processing time: 0.001043
+[1618937113859469] [EccDecode] Header: 58	 CRC checked: No error
+[1618937113859478] [EccDecode] Average processing time: 0.001028
+[1618937113920171] [EccDecode] Header: 59	 CRC checked: No error
+[1618937113920179] [EccDecode] Average processing time: 0.001143
+[1618937113965098] [EccDecode] Header: 60	 CRC checked: No error
+[1618937113976148] [EccDecode] Average processing time: 0.001208
+[1618937114014838] [EccDecode] Header: 60	 CRC checked: No error
+[1618937114014845] [EccDecode] Average processing time: 0.001192
+[1618937114065290] [EccDecode] Header: 61	 CRC checked: No error
+[1618937114065298] [EccDecode] Average processing time: 0.001176
+[1618937114101141] [EccDecode] Header: 62	 CRC checked: No error
+[1618937114101156] [EccDecode] Average processing time: 0.001160
+[1618937114432538] [EccDecode] Header: 62	 CRC checked: No error
+[1618937114438804] [EccDecode] Average processing time: 0.001227
+[1618937114438900] [EccDecode] Header: 63	 CRC checked: No error
+[1618937114438913] [EccDecode] Average processing time: 0.001212
+[1618937114485266] [EccDecode] Header: 63	 CRC checked: No error
+[1618937114485375] [EccDecode] Average processing time: 0.001225
+[1618937114488903] [EccDecode] Header: 64	 CRC checked: No error
+[1618937114488913] [EccDecode] Average processing time: 0.001210
+[1618937114560169] [EccDecode] Header: 64	 CRC checked: No error
+[1618937114560180] [EccDecode] Average processing time: 0.001195
+[1618937114628155] [EccDecode] Header: 64	 CRC checked: No error
+[1618937114628164] [EccDecode] Average processing time: 0.001181
+[1618937114684393] [EccDecode] Header: 65	 CRC checked: No error
+[1618937114692160] [EccDecode] Average processing time: 0.001261
+[1618937114776432] [EccDecode] Header: 66	 CRC checked: No error
+[1618937114776439] [EccDecode] Average processing time: 0.001246
+[1618937114837119] [EccDecode] Header: 67	 CRC checked: No error
+[1618937114837126] [EccDecode] Average processing time: 0.001231
+[1618937114879467] [EccDecode] Header: 67	 CRC checked: No error
+[1618937114879476] [EccDecode] Average processing time: 0.001217
+[1618937114923314] [EccDecode] Header: 68	 CRC checked: No error
+[1618937114923323] [EccDecode] Average processing time: 0.001203
+[1618937115016408] [EccDecode] Header: 69	 CRC checked: No error
+[1618937115016417] [EccDecode] Average processing time: 0.001189
+[1618937115052401] [EccDecode] Header: 69	 CRC checked: No error
+[1618937115052415] [EccDecode] Average processing time: 0.001176
+[1618937115132347] [EccDecode] Header: 70	 CRC checked: No error
+[1618937115136861] [EccDecode] Average processing time: 0.001214
+[1618937115201098] [EccDecode] Header: 71	 CRC checked: No error
+[1618937115201196] [EccDecode] Average processing time: 0.001246
+[1618937115278789] [EccDecode] Header: 72	 CRC checked: No error
+[1618937115280960] [EccDecode] Average processing time: 0.001276
+[1618937115348418] [EccDecode] Header: 73	 CRC checked: No error
+[1618937115348430] [EccDecode] Average processing time: 0.001262
+[1618937115416427] [EccDecode] Header: 74	 CRC checked: No error
+[1618937115416434] [EccDecode] Average processing time: 0.001249
+[1618937115468420] [EccDecode] Header: 74	 CRC checked: No error
+[1618937115468426] [EccDecode] Average processing time: 0.001235
+[1618937115511105] [EccDecode] Header: 75	 CRC checked: No error
+[1618937115512927] [EccDecode] Average processing time: 0.001307
+[1618937115572430] [EccDecode] Header: 75	 CRC checked: No error
+[1618937115572437] [EccDecode] Average processing time: 0.001293
+[1618937115636446] [EccDecode] Header: 75	 CRC checked: No error
+[1618937115636456] [EccDecode] Average processing time: 0.001280
+[1618937115682332] [EccDecode] Header: 76	 CRC checked: No error
+[1618937115682341] [EccDecode] Average processing time: 0.001267
+[1618937115728426] [EccDecode] Header: 77	 CRC checked: No error
+[1618937115728435] [EccDecode] Average processing time: 0.001254
+[1618937115792156] [EccDecode] Header: 77	 CRC checked: No error
+[1618937115792166] [EccDecode] Average processing time: 0.001242
+[1618937115852164] [EccDecode] Header: 77	 CRC checked: No error
+[1618937115852180] [EccDecode] Average processing time: 0.001230
+[1618937115900156] [EccDecode] Header: 78	 CRC checked: No error
+[1618937115900166] [EccDecode] Average processing time: 0.001218
+[1618937115988413] [EccDecode] Header: 78	 CRC checked: No error
+[1618937115988429] [EccDecode] Average processing time: 0.001206
+[1618937116060155] [EccDecode] Header: 79	 CRC checked: No error
+[1618937116060165] [EccDecode] Average processing time: 0.001195
+[1618937116108157] [EccDecode] Header: 79	 CRC checked: No error
+[1618937116108173] [EccDecode] Average processing time: 0.001184
+[1618937116144419] [EccDecode] Header: 79	 CRC checked: No error
+[1618937116144428] [EccDecode] Average processing time: 0.001173
+[1618937116182317] [EccDecode] Header: 79	 CRC checked: No error
+[1618937116182326] [EccDecode] Average processing time: 0.001162
+[1618937116244434] [EccDecode] Header: 79	 CRC checked: No error
+[1618937116244443] [EccDecode] Average processing time: 0.001151
+[1618937116276581] [EccDecode] Header: 80	 CRC checked: No error
+[1618937116276589] [EccDecode] Average processing time: 0.001141
+[1618937116320673] [EccDecode] Header: 81	 CRC checked: No error
+[1618937116320682] [EccDecode] Average processing time: 0.001131
+[1618937116376154] [EccDecode] Header: 81	 CRC checked: No error
+[1618937116376163] [EccDecode] Average processing time: 0.001121
+[1618937116428165] [EccDecode] Header: 82	 CRC checked: No error
+[1618937116428174] [EccDecode] Average processing time: 0.001111
+[1618937116492154] [EccDecode] Header: 82	 CRC checked: No error
+[1618937116492162] [EccDecode] Average processing time: 0.001101
+[1618937116548154] [EccDecode] Header: 83	 CRC checked: No error
+[1618937116548168] [EccDecode] Average processing time: 0.001091
+[1618937116597575] [EccDecode] Header: 84	 CRC checked: No error
+[1618937116597583] [EccDecode] Average processing time: 0.001082
+[1618937116649400] [EccDecode] Header: 85	 CRC checked: No error
+[1618937116649414] [EccDecode] Average processing time: 0.001073
+[1618937116697321] [EccDecode] Header: 86	 CRC checked: No error
+[1618937116697331] [EccDecode] Average processing time: 0.001064
+[1618937116757313] [EccDecode] Header: 87	 CRC checked: No error
+[1618937116757332] [EccDecode] Average processing time: 0.001055
+[1618937116803330] [EccDecode] Header: 88	 CRC checked: No error
+[1618937116803340] [EccDecode] Average processing time: 0.001046
+[1618937116856156] [EccDecode] Header: 89	 CRC checked: No error
+[1618937116856166] [EccDecode] Average processing time: 0.001038
+[1618937116932168] [EccDecode] Header: 90	 CRC checked: No error
+[1618937116932176] [EccDecode] Average processing time: 0.001029
+[1618937116984156] [EccDecode] Header: 91	 CRC checked: No error
+[1618937116984166] [EccDecode] Average processing time: 0.001021
+[1618937117032794] [EccDecode] Header: 92	 CRC checked: No error
+[1618937117032803] [EccDecode] Average processing time: 0.001013
+[1618937117073091] [EccDecode] Header: 93	 CRC checked: No error
+[1618937117073099] [EccDecode] Average processing time: 0.001005
+[1618937117113105] [EccDecode] Header: 93	 CRC checked: No error
+[1618937117113117] [EccDecode] Average processing time: 0.001030
+[1618937117156938] [EccDecode] Header: 93	 CRC checked: No error
+[1618937117156951] [EccDecode] Average processing time: 0.001053
+[1618937117179478] [EccDecode] Header: 93	 CRC checked: No error
+[1618937117179490] [EccDecode] Average processing time: 0.001045
+[1618937117256425] [EccDecode] Header: 94	 CRC checked: No error
+[1618937117256435] [EccDecode] Average processing time: 0.001037
+[1618937117364932] [EccDecode] Header: 95	 CRC checked: No error
+[1618937117364944] [EccDecode] Average processing time: 0.001060
+[1618937117432428] [EccDecode] Header: 95	 CRC checked: No error
+[1618937117432804] [EccDecode] Average processing time: 0.001055
+[1618937117480454] [EccDecode] Header: 96	 CRC checked: No error
+[1618937117480470] [EccDecode] Average processing time: 0.001047
+[1618937117544155] [EccDecode] Header: 97	 CRC checked: No error
+[1618937117544164] [EccDecode] Average processing time: 0.001039
+[1618937117632157] [EccDecode] Header: 98	 CRC checked: No error
+[1618937117632166] [EccDecode] Average processing time: 0.001031
+[1618937117700156] [EccDecode] Header: 99	 CRC checked: No error
+[1618937117700326] [EccDecode] Average processing time: 0.001025
+[1618937117732156] [EccDecode] Header: 100	 CRC checked: No error
+[1618937117732165] [EccDecode] Average processing time: 0.001017
+[1618937117784926] [EccDecode] Header: 101	 CRC checked: No error
+[1618937117784933] [EccDecode] Average processing time: 0.001010
+[1618937117824854] [EccDecode] Header: 102	 CRC checked: No error
+[1618937117824861] [EccDecode] Average processing time: 0.001016
+[1618937117844899] [EccDecode] Header: 103	 CRC checked: No error
+[1618937117844909] [EccDecode] Average processing time: 0.001009
+[1618937117900175] [EccDecode] Header: 104	 CRC checked: No error
+[1618937117902875] [EccDecode] Average processing time: 0.001021
+[1618937117932170] [EccDecode] Header: 104	 CRC checked: No error
+[1618937117932192] [EccDecode] Average processing time: 0.001014
+[1618937117980166] [EccDecode] Header: 105	 CRC checked: No error
+[1618937117980176] [EccDecode] Average processing time: 0.001007
+[1618937118024169] [EccDecode] Header: 106	 CRC checked: No error
+[1618937118024194] [EccDecode] Average processing time: 0.001000
+[1618937118099302] [EccDecode] Header: 107	 CRC checked: No error
+[1618937118099312] [EccDecode] Average processing time: 0.000993
+[1618937118148438] [EccDecode] Header: 108	 CRC checked: No error
+[1618937118148456] [EccDecode] Average processing time: 0.000986
+[1618937118196963] [EccDecode] Header: 109	 CRC checked: No error
+[1618937118196971] [EccDecode] Average processing time: 0.000980
+[1618937118244464] [EccDecode] Header: 110	 CRC checked: No error
+[1618937118244473] [EccDecode] Average processing time: 0.000973
+[1618937118276436] [EccDecode] Header: 111	 CRC checked: No error
+[1618937118276445] [EccDecode] Average processing time: 0.000966
+[1618937118292452] [EccDecode] Header: 112	 CRC checked: No error
+[1618937118292462] [EccDecode] Average processing time: 0.000960
+[1618937118342894] [EccDecode] Header: 113	 CRC checked: No error
+[1618937118342901] [EccDecode] Average processing time: 0.000954
+[1618937118383178] [EccDecode] Header: 114	 CRC checked: No error
+[1618937118383188] [EccDecode] Average processing time: 0.000947
+[1618937118440863] [EccDecode] Header: 115	 CRC checked: No error
+[1618937118444851] [EccDecode] Average processing time: 0.000994
+[1618937118480790] [EccDecode] Header: 116	 CRC checked: No error
+[1618937118480798] [EccDecode] Average processing time: 0.001014
+[1618937118528430] [EccDecode] Header: 117	 CRC checked: No error
+[1618937118528443] [EccDecode] Average processing time: 0.001007
+[1618937118600155] [EccDecode] Header: 118	 CRC checked: No error
+[1618937118600166] [EccDecode] Average processing time: 0.001001
+[1618937118684157] [EccDecode] Header: 118	 CRC checked: No error
+[1618937118684175] [EccDecode] Average processing time: 0.000995
+[1618937118764167] [EccDecode] Header: 119	 CRC checked: No error
+[1618937118764178] [EccDecode] Average processing time: 0.000988
+[1618937118836421] [EccDecode] Header: 120	 CRC checked: No error
+[1618937118836441] [EccDecode] Average processing time: 0.000982
+[1618937118876412] [EccDecode] Header: 121	 CRC checked: No error
+[1618937118876422] [EccDecode] Average processing time: 0.000976
+[1618937118948432] [EccDecode] Header: 122	 CRC checked: No error
+[1618937118948440] [EccDecode] Average processing time: 0.000970
+[1618937119012487] [EccDecode] Header: 123	 CRC checked: No error
+[1618937119012496] [EccDecode] Average processing time: 0.000964
+[1618937119068476] [EccDecode] Header: 124	 CRC checked: No error
+[1618937119084152] [EccDecode] Average processing time: 0.001056
+[1618937119136154] [EccDecode] Header: 125	 CRC checked: No error
+[1618937119136164] [EccDecode] Average processing time: 0.001049
+[1618937119208165] [EccDecode] Header: 126	 CRC checked: No error
+[1618937119208175] [EccDecode] Average processing time: 0.001043
+[1618937119260165] [EccDecode] Header: 127	 CRC checked: No error
+[1618937119260181] [EccDecode] Average processing time: 0.001037
+[1618937119311216] [EccDecode] Header: 128	 CRC checked: No error
+[1618937119311224] [EccDecode] Average processing time: 0.001030
+[1618937119360154] [EccDecode] Header: 129	 CRC checked: No error
+[1618937119360168] [EccDecode] Average processing time: 0.001024
+[1618937119396409] [EccDecode] Header: 130	 CRC checked: No error
+[1618937119396418] [EccDecode] Average processing time: 0.001018
+[1618937119460402] [EccDecode] Header: 130	 CRC checked: No error
+[1618937119460417] [EccDecode] Average processing time: 0.001012
+[1618937119524154] [EccDecode] Header: 131	 CRC checked: No error
+[1618937119524162] [EccDecode] Average processing time: 0.001006
+[1618937119584167] [EccDecode] Header: 132	 CRC checked: No error
+[1618937119584180] [EccDecode] Average processing time: 0.001001
+[1618937119632154] [EccDecode] Header: 133	 CRC checked: No error
+[1618937119632162] [EccDecode] Average processing time: 0.000995
+[1618937119688431] [EccDecode] Header: 134	 CRC checked: No error
+[1618937119704160] [EccDecode] Average processing time: 0.001080
+[1618937119780155] [EccDecode] Header: 135	 CRC checked: No error
+[1618937119788291] [EccDecode] Average processing time: 0.001121
+[1618937119852408] [EccDecode] Header: 136	 CRC checked: No error
+[1618937119852418] [EccDecode] Average processing time: 0.001115
+[1618937119876467] [EccDecode] Header: 137	 CRC checked: No error
+[1618937119876476] [EccDecode] Average processing time: 0.001109
+[1618937119908450] [EccDecode] Header: 138	 CRC checked: No error
+[1618937119908458] [EccDecode] Average processing time: 0.001102
+[1618937119996155] [EccDecode] Header: 139	 CRC checked: No error
+[1618937119996169] [EccDecode] Average processing time: 0.001096
+[1618937120028155] [EccDecode] Header: 140	 CRC checked: No error
+[1618937120028164] [EccDecode] Average processing time: 0.001090
+[1618937120348194] [EccDecode] Header: 140	 CRC checked: No error
+[1618937120348214] [EccDecode] Average processing time: 0.001084
+[1618937120617274] [EccDecode] Header: 140	 CRC checked: No error
+[1618937120617285] [EccDecode] Average processing time: 0.001078
+[1618937120680155] [EccDecode] Header: 141	 CRC checked: No error
+[1618937120680171] [EccDecode] Average processing time: 0.001072
+[1618937120732167] [EccDecode] Header: 142	 CRC checked: No error
+[1618937120732177] [EccDecode] Average processing time: 0.001067
+[1618937120804572] [EccDecode] Header: 142	 CRC checked: No error
+[1618937120804586] [EccDecode] Average processing time: 0.001061
+[1618937120848412] [EccDecode] Header: 143	 CRC checked: No error
+[1618937120848421] [EccDecode] Average processing time: 0.001055
+[1618937120920432] [EccDecode] Header: 143	 CRC checked: No error
+[1618937120920440] [EccDecode] Average processing time: 0.001050
+[1618937120980169] [EccDecode] Header: 144	 CRC checked: No error
+[1618937120980177] [EccDecode] Average processing time: 0.001044
+[1618937121028153] [EccDecode] Header: 145	 CRC checked: No error
+[1618937121028161] [EccDecode] Average processing time: 0.001039
+[1618937121080155] [EccDecode] Header: 146	 CRC checked: No error
+[1618937121092157] [EccDecode] Average processing time: 0.001097
+[1618937121148154] [EccDecode] Header: 147	 CRC checked: No error
+[1618937121148162] [EccDecode] Average processing time: 0.001091
+[1618937121216411] [EccDecode] Header: 148	 CRC checked: No error
+[1618937121232159] [EccDecode] Average processing time: 0.001168
+[1618937121265332] [EccDecode] Header: 148	 CRC checked: No error
+[1618937121265342] [EccDecode] Average processing time: 0.001162
+[1618937121315313] [EccDecode] Header: 148	 CRC checked: No error
+[1618937121315330] [EccDecode] Average processing time: 0.001156
+[1618937121355268] [EccDecode] Header: 149	 CRC checked: No error
+[1618937121355277] [EccDecode] Average processing time: 0.001150
+[1618937121403164] [EccDecode] Header: 150	 CRC checked: No error
+[1618937121403178] [EccDecode] Average processing time: 0.001145
+[1618937121485186] [EccDecode] Header: 151	 CRC checked: No error
+[1618937121485196] [EccDecode] Average processing time: 0.001139
+[1618937121529115] [EccDecode] Header: 151	 CRC checked: No error
+[1618937121529124] [EccDecode] Average processing time: 0.001133
+[1618937121561090] [EccDecode] Header: 152	 CRC checked: No error
+[1618937121561097] [EccDecode] Average processing time: 0.001127
+[1618937121608604] [EccDecode] Header: 153	 CRC checked: No error
+[1618937121608612] [EccDecode] Average processing time: 0.001122
+[1618937121640447] [EccDecode] Header: 154	 CRC checked: No error
+[1618937121640455] [EccDecode] Average processing time: 0.001116
+[1618937121691021] [EccDecode] Header: 154	 CRC checked: No error
+[1618937121691031] [EccDecode] Average processing time: 0.001111
+[1618937121753173] [EccDecode] Header: 155	 CRC checked: No error
+[1618937121753182] [EccDecode] Average processing time: 0.001105
+[1618937121787240] [EccDecode] Header: 156	 CRC checked: No error
+[1618937121796150] [EccDecode] Average processing time: 0.001144
+[1618937121861032] [EccDecode] Header: 157	 CRC checked: No error
+[1618937121861047] [EccDecode] Average processing time: 0.001138
+[1618937121924155] [EccDecode] Header: 158	 CRC checked: No error
+[1618937121932158] [EccDecode] Average processing time: 0.001172
+[1618937121988154] [EccDecode] Header: 159	 CRC checked: No error
+[1618937121988169] [EccDecode] Average processing time: 0.001166
+[1618937122057395] [EccDecode] Header: 160	 CRC checked: No error
+[1618937122068160] [EccDecode] Average processing time: 0.001213
+[1618937122125280] [EccDecode] Header: 161	 CRC checked: No error
+[1618937122144159] [EccDecode] Average processing time: 0.001298
+[1618937122216163] [EccDecode] Header: 162	 CRC checked: No error
+[1618937122216171] [EccDecode] Average processing time: 0.001292
+[1618937122284412] [EccDecode] Header: 163	 CRC checked: No error
+[1618937122288160] [EccDecode] Average processing time: 0.001304
+[1618937122348440] [EccDecode] Header: 164	 CRC checked: No error
+[1618937122356160] [EccDecode] Average processing time: 0.001335
+[1618937122388392] [EccDecode] Header: 165	 CRC checked: No error
+[1618937122388402] [EccDecode] Average processing time: 0.001328
+[1618937122436460] [EccDecode] Header: 166	 CRC checked: No error
+[1618937122436470] [EccDecode] Average processing time: 0.001322
+[1618937122484446] [EccDecode] Header: 166	 CRC checked: No error
+[1618937122484454] [EccDecode] Average processing time: 0.001316
+[1618937122548451] [EccDecode] Header: 167	 CRC checked: No error
+[1618937122556159] [EccDecode] Average processing time: 0.001346
+[1618937122584410] [EccDecode] Header: 168	 CRC checked: No error
+[1618937122584420] [EccDecode] Average processing time: 0.001340
+[1618937122624400] [EccDecode] Header: 169	 CRC checked: No error
+[1618937122624414] [EccDecode] Average processing time: 0.001334
+[1618937122700429] [EccDecode] Header: 169	 CRC checked: No error
+[1618937122700440] [EccDecode] Average processing time: 0.001328
+[1618937122772397] [EccDecode] Header: 170	 CRC checked: No error
+[1618937122772415] [EccDecode] Average processing time: 0.001322
+[1618937122872155] [EccDecode] Header: 171	 CRC checked: No error
+[1618937122872163] [EccDecode] Average processing time: 0.001316
+[1618937122936155] [EccDecode] Header: 172	 CRC checked: No error
+[1618937122936178] [EccDecode] Average processing time: 0.001310
+[1618937122992445] [EccDecode] Header: 172	 CRC checked: No error
+[1618937122992475] [EccDecode] Average processing time: 0.001304
+[1618937123029061] [EccDecode] Header: 172	 CRC checked: No error
+[1618937123029071] [EccDecode] Average processing time: 0.001298
+[1618937123076670] [EccDecode] Header: 173	 CRC checked: No error
+[1618937123076690] [EccDecode] Average processing time: 0.001292
+[1618937123120155] [EccDecode] Header: 174	 CRC checked: No error
+[1618937123120166] [EccDecode] Average processing time: 0.001287
+[1618937123147037] [EccDecode] Header: 175	 CRC checked: No error
+[1618937123147046] [EccDecode] Average processing time: 0.001281
+[1618937123208154] [EccDecode] Header: 176	 CRC checked: No error
+[1618937123208163] [EccDecode] Average processing time: 0.001276
+[1618937123256154] [EccDecode] Header: 177	 CRC checked: No error
+[1618937123256162] [EccDecode] Average processing time: 0.001270
+[1618937123296442] [EccDecode] Header: 177	 CRC checked: No error
+[1618937123296453] [EccDecode] Average processing time: 0.001264
+[1618937123348154] [EccDecode] Header: 177	 CRC checked: No error
+[1618937123348169] [EccDecode] Average processing time: 0.001259
+[1618937123452424] [EccDecode] Header: 178	 CRC checked: No error
+[1618937123452433] [EccDecode] Average processing time: 0.001254
+[1618937123500420] [EccDecode] Header: 179	 CRC checked: No error
+[1618937123500432] [EccDecode] Average processing time: 0.001248
+[1618937123552420] [EccDecode] Header: 179	 CRC checked: No error
+[1618937123552431] [EccDecode] Average processing time: 0.001243
+[1618937123668425] [EccDecode] Header: 179	 CRC checked: No error
+[1618937123668441] [EccDecode] Average processing time: 0.001238
+[1618937123728442] [EccDecode] Header: 180	 CRC checked: No error
+[1618937123728451] [EccDecode] Average processing time: 0.001232
+[1618937123776420] [EccDecode] Header: 181	 CRC checked: No error
+[1618937123776428] [EccDecode] Average processing time: 0.001227
+[1618937123848409] [EccDecode] Header: 182	 CRC checked: No error
+[1618937123856166] [EccDecode] Average processing time: 0.001255
+[1618937123896486] [EccDecode] Header: 182	 CRC checked: No error
+[1618937123912153] [EccDecode] Average processing time: 0.001316
+[1618937123996155] [EccDecode] Header: 183	 CRC checked: No error
+[1618937123996163] [EccDecode] Average processing time: 0.001310
+[1618937124048162] [EccDecode] Header: 184	 CRC checked: No error
+[1618937124048171] [EccDecode] Average processing time: 0.001305
+[1618937124116155] [EccDecode] Header: 184	 CRC checked: No error
+[1618937124116165] [EccDecode] Average processing time: 0.001300
+[1618937124168411] [EccDecode] Header: 185	 CRC checked: No error
+[1618937124168418] [EccDecode] Average processing time: 0.001294
+[1618937124248418] [EccDecode] Header: 186	 CRC checked: No error
+[1618937124248434] [EccDecode] Average processing time: 0.001289
+[1618937124288469] [EccDecode] Header: 187	 CRC checked: No error
+[1618937124288478] [EccDecode] Average processing time: 0.001284
+[1618937124376160] [EccDecode] Header: 187	 CRC checked: No error
+[1618937124387837] [EccDecode] Average processing time: 0.001326
+[1618937124472166] [EccDecode] Header: 187	 CRC checked: No error
+[1618937124472175] [EccDecode] Average processing time: 0.001321
+[1618937124544431] [EccDecode] Header: 188	 CRC checked: No error
+[1618937124544445] [EccDecode] Average processing time: 0.001316
+[1618937124620428] [EccDecode] Header: 188	 CRC checked: No error
+[1618937124620438] [EccDecode] Average processing time: 0.001310
+[1618937124677052] [EccDecode] Header: 189	 CRC checked: No error
+[1618937124677063] [EccDecode] Average processing time: 0.001305
+[1618937124733444] [EccDecode] Header: 189	 CRC checked: No error
+[1618937124733453] [EccDecode] Average processing time: 0.001300
+[1618937124759117] [EccDecode] Header: 190	 CRC checked: No error
+[1618937124759126] [EccDecode] Average processing time: 0.001295
+[1618937124804154] [EccDecode] Header: 191	 CRC checked: No error
+[1618937124804170] [EccDecode] Average processing time: 0.001290
+[1618937124840169] [EccDecode] Header: 192	 CRC checked: No error
+[1618937124840178] [EccDecode] Average processing time: 0.001285
+[1618937124896154] [EccDecode] Header: 193	 CRC checked: No error
+[1618937124896172] [EccDecode] Average processing time: 0.001280
+[1618937124949312] [EccDecode] Header: 194	 CRC checked: No error
+[1618937124949319] [EccDecode] Average processing time: 0.001275
+[1618937125028155] [EccDecode] Header: 195	 CRC checked: No error
+[1618937125028176] [EccDecode] Average processing time: 0.001270
+[1618937125076214] [EccDecode] Header: 196	 CRC checked: No error
+[1618937125076225] [EccDecode] Average processing time: 0.001265
+[1618937125140400] [EccDecode] Header: 197	 CRC checked: No error
+[1618937125140412] [EccDecode] Average processing time: 0.001260
+[1618937125188153] [EccDecode] Header: 198	 CRC checked: No error
+[1618937125188161] [EccDecode] Average processing time: 0.001255
+[1618937125225234] [EccDecode] Header: 199	 CRC checked: No error
+[1618937125225247] [EccDecode] Average processing time: 0.001250
+[1618937125273140] [EccDecode] Header: 199	 CRC checked: No error
+[1618937125273148] [EccDecode] Average processing time: 0.001246
+[1618937125295217] [EccDecode] Header: 200	 CRC checked: No error
+[1618937125295226] [EccDecode] Average processing time: 0.001241
+[1618937125333047] [EccDecode] Header: 200	 CRC checked: No error
+[1618937125333055] [EccDecode] Average processing time: 0.001236
+[1618937125392155] [EccDecode] Header: 201	 CRC checked: No error
+[1618937125392164] [EccDecode] Average processing time: 0.001232
+[1618937125432158] [EccDecode] Header: 201	 CRC checked: No error
+[1618937125432165] [EccDecode] Average processing time: 0.001227
+[1618937125496154] [EccDecode] Header: 201	 CRC checked: No error
+[1618937125496162] [EccDecode] Average processing time: 0.001222
+[1618937125560598] [EccDecode] Header: 202	 CRC checked: No error
+[1618937125560613] [EccDecode] Average processing time: 0.001218
+[1618937125605329] [EccDecode] Header: 203	 CRC checked: No error
+[1618937125605338] [EccDecode] Average processing time: 0.001213
+[1618937125687365] [EccDecode] Header: 204	 CRC checked: No error
+[1618937125687380] [EccDecode] Average processing time: 0.001209
+[1618937125717060] [EccDecode] Header: 205	 CRC checked: No error
+[1618937125717069] [EccDecode] Average processing time: 0.001205
+[1618937125764154] [EccDecode] Header: 206	 CRC checked: No error
+[1618937125764168] [EccDecode] Average processing time: 0.001200
+[1618937125852153] [EccDecode] Header: 206	 CRC checked: No error
+[1618937125852160] [EccDecode] Average processing time: 0.001196
+[1618937125887423] [EccDecode] Header: 207	 CRC checked: No error
+[1618937125887439] [EccDecode] Average processing time: 0.001191
+[1618937125915436] [EccDecode] Header: 208	 CRC checked: No error
+[1618937125915444] [EccDecode] Average processing time: 0.001187
+[1618937125972713] [EccDecode] Header: 208	 CRC checked: No error
+[1618937125972722] [EccDecode] Average processing time: 0.001183
+[1618937126005316] [EccDecode] Header: 209	 CRC checked: No error
+[1618937126005326] [EccDecode] Average processing time: 0.001179
+[1618937126080166] [EccDecode] Header: 210	 CRC checked: No error
+[1618937126080175] [EccDecode] Average processing time: 0.001174
+[1618937126360412] [EccDecode] Header: 210	 CRC checked: No error
+[1618937126360421] [EccDecode] Average processing time: 0.001170
+[1618937126460418] [EccDecode] Header: 211	 CRC checked: No error
+[1618937126460427] [EccDecode] Average processing time: 0.001166
+[1618937126520165] [EccDecode] Header: 211	 CRC checked: No error
+[1618937126520178] [EccDecode] Average processing time: 0.001162
+[1618937126572154] [EccDecode] Header: 212	 CRC checked: No error
+[1618937126572162] [EccDecode] Average processing time: 0.001158
+[1618937126608407] [EccDecode] Header: 213	 CRC checked: No error
+[1618937126624151] [EccDecode] Average processing time: 0.001210
+[1618937126700156] [EccDecode] Header: 214	 CRC checked: No error
+[1618937126700167] [EccDecode] Average processing time: 0.001206
+[1618937126752414] [EccDecode] Header: 215	 CRC checked: No error
+[1618937126752434] [EccDecode] Average processing time: 0.001201
+[1618937126804406] [EccDecode] Header: 216	 CRC checked: No error
+[1618937126804416] [EccDecode] Average processing time: 0.001197
+[1618937126860405] [EccDecode] Header: 217	 CRC checked: No error
+[1618937126860426] [EccDecode] Average processing time: 0.001193
+[1618937126913205] [EccDecode] Header: 218	 CRC checked: No error
+[1618937126913218] [EccDecode] Average processing time: 0.001189
+[1618937126947242] [EccDecode] Header: 218	 CRC checked: No error
+[1618937126947254] [EccDecode] Average processing time: 0.001185
+[1618937127008156] [EccDecode] Header: 219	 CRC checked: No error
+[1618937127008166] [EccDecode] Average processing time: 0.001181
+[1618937127075376] [EccDecode] Header: 220	 CRC checked: No error
+[1618937127080150] [EccDecode] Average processing time: 0.001193
+[1618937127132397] [EccDecode] Header: 221	 CRC checked: No error
+[1618937127132409] [EccDecode] Average processing time: 0.001189
+[1618937127200413] [EccDecode] Header: 222	 CRC checked: No error
+[1618937127200423] [EccDecode] Average processing time: 0.001185
+[1618937127220408] [EccDecode] Header: 223	 CRC checked: No error
+[1618937127220424] [EccDecode] Average processing time: 0.001181
+[1618937127244396] [EccDecode] Header: 223	 CRC checked: No error
+[1618937127252161] [EccDecode] Average processing time: 0.001204
+[1618937127300930] [EccDecode] Header: 224	 CRC checked: No error
+[1618937127300952] [EccDecode] Average processing time: 0.001200
+[1618937127332867] [EccDecode] Header: 225	 CRC checked: No error
+[1618937127332876] [EccDecode] Average processing time: 0.001196
+[1618937127400395] [EccDecode] Header: 226	 CRC checked: No error
+[1618937127400409] [EccDecode] Average processing time: 0.001192
+[1618937127440391] [EccDecode] Header: 227	 CRC checked: No error
+[1618937127440400] [EccDecode] Average processing time: 0.001188
+[1618937127531416] [EccDecode] Header: 228	 CRC checked: No error
+[1618937127531435] [EccDecode] Average processing time: 0.001184
+[1618937127581095] [EccDecode] Header: 228	 CRC checked: No error
+[1618937127581107] [EccDecode] Average processing time: 0.001180
+[1618937127605383] [EccDecode] Header: 228	 CRC checked: No error
+[1618937127605392] [EccDecode] Average processing time: 0.001176
+[1618937127667123] [EccDecode] Header: 229	 CRC checked: No error
+[1618937127667133] [EccDecode] Average processing time: 0.001172
+[1618937127711035] [EccDecode] Header: 230	 CRC checked: No error
+[1618937127711048] [EccDecode] Average processing time: 0.001168
+[1618937127741149] [EccDecode] Header: 230	 CRC checked: No error
+[1618937127741161] [EccDecode] Average processing time: 0.001165
+[1618937127788154] [EccDecode] Header: 231	 CRC checked: No error
+[1618937127788162] [EccDecode] Average processing time: 0.001161
+[1618937127872167] [EccDecode] Header: 232	 CRC checked: No error
+[1618937127872183] [EccDecode] Average processing time: 0.001157
+[1618937127960167] [EccDecode] Header: 232	 CRC checked: No error
+[1618937127960177] [EccDecode] Average processing time: 0.001153
+[1618937127996174] [EccDecode] Header: 233	 CRC checked: No error
+[1618937127996190] [EccDecode] Average processing time: 0.001150
+[1618937128060155] [EccDecode] Header: 233	 CRC checked: No error
+[1618937128060163] [EccDecode] Average processing time: 0.001146
+[1618937128100154] [EccDecode] Header: 234	 CRC checked: No error
+[1618937128100170] [EccDecode] Average processing time: 0.001142
+[1618937128164434] [EccDecode] Header: 234	 CRC checked: No error
+[1618937128168152] [EccDecode] Average processing time: 0.001151
+[1618937128220428] [EccDecode] Header: 235	 CRC checked: No error
+[1618937128220441] [EccDecode] Average processing time: 0.001147
+[1618937128256168] [EccDecode] Header: 236	 CRC checked: No error
+[1618937128256177] [EccDecode] Average processing time: 0.001143
+[1618937128285342] [EccDecode] Header: 237	 CRC checked: No error
+[1618937128285350] [EccDecode] Average processing time: 0.001140
+[1618937128352429] [EccDecode] Header: 237	 CRC checked: No error
+[1618937128352443] [EccDecode] Average processing time: 0.001136
+[1618937128408164] [EccDecode] Header: 238	 CRC checked: No error
+[1618937128408172] [EccDecode] Average processing time: 0.001133
+[1618937128456165] [EccDecode] Header: 238	 CRC checked: No error
+[1618937128456173] [EccDecode] Average processing time: 0.001129
+[1618937128528429] [EccDecode] Header: 239	 CRC checked: No error
+[1618937128528438] [EccDecode] Average processing time: 0.001126
+[1618937128572154] [EccDecode] Header: 239	 CRC checked: No error
+[1618937128572178] [EccDecode] Average processing time: 0.001122
+[1618937128620165] [EccDecode] Header: 240	 CRC checked: No error
+[1618937128620178] [EccDecode] Average processing time: 0.001119
+[1618937128651275] [EccDecode] Header: 241	 CRC checked: No error
+[1618937128651289] [EccDecode] Average processing time: 0.001115
+[1618937128680166] [EccDecode] Header: 242	 CRC checked: No error
+[1618937128680175] [EccDecode] Average processing time: 0.001112
+[1618937128985192] [EccDecode] Header: 242	 CRC checked: No error
+[1618937128985212] [EccDecode] Average processing time: 0.001109
+[1618937129017123] [EccDecode] Header: 243	 CRC checked: No error
+[1618937129017132] [EccDecode] Average processing time: 0.001105
+[1618937129019307] [EccDecode] Header: 243	 CRC checked: No error
+[1618937129019312] [EccDecode] Average processing time: 0.001102
+[1618937129084476] [EccDecode] Header: 244	 CRC checked: No error
+[1618937129084488] [EccDecode] Average processing time: 0.001098
+[1618937129149225] [EccDecode] Header: 245	 CRC checked: No error
+[1618937129152151] [EccDecode] Average processing time: 0.001104
+[1618937129221135] [EccDecode] Header: 245	 CRC checked: No error
+[1618937129221145] [EccDecode] Average processing time: 0.001101
+[1618937129276155] [EccDecode] Header: 246	 CRC checked: No error
+[1618937129276164] [EccDecode] Average processing time: 0.001097
+[1618937129372421] [EccDecode] Header: 247	 CRC checked: No error
+[1618937129372430] [EccDecode] Average processing time: 0.001094
+[1618937129436406] [EccDecode] Header: 248	 CRC checked: No error
+[1618937129436415] [EccDecode] Average processing time: 0.001091
+[1618937129508156] [EccDecode] Header: 248	 CRC checked: No error
+[1618937129508173] [EccDecode] Average processing time: 0.001088
+[1618937129588472] [EccDecode] Header: 249	 CRC checked: No error
+[1618937129608153] [EccDecode] Average processing time: 0.001144
+[1618937129664165] [EccDecode] Header: 250	 CRC checked: No error
+[1618937129664182] [EccDecode] Average processing time: 0.001140
+[1618937129704155] [EccDecode] Header: 251	 CRC checked: No error
+[1618937129704164] [EccDecode] Average processing time: 0.001137
+[1618937129796155] [EccDecode] Header: 252	 CRC checked: No error
+[1618937129796177] [EccDecode] Average processing time: 0.001134
+[1618937129840166] [EccDecode] Header: 252	 CRC checked: No error
+[1618937129840175] [EccDecode] Average processing time: 0.001130
+[1618937129904411] [EccDecode] Header: 253	 CRC checked: No error
+[1618937129904420] [EccDecode] Average processing time: 0.001127
+[1618937129964419] [EccDecode] Header: 254	 CRC checked: No error
+[1618937129964429] [EccDecode] Average processing time: 0.001124
+[1618937130044736] [EccDecode] Header: 255	 CRC checked: No error
+[1618937130044746] [EccDecode] Average processing time: 0.001120
+[1618937130104490] [EccDecode] Header: 256	 CRC checked: No error
+[1618937130104501] [EccDecode] Average processing time: 0.001117
+[1618937130184155] [EccDecode] Header: 257	 CRC checked: No error
+[1618937130184165] [EccDecode] Average processing time: 0.001114
+[1618937130228163] [EccDecode] Header: 258	 CRC checked: No error
+[1618937130228176] [EccDecode] Average processing time: 0.001111
+[1618937130284441] [EccDecode] Header: 259	 CRC checked: No error
+[1618937130284452] [EccDecode] Average processing time: 0.001108
+[1618937130321332] [EccDecode] Header: 260	 CRC checked: No error
+[1618937130321349] [EccDecode] Average processing time: 0.001104
+[1618937130416418] [EccDecode] Header: 261	 CRC checked: No error
+[1618937130416435] [EccDecode] Average processing time: 0.001101
+[1618937130472418] [EccDecode] Header: 262	 CRC checked: No error
+[1618937130472435] [EccDecode] Average processing time: 0.001098
+[1618937130548400] [EccDecode] Header: 263	 CRC checked: No error
+[1618937130548412] [EccDecode] Average processing time: 0.001095
+[1618937130604976] [EccDecode] Header: 263	 CRC checked: No error
+[1618937130604993] [EccDecode] Average processing time: 0.001092
+[1618937130644571] [EccDecode] Header: 264	 CRC checked: No error
+[1618937130644579] [EccDecode] Average processing time: 0.001089
+[1618937130675278] [EccDecode] Header: 265	 CRC checked: No error
+[1618937130675295] [EccDecode] Average processing time: 0.001086
+[1618937130695233] [EccDecode] Header: 266	 CRC checked: No error
+[1618937130695242] [EccDecode] Average processing time: 0.001083
+[1618937130727260] [EccDecode] Header: 267	 CRC checked: No error
+[1618937130727270] [EccDecode] Average processing time: 0.001080
+[1618937130801256] [EccDecode] Header: 268	 CRC checked: No error
+[1618937130801267] [EccDecode] Average processing time: 0.001077
+[1618937130834960] [EccDecode] Header: 269	 CRC checked: No error
+[1618937130834970] [EccDecode] Average processing time: 0.001074
+[1618937130877131] [EccDecode] Header: 270	 CRC checked: No error
+[1618937130877143] [EccDecode] Average processing time: 0.001071
+[1618937130939147] [EccDecode] Header: 271	 CRC checked: No error
+[1618937130939158] [EccDecode] Average processing time: 0.001068
+[1618937130977618] [EccDecode] Header: 272	 CRC checked: No error
+[1618937130977632] [EccDecode] Average processing time: 0.001065
+[1618937131012429] [EccDecode] Header: 273	 CRC checked: No error
+[1618937131012441] [EccDecode] Average processing time: 0.001062
+[1618937131076398] [EccDecode] Header: 274	 CRC checked: No error
+[1618937131076415] [EccDecode] Average processing time: 0.001059
+[1618937131172164] [EccDecode] Header: 275	 CRC checked: No error
+[1618937131172174] [EccDecode] Average processing time: 0.001056
+[1618937131228411] [EccDecode] Header: 276	 CRC checked: No error
+[1618937131228431] [EccDecode] Average processing time: 0.001053
+[1618937131271276] [EccDecode] Header: 277	 CRC checked: No error
+[1618937131271285] [EccDecode] Average processing time: 0.001050
+[1618937131320154] [EccDecode] Header: 278	 CRC checked: No error
+[1618937131320162] [EccDecode] Average processing time: 0.001048
+[1618937131352154] [EccDecode] Header: 279	 CRC checked: No error
+[1618937131352161] [EccDecode] Average processing time: 0.001045
+[1618937131421181] [EccDecode] Header: 280	 CRC checked: No error
+[1618937131421191] [EccDecode] Average processing time: 0.001042
+[1618937131469095] [EccDecode] Header: 281	 CRC checked: No error
+[1618937131469104] [EccDecode] Average processing time: 0.001039
+[1618937131772441] [EccDecode] Header: 281	 CRC checked: No error
+[1618937131772451] [EccDecode] Average processing time: 0.001036
+[1618937131840409] [EccDecode] Header: 282	 CRC checked: No error
+[1618937131840417] [EccDecode] Average processing time: 0.001033
+[1618937131940454] [EccDecode] Header: 283	 CRC checked: No error
+[1618937131940464] [EccDecode] Average processing time: 0.001031
+[1618937131984420] [EccDecode] Header: 283	 CRC checked: No error
+[1618937131984435] [EccDecode] Average processing time: 0.001028
+[1618937132016396] [EccDecode] Header: 284	 CRC checked: No error
+[1618937132016968] [EccDecode] Average processing time: 0.001027
+[1618937132084406] [EccDecode] Header: 285	 CRC checked: No error
+[1618937132084420] [EccDecode] Average processing time: 0.001024
+[1618937132152155] [EccDecode] Header: 286	 CRC checked: No error
+[1618937132152163] [EccDecode] Average processing time: 0.001021
+[1618937132200407] [EccDecode] Header: 286	 CRC checked: No error
+[1618937132200421] [EccDecode] Average processing time: 0.001019
+[1618937132252416] [EccDecode] Header: 287	 CRC checked: No error
+[1618937132256971] [EccDecode] Average processing time: 0.001028
+[1618937132312541] [EccDecode] Header: 288	 CRC checked: No error
+[1618937132316164] [EccDecode] Average processing time: 0.001035
+[1618937132352825] [EccDecode] Header: 288	 CRC checked: No error
+[1618937132352834] [EccDecode] Average processing time: 0.001032
+[1618937132428683] [EccDecode] Header: 289	 CRC checked: No error
+[1618937132428691] [EccDecode] Average processing time: 0.001030
+[1618937132460439] [EccDecode] Header: 290	 CRC checked: No error
+[1618937132460447] [EccDecode] Average processing time: 0.001027
+[1618937132505160] [EccDecode] Header: 291	 CRC checked: No error
+[1618937132505169] [EccDecode] Average processing time: 0.001024
+[1618937132565330] [EccDecode] Header: 292	 CRC checked: No error
+[1618937132565345] [EccDecode] Average processing time: 0.001022
+[1618937132628851] [EccDecode] Header: 293	 CRC checked: No error
+[1618937132628861] [EccDecode] Average processing time: 0.001019
+[1618937132665885] [EccDecode] Header: 294	 CRC checked: No error
+[1618937132665900] [EccDecode] Average processing time: 0.001016
+[1618937132716158] [EccDecode] Header: 295	 CRC checked: No error
+[1618937132716169] [EccDecode] Average processing time: 0.001014
+[1618937132766941] [EccDecode] Header: 295	 CRC checked: No error
+[1618937132766953] [EccDecode] Average processing time: 0.001011
+[1618937132816675] [EccDecode] Header: 296	 CRC checked: No error
+[1618937132816682] [EccDecode] Average processing time: 0.001009
+[1618937132856175] [EccDecode] Header: 296	 CRC checked: No error
+[1618937132856187] [EccDecode] Average processing time: 0.001006
+[1618937132912155] [EccDecode] Header: 297	 CRC checked: No error
+[1618937132912167] [EccDecode] Average processing time: 0.001004
+[1618937132979152] [EccDecode] Header: 298	 CRC checked: No error
+[1618937132979164] [EccDecode] Average processing time: 0.001001
+[1618937133029244] [EccDecode] Header: 298	 CRC checked: No error
+[1618937133029253] [EccDecode] Average processing time: 0.000998
+[1618937133069260] [EccDecode] Header: 299	 CRC checked: No error
+[1618937133069270] [EccDecode] Average processing time: 0.000996
+[1618937133109196] [EccDecode] Header: 300	 CRC checked: No error
+[1618937133109205] [EccDecode] Average processing time: 0.000993
+[1618937133129062] [EccDecode] Header: 301	 CRC checked: No error
+[1618937133144160] [EccDecode] Average processing time: 0.001029
+[1618937133199157] [EccDecode] Header: 301	 CRC checked: No error
+[1618937133199175] [EccDecode] Average processing time: 0.001027
+[1618937133241320] [EccDecode] Header: 302	 CRC checked: No error
+[1618937133241330] [EccDecode] Average processing time: 0.001024
+[1618937133261222] [EccDecode] Header: 303	 CRC checked: No error
+[1618937133261240] [EccDecode] Average processing time: 0.001022
+[1618937133308596] [EccDecode] Header: 304	 CRC checked: No error
+[1618937133308606] [EccDecode] Average processing time: 0.001019
+[1618937133360156] [EccDecode] Header: 305	 CRC checked: No error
+[1618937133360170] [EccDecode] Average processing time: 0.001017
+[1618937133420170] [EccDecode] Header: 306	 CRC checked: No error
+[1618937133420180] [EccDecode] Average processing time: 0.001014
+[1618937133460155] [EccDecode] Header: 307	 CRC checked: No error
+[1618937133460171] [EccDecode] Average processing time: 0.001012
+[1618937133488818] [EccDecode] Header: 308	 CRC checked: No error
+[1618937133488825] [EccDecode] Average processing time: 0.001009
+[1618937133527671] [EccDecode] Header: 309	 CRC checked: No error
+[1618937133527680] [EccDecode] Average processing time: 0.001007
+[1618937133569410] [EccDecode] Header: 310	 CRC checked: No error
+[1618937133569421] [EccDecode] Average processing time: 0.001004
+[1618937133600286] [EccDecode] Header: 311	 CRC checked: No error
+[1618937133600295] [EccDecode] Average processing time: 0.001002
+[1618937133625319] [EccDecode] Header: 312	 CRC checked: No error
+[1618937133625328] [EccDecode] Average processing time: 0.000999
+[1618937133649969] [EccDecode] Header: 313	 CRC checked: No error
+[1618937133649979] [EccDecode] Average processing time: 0.000997
+[1618937133698762] [EccDecode] Header: 314	 CRC checked: No error
+[1618937133698774] [EccDecode] Average processing time: 0.000995
+[1618937133756262] [EccDecode] Header: 315	 CRC checked: No error
+[1618937133756268] [EccDecode] Average processing time: 0.000992
+[1618937133788772] [EccDecode] Header: 316	 CRC checked: No error
+[1618937133788784] [EccDecode] Average processing time: 0.000999
+[1618937133808824] [EccDecode] Header: 317	 CRC checked: No error
+[1618937133808831] [EccDecode] Average processing time: 0.000997
+[1618937133843469] [EccDecode] Header: 318	 CRC checked: No error
+[1618937133843485] [EccDecode] Average processing time: 0.000995
+[1618937133887787] [EccDecode] Header: 319	 CRC checked: No error
+[1618937133887796] [EccDecode] Average processing time: 0.000993
+[1618937133949116] [EccDecode] Header: 320	 CRC checked: No error
+[1618937133949132] [EccDecode] Average processing time: 0.000990
+[1618937134020155] [EccDecode] Header: 321	 CRC checked: No error
+[1618937134020165] [EccDecode] Average processing time: 0.000988
+[1618937134088156] [EccDecode] Header: 322	 CRC checked: No error
+[1618937134088166] [EccDecode] Average processing time: 0.000985
+[1618937134145255] [EccDecode] Header: 323	 CRC checked: No error
+[1618937134145262] [EccDecode] Average processing time: 0.000983
+[1618937134165115] [EccDecode] Header: 324	 CRC checked: No error
+[1618937134165121] [EccDecode] Average processing time: 0.000981
+[1618937134206947] [EccDecode] Header: 325	 CRC checked: No error
+[1618937134216172] [EccDecode] Average processing time: 0.001007
+[1618937134256802] [EccDecode] Header: 326	 CRC checked: No error
+[1618937134256809] [EccDecode] Average processing time: 0.001005
+[1618937134336156] [EccDecode] Header: 327	 CRC checked: No error
+[1618937134336172] [EccDecode] Average processing time: 0.001002
+[1618937134417068] [EccDecode] Header: 327	 CRC checked: No error
+[1618937134417076] [EccDecode] Average processing time: 0.001000
+[1618937134480158] [EccDecode] Header: 328	 CRC checked: No error
+[1618937134480173] [EccDecode] Average processing time: 0.000998
+[1618937134531086] [EccDecode] Header: 329	 CRC checked: No error
+[1618937134531096] [EccDecode] Average processing time: 0.000995
+[1618937134588450] [EccDecode] Header: 330	 CRC checked: No error
+[1618937134588464] [EccDecode] Average processing time: 0.000993
+[1618937134638915] [EccDecode] Header: 331	 CRC checked: No error
+[1618937134638921] [EccDecode] Average processing time: 0.000996
+[1618937134680990] [EccDecode] Header: 331	 CRC checked: No error
+[1618937134681001] [EccDecode] Average processing time: 0.000994
+[1618937134721037] [EccDecode] Header: 332	 CRC checked: No error
+[1618937134721045] [EccDecode] Average processing time: 0.000992
+[1618937134741182] [EccDecode] Header: 332	 CRC checked: No error
+[1618937134741190] [EccDecode] Average processing time: 0.000989
+[1618937134796820] [EccDecode] Header: 333	 CRC checked: No error
+[1618937134796831] [EccDecode] Average processing time: 0.000989
+[1618937134876167] [EccDecode] Header: 334	 CRC checked: No error
+[1618937134876177] [EccDecode] Average processing time: 0.000986
+[1618937134925288] [EccDecode] Header: 335	 CRC checked: No error
+[1618937134925295] [EccDecode] Average processing time: 0.000984
+[1618937134992168] [EccDecode] Header: 336	 CRC checked: No error
+[1618937134992178] [EccDecode] Average processing time: 0.000982
+[1618937135045352] [EccDecode] Header: 337	 CRC checked: No error
+[1618937135045371] [EccDecode] Average processing time: 0.000980
+[1618937135156170] [EccDecode] Header: 338	 CRC checked: No error
+[1618937135156179] [EccDecode] Average processing time: 0.000977
+[1618937135245021] [EccDecode] Header: 339	 CRC checked: No error
+[1618937135245034] [EccDecode] Average processing time: 0.000975
+[1618937135308155] [EccDecode] Header: 340	 CRC checked: No error
+[1618937135316159] [EccDecode] Average processing time: 0.000991
+[1618937135365510] [EccDecode] Header: 341	 CRC checked: No error
+[1618937135368162] [EccDecode] Average processing time: 0.000995
+[1618937135429060] [EccDecode] Header: 342	 CRC checked: No error
+[1618937135429070] [EccDecode] Average processing time: 0.000993
+[1618937135481669] [EccDecode] Header: 343	 CRC checked: No error
+[1618937135481687] [EccDecode] Average processing time: 0.000991
+[1618937135539024] [EccDecode] Header: 344	 CRC checked: No error
+[1618937135539033] [EccDecode] Average processing time: 0.000989
+[1618937135581189] [EccDecode] Header: 344	 CRC checked: No error
+[1618937135581199] [EccDecode] Average processing time: 0.000986
+[1618937135621128] [EccDecode] Header: 345	 CRC checked: No error
+[1618937135621137] [EccDecode] Average processing time: 0.000984
+[1618937135684589] [EccDecode] Header: 346	 CRC checked: No error
+[1618937135692170] [EccDecode] Average processing time: 0.000999
+[1618937135740406] [EccDecode] Header: 346	 CRC checked: No error
+[1618937135748157] [EccDecode] Average processing time: 0.001014
+[1618937135789249] [EccDecode] Header: 347	 CRC checked: No error
+[1618937135789258] [EccDecode] Average processing time: 0.001012
+[1618937135852877] [EccDecode] Header: 348	 CRC checked: No error
+[1618937135852888] [EccDecode] Average processing time: 0.001010
+[1618937135880740] [EccDecode] Header: 349	 CRC checked: No error
+[1618937135880749] [EccDecode] Average processing time: 0.001008
+[1618937135928662] [EccDecode] Header: 350	 CRC checked: No error
+[1618937135928678] [EccDecode] Average processing time: 0.001005
+[1618937135973286] [EccDecode] Header: 351	 CRC checked: No error
+[1618937135973294] [EccDecode] Average processing time: 0.001003
+[1618937136033196] [EccDecode] Header: 352	 CRC checked: No error
+[1618937136033210] [EccDecode] Average processing time: 0.001001
+[1618937136072489] [EccDecode] Header: 353	 CRC checked: No error
+[1618937136072497] [EccDecode] Average processing time: 0.000999
+[1618937136108687] [EccDecode] Header: 354	 CRC checked: No error
+[1618937136112170] [EccDecode] Average processing time: 0.001004
+[1618937136176446] [EccDecode] Header: 355	 CRC checked: No error
+[1618937136176455] [EccDecode] Average processing time: 0.001002
+[1618937136216429] [EccDecode] Header: 355	 CRC checked: No error
+[1618937136216437] [EccDecode] Average processing time: 0.001000
+[1618937136283656] [EccDecode] Header: 356	 CRC checked: No error
+[1618937136284160] [EccDecode] Average processing time: 0.000999
+[1618937136340829] [EccDecode] Header: 357	 CRC checked: No error
+[1618937136340837] [EccDecode] Average processing time: 0.000997
+[1618937136401422] [EccDecode] Header: 358	 CRC checked: No error
+[1618937136401430] [EccDecode] Average processing time: 0.000995
+[1618937136435401] [EccDecode] Header: 359	 CRC checked: No error
+[1618937136435410] [EccDecode] Average processing time: 0.000992
+[1618937136479678] [EccDecode] Header: 360	 CRC checked: No error
+[1618937136479691] [EccDecode] Average processing time: 0.000990
+[1618937136528425] [EccDecode] Header: 361	 CRC checked: No error
+[1618937136528433] [EccDecode] Average processing time: 0.000988
+[1618937136584439] [EccDecode] Header: 362	 CRC checked: No error
+[1618937136584452] [EccDecode] Average processing time: 0.000986
+[1618937136676973] [EccDecode] Header: 363	 CRC checked: No error
+[1618937136676984] [EccDecode] Average processing time: 0.000984
+[1618937136748158] [EccDecode] Header: 364	 CRC checked: No error
+[1618937136748173] [EccDecode] Average processing time: 0.000982
+[1618937136884422] [EccDecode] Header: 365	 CRC checked: No error
+[1618937136884433] [EccDecode] Average processing time: 0.000980
+[1618937136952433] [EccDecode] Header: 366	 CRC checked: No error
+[1618937136952443] [EccDecode] Average processing time: 0.000978
+[1618937137000418] [EccDecode] Header: 367	 CRC checked: No error
+[1618937137000427] [EccDecode] Average processing time: 0.000976
+[1618937137048161] [EccDecode] Header: 368	 CRC checked: No error
+[1618937137048173] [EccDecode] Average processing time: 0.000974
+[1618937137092173] [EccDecode] Header: 368	 CRC checked: No error
+[1618937137092183] [EccDecode] Average processing time: 0.000972
+[1618937137144428] [EccDecode] Header: 369	 CRC checked: No error
+[1618937137144437] [EccDecode] Average processing time: 0.000970
+[1618937137212450] [EccDecode] Header: 370	 CRC checked: No error
+[1618937137212466] [EccDecode] Average processing time: 0.000967
+[1618937137260453] [EccDecode] Header: 371	 CRC checked: No error
+[1618937137260462] [EccDecode] Average processing time: 0.000965
+[1618937137316419] [EccDecode] Header: 372	 CRC checked: No error
+[1618937137316433] [EccDecode] Average processing time: 0.000963
+[1618937137364414] [EccDecode] Header: 373	 CRC checked: No error
+[1618937137364422] [EccDecode] Average processing time: 0.000961
+[1618937137444431] [EccDecode] Header: 374	 CRC checked: No error
+[1618937137444445] [EccDecode] Average processing time: 0.000959
+[1618937137492157] [EccDecode] Header: 375	 CRC checked: No error
+[1618937137492168] [EccDecode] Average processing time: 0.000957
+[1618937137588154] [EccDecode] Header: 376	 CRC checked: No error
+[1618937137588168] [EccDecode] Average processing time: 0.000956
+[1618937137648155] [EccDecode] Header: 377	 CRC checked: No error
+[1618937137648164] [EccDecode] Average processing time: 0.000954
+[1618937137696154] [EccDecode] Header: 378	 CRC checked: No error
+[1618937137696163] [EccDecode] Average processing time: 0.000952
+[1618937137744519] [EccDecode] Header: 379	 CRC checked: No error
+[1618937137744527] [EccDecode] Average processing time: 0.000950
+[1618937137856444] [EccDecode] Header: 380	 CRC checked: No error
+[1618937137864886] [EccDecode] Average processing time: 0.000965
+[1618937137894730] [EccDecode] Header: 381	 CRC checked: No error
+[1618937137894736] [EccDecode] Average processing time: 0.000963
+[1618937137948410] [EccDecode] Header: 382	 CRC checked: No error
+[1618937137964156] [EccDecode] Average processing time: 0.000994
+[1618937138012156] [EccDecode] Header: 383	 CRC checked: No error
+[1618937138012165] [EccDecode] Average processing time: 0.000992
+[1618937138056175] [EccDecode] Header: 384	 CRC checked: No error
+[1618937138056190] [EccDecode] Average processing time: 0.000990
+[1618937138148155] [EccDecode] Header: 385	 CRC checked: No error
+[1618937138148175] [EccDecode] Average processing time: 0.000988
+[1618937138228415] [EccDecode] Header: 385	 CRC checked: No error
+[1618937138228426] [EccDecode] Average processing time: 0.000986
+[1618937138276428] [EccDecode] Header: 386	 CRC checked: No error
+[1618937138276447] [EccDecode] Average processing time: 0.000984
+[1618937138325061] [EccDecode] Header: 386	 CRC checked: No error
+[1618937138325070] [EccDecode] Average processing time: 0.000982
+[1618937138356417] [EccDecode] Header: 387	 CRC checked: No error
+[1618937138356430] [EccDecode] Average processing time: 0.000980
+[1618937138396429] [EccDecode] Header: 387	 CRC checked: No error
+[1618937138396437] [EccDecode] Average processing time: 0.000978
+[1618937138436172] [EccDecode] Header: 388	 CRC checked: No error
+[1618937138436182] [EccDecode] Average processing time: 0.000976
+[1618937138508153] [EccDecode] Header: 389	 CRC checked: No error
+[1618937138508161] [EccDecode] Average processing time: 0.000974
+[1618937138540160] [EccDecode] Header: 390	 CRC checked: No error
+[1618937138540168] [EccDecode] Average processing time: 0.000972
+[1618937138632408] [EccDecode] Header: 390	 CRC checked: No error
+[1618937138632418] [EccDecode] Average processing time: 0.000970
+[1618937138748153] [EccDecode] Header: 391	 CRC checked: No error
+[1618937138748162] [EccDecode] Average processing time: 0.000968
+[1618937138812447] [EccDecode] Header: 392	 CRC checked: No error
+[1618937138812457] [EccDecode] Average processing time: 0.000966
+[1618937138876503] [EccDecode] Header: 393	 CRC checked: No error
+[1618937138884151] [EccDecode] Average processing time: 0.000980
+[1618937138968155] [EccDecode] Header: 393	 CRC checked: No error
+[1618937138968171] [EccDecode] Average processing time: 0.000978
+[1618937139036690] [EccDecode] Header: 394	 CRC checked: No error
+[1618937139042809] [EccDecode] Average processing time: 0.000988
+[1618937139100885] [EccDecode] Header: 395	 CRC checked: No error
+[1618937139100987] [EccDecode] Average processing time: 0.000994
+[1618937139152461] [EccDecode] Header: 396	 CRC checked: No error
+[1618937139156790] [EccDecode] Average processing time: 0.001001
+[1618937139216397] [EccDecode] Header: 397	 CRC checked: No error
+[1618937139216409] [EccDecode] Average processing time: 0.000999
+[1618937139276462] [EccDecode] Header: 398	 CRC checked: No error
+[1618937139276470] [EccDecode] Average processing time: 0.000997
+[1618937139336391] [EccDecode] Header: 399	 CRC checked: No error
+[1618937139336400] [EccDecode] Average processing time: 0.000995
+[1618937139444154] [EccDecode] Header: 399	 CRC checked: No error
+[1618937139452163] [EccDecode] Average processing time: 0.001009
+[1618937139520403] [EccDecode] Header: 400	 CRC checked: No error
+[1618937139520412] [EccDecode] Average processing time: 0.001007
+[1618937139584388] [EccDecode] Header: 401	 CRC checked: No error
+[1618937139584396] [EccDecode] Average processing time: 0.001005
+[1618937139652889] [EccDecode] Header: 402	 CRC checked: No error
+[1618937139652898] [EccDecode] Average processing time: 0.001003
+[1618937139681209] [EccDecode] Header: 403	 CRC checked: No error
+[1618937139681221] [EccDecode] Average processing time: 0.001001
+[1618937139718958] [EccDecode] Header: 403	 CRC checked: No error
+[1618937139718966] [EccDecode] Average processing time: 0.000999
+[1618937139793025] [EccDecode] Header: 404	 CRC checked: No error
+[1618937139793039] [EccDecode] Average processing time: 0.000997
+[1618937139856417] [EccDecode] Header: 405	 CRC checked: No error
+[1618937139856426] [EccDecode] Average processing time: 0.000996
+[1618937139908424] [EccDecode] Header: 406	 CRC checked: No error
+[1618937139908437] [EccDecode] Average processing time: 0.000994
+[1618937139964428] [EccDecode] Header: 406	 CRC checked: No error
+[1618937139964436] [EccDecode] Average processing time: 0.000992
+[1618937140016433] [EccDecode] Header: 407	 CRC checked: No error
+[1618937140016451] [EccDecode] Average processing time: 0.000990
+[1618937140080429] [EccDecode] Header: 407	 CRC checked: No error
+[1618937140084284] [EccDecode] Average processing time: 0.000995
+[1618937140136419] [EccDecode] Header: 408	 CRC checked: No error
+[1618937140136429] [EccDecode] Average processing time: 0.000993
+[1618937140163406] [EccDecode] Header: 409	 CRC checked: No error
+[1618937140163413] [EccDecode] Average processing time: 0.000992
+[1618937140208165] [EccDecode] Header: 410	 CRC checked: No error
+[1618937140208178] [EccDecode] Average processing time: 0.000990
+[1618937140244397] [EccDecode] Header: 411	 CRC checked: No error
+[1618937140244408] [EccDecode] Average processing time: 0.000988
+[1618937140289485] [EccDecode] Header: 411	 CRC checked: No error
+[1618937140289496] [EccDecode] Average processing time: 0.000986
+[1618937140316157] [EccDecode] Header: 412	 CRC checked: No error
+[1618937140316175] [EccDecode] Average processing time: 0.000984
+[1618937140356860] [EccDecode] Header: 413	 CRC checked: No error
+[1618937140364176] [EccDecode] Average processing time: 0.001004
+[1618937140401081] [EccDecode] Header: 413	 CRC checked: No error
+[1618937140401097] [EccDecode] Average processing time: 0.001002
+[1618937140452436] [EccDecode] Header: 414	 CRC checked: No error
+[1618937140452446] [EccDecode] Average processing time: 0.001000
+[1618937140508436] [EccDecode] Header: 415	 CRC checked: No error
+[1618937140508453] [EccDecode] Average processing time: 0.000998
+[1618937140560446] [EccDecode] Header: 416	 CRC checked: No error
+[1618937140560457] [EccDecode] Average processing time: 0.000996
+[1618937140607258] [EccDecode] Header: 417	 CRC checked: No error
+[1618937140607275] [EccDecode] Average processing time: 0.000995
+[1618937140668435] [EccDecode] Header: 418	 CRC checked: No error
+[1618937140668447] [EccDecode] Average processing time: 0.000993
+[1618937140744391] [EccDecode] Header: 418	 CRC checked: No error
+[1618937140744402] [EccDecode] Average processing time: 0.000991
+[1618937140812398] [EccDecode] Header: 419	 CRC checked: No error
+[1618937140812407] [EccDecode] Average processing time: 0.000989
+[1618937140860169] [EccDecode] Header: 419	 CRC checked: No error
+[1618937140860181] [EccDecode] Average processing time: 0.000987
+[1618937140932157] [EccDecode] Header: 420	 CRC checked: No error
+[1618937140932168] [EccDecode] Average processing time: 0.000985
+[1618937140990919] [EccDecode] Header: 421	 CRC checked: No error
+[1618937141000150] [EccDecode] Average processing time: 0.001001
+[1618937141063799] [EccDecode] Header: 422	 CRC checked: No error
+[1618937141063819] [EccDecode] Average processing time: 0.000999
+[1618937141125194] [EccDecode] Header: 422	 CRC checked: No error
+[1618937141132156] [EccDecode] Average processing time: 0.001010
+[1618937141168153] [EccDecode] Header: 422	 CRC checked: No error
+[1618937141172160] [EccDecode] Average processing time: 0.001016
+[1618937141224406] [EccDecode] Header: 423	 CRC checked: No error
+[1618937141224425] [EccDecode] Average processing time: 0.001014
+[1618937141264404] [EccDecode] Header: 424	 CRC checked: No error
+[1618937141264420] [EccDecode] Average processing time: 0.001012
+[1618937141300421] [EccDecode] Header: 424	 CRC checked: No error
+[1618937141300429] [EccDecode] Average processing time: 0.001010
+[1618937141328440] [EccDecode] Header: 425	 CRC checked: No error
+[1618937141328455] [EccDecode] Average processing time: 0.001008
+[1618937141396416] [EccDecode] Header: 426	 CRC checked: No error
+[1618937141396426] [EccDecode] Average processing time: 0.001007
+[1618937141440421] [EccDecode] Header: 427	 CRC checked: No error
+[1618937141440431] [EccDecode] Average processing time: 0.001005
+[1618937141484420] [EccDecode] Header: 428	 CRC checked: No error
+[1618937141484429] [EccDecode] Average processing time: 0.001003
+[1618937141548154] [EccDecode] Header: 429	 CRC checked: No error
+[1618937141548163] [EccDecode] Average processing time: 0.001001
+[1618937141616751] [EccDecode] Header: 430	 CRC checked: No error
+[1618937141632153] [EccDecode] Average processing time: 0.001027
+[1618937141688186] [EccDecode] Header: 430	 CRC checked: No error
+[1618937141688195] [EccDecode] Average processing time: 0.001026
+[1618937141736155] [EccDecode] Header: 431	 CRC checked: No error
+[1618937141736168] [EccDecode] Average processing time: 0.001024
+[1618937141772422] [EccDecode] Header: 432	 CRC checked: No error
+[1618937141772430] [EccDecode] Average processing time: 0.001022
+[1618937141808426] [EccDecode] Header: 433	 CRC checked: No error
+[1618937141812152] [EccDecode] Average processing time: 0.001027
+[1618937141852409] [EccDecode] Header: 434	 CRC checked: No error
+[1618937141852418] [EccDecode] Average processing time: 0.001025
+[1618937141903242] [EccDecode] Header: 434	 CRC checked: No error
+[1618937141903261] [EccDecode] Average processing time: 0.001023
+[1618937141948413] [EccDecode] Header: 434	 CRC checked: No error
+[1618937141948427] [EccDecode] Average processing time: 0.001021
+[1618937142012157] [EccDecode] Header: 435	 CRC checked: No error
+[1618937142012172] [EccDecode] Average processing time: 0.001020
+[1618937142120157] [EccDecode] Header: 435	 CRC checked: No error
+[1618937142120167] [EccDecode] Average processing time: 0.001018
+[1618937142192394] [EccDecode] Header: 436	 CRC checked: No error
+[1618937142192401] [EccDecode] Average processing time: 0.001016
+[1618937142240856] [EccDecode] Header: 436	 CRC checked: No error
+[1618937142240863] [EccDecode] Average processing time: 0.001014
+[1618937142282129] [EccDecode] Header: 436	 CRC checked: No error
+[1618937142282139] [EccDecode] Average processing time: 0.001012
+[1618937142321809] [EccDecode] Header: 437	 CRC checked: No error
+[1618937142321823] [EccDecode] Average processing time: 0.001011
+[1618937142381084] [EccDecode] Header: 438	 CRC checked: No error
+[1618937142384161] [EccDecode] Average processing time: 0.001014
+[1618937142456786] [EccDecode] Header: 439	 CRC checked: No error
+[1618937142460778] [EccDecode] Average processing time: 0.001020
+[1618937142508758] [EccDecode] Header: 440	 CRC checked: No error
+[1618937142508765] [EccDecode] Average processing time: 0.001018
+[1618937142596158] [EccDecode] Header: 440	 CRC checked: No error
+[1618937142596174] [EccDecode] Average processing time: 0.001016
+[1618937142620155] [EccDecode] Header: 440	 CRC checked: No error
+[1618937142620165] [EccDecode] Average processing time: 0.001014
+[1618937142664155] [EccDecode] Header: 441	 CRC checked: No error
+[1618937142664170] [EccDecode] Average processing time: 0.001013
+[1618937142740431] [EccDecode] Header: 441	 CRC checked: No error
+[1618937142740442] [EccDecode] Average processing time: 0.001011
+[1618937142772418] [EccDecode] Header: 442	 CRC checked: No error
+[1618937142772432] [EccDecode] Average processing time: 0.001009
+[1618937142832550] [EccDecode] Header: 443	 CRC checked: No error
+[1618937142832561] [EccDecode] Average processing time: 0.001007
+[1618937142875009] [EccDecode] Header: 444	 CRC checked: No error
+[1618937142875018] [EccDecode] Average processing time: 0.001006
+[1618937142952161] [EccDecode] Header: 444	 CRC checked: No error
+[1618937142952171] [EccDecode] Average processing time: 0.001004
+[1618937143008428] [EccDecode] Header: 445	 CRC checked: No error
+[1618937143008439] [EccDecode] Average processing time: 0.001002
+[1618937143088157] [EccDecode] Header: 445	 CRC checked: No error
+[1618937143088167] [EccDecode] Average processing time: 0.001000
+[1618937143133952] [EccDecode] Header: 446	 CRC checked: No error
+[1618937143133962] [EccDecode] Average processing time: 0.000999
+[1618937143201556] [EccDecode] Header: 447	 CRC checked: No error
+[1618937143201572] [EccDecode] Average processing time: 0.000997
+[1618937143221929] [EccDecode] Header: 448	 CRC checked: No error
+[1618937143221938] [EccDecode] Average processing time: 0.000995
+[1618937143300407] [EccDecode] Header: 449	 CRC checked: No error
+[1618937143300426] [EccDecode] Average processing time: 0.000994
+[1618937143352156] [EccDecode] Header: 450	 CRC checked: No error
+[1618937143352167] [EccDecode] Average processing time: 0.000992
+[1618937143400156] [EccDecode] Header: 450	 CRC checked: No error
+[1618937143400176] [EccDecode] Average processing time: 0.000990
+[1618937143439100] [EccDecode] Header: 451	 CRC checked: No error
+[1618937143448153] [EccDecode] Average processing time: 0.001004
+[1618937143516157] [EccDecode] Header: 452	 CRC checked: No error
+[1618937143520161] [EccDecode] Average processing time: 0.001009
+[1618937143576166] [EccDecode] Header: 452	 CRC checked: No error
+[1618937143576176] [EccDecode] Average processing time: 0.001008
+[1618937143624413] [EccDecode] Header: 452	 CRC checked: No error
+[1618937143624422] [EccDecode] Average processing time: 0.001006
+[1618937143675334] [EccDecode] Header: 453	 CRC checked: No error
+[1618937143675342] [EccDecode] Average processing time: 0.001004
+[1618937143724686] [EccDecode] Header: 454	 CRC checked: No error
+[1618937143724695] [EccDecode] Average processing time: 0.001002
+[1618937143776157] [EccDecode] Header: 455	 CRC checked: No error
+[1618937143776168] [EccDecode] Average processing time: 0.001001
+[1618937143852161] [EccDecode] Header: 456	 CRC checked: No error
+[1618937143852171] [EccDecode] Average processing time: 0.000999
+[1618937143883009] [EccDecode] Header: 456	 CRC checked: No error
+[1618937143883025] [EccDecode] Average processing time: 0.000997
+[1618937143944169] [EccDecode] Header: 457	 CRC checked: No error
+[1618937143944178] [EccDecode] Average processing time: 0.000996
+[1618937143988638] [EccDecode] Header: 458	 CRC checked: No error
+[1618937143988651] [EccDecode] Average processing time: 0.000994
+[1618937144062689] [EccDecode] Header: 458	 CRC checked: No error
+[1618937144064863] [EccDecode] Average processing time: 0.000996
+[1618937144152157] [EccDecode] Header: 459	 CRC checked: No error
+[1618937144152174] [EccDecode] Average processing time: 0.000994
+[1618937144208420] [EccDecode] Header: 459	 CRC checked: No error
+[1618937144208429] [EccDecode] Average processing time: 0.000993
+[1618937144256807] [EccDecode] Header: 460	 CRC checked: No error
+[1618937144256818] [EccDecode] Average processing time: 0.000991
+[1618937144360157] [EccDecode] Header: 461	 CRC checked: No error
+[1618937144360167] [EccDecode] Average processing time: 0.000990
+[1618937144444435] [EccDecode] Header: 462	 CRC checked: No error
+[1618937144444450] [EccDecode] Average processing time: 0.000988
+[1618937144524407] [EccDecode] Header: 463	 CRC checked: No error
+[1618937144524417] [EccDecode] Average processing time: 0.000986
+[1618937144576611] [EccDecode] Header: 464	 CRC checked: No error
+[1618937144576621] [EccDecode] Average processing time: 0.000985
+[1618937144628430] [EccDecode] Header: 464	 CRC checked: No error
+[1618937144628439] [EccDecode] Average processing time: 0.000983
+[1618937144696157] [EccDecode] Header: 464	 CRC checked: No error
+[1618937144704157] [EccDecode] Average processing time: 0.000995
+[1618937144760422] [EccDecode] Header: 465	 CRC checked: No error
+[1618937144760433] [EccDecode] Average processing time: 0.000993
+[1618937144824675] [EccDecode] Header: 465	 CRC checked: No error
+[1618937144824682] [EccDecode] Average processing time: 0.000991
+[1618937144852937] [EccDecode] Header: 466	 CRC checked: No error
+[1618937144852949] [EccDecode] Average processing time: 0.000990
+[1618937144932393] [EccDecode] Header: 467	 CRC checked: No error
+[1618937144940164] [EccDecode] Average processing time: 0.001001
+[1618937145000427] [EccDecode] Header: 468	 CRC checked: No error
+[1618937145000441] [EccDecode] Average processing time: 0.001000
+[1618937145060433] [EccDecode] Header: 469	 CRC checked: No error
+[1618937145060442] [EccDecode] Average processing time: 0.000998
+[1618937145108451] [EccDecode] Header: 469	 CRC checked: No error
+[1618937145108459] [EccDecode] Average processing time: 0.000996
+[1618937145144455] [EccDecode] Header: 469	 CRC checked: No error
+[1618937145144462] [EccDecode] Average processing time: 0.000995
+[1618937145180618] [EccDecode] Header: 470	 CRC checked: No error
+[1618937145180626] [EccDecode] Average processing time: 0.000993
+[1618937145215828] [EccDecode] Header: 471	 CRC checked: No error
+[1618937145216160] [EccDecode] Average processing time: 0.000992
+[1618937145265569] [EccDecode] Header: 471	 CRC checked: No error
+[1618937145265577] [EccDecode] Average processing time: 0.000990
+[1618937145302963] [EccDecode] Header: 472	 CRC checked: No error
+[1618937145302971] [EccDecode] Average processing time: 0.000989
+[1618937145380465] [EccDecode] Header: 473	 CRC checked: No error
+[1618937145380473] [EccDecode] Average processing time: 0.000987
+[1618937145448492] [EccDecode] Header: 474	 CRC checked: No error
+[1618937145448505] [EccDecode] Average processing time: 0.000986
+[1618937145496191] [EccDecode] Header: 475	 CRC checked: No error
+[1618937145496199] [EccDecode] Average processing time: 0.000984
+[1618937145552157] [EccDecode] Header: 476	 CRC checked: No error
+[1618937145552175] [EccDecode] Average processing time: 0.000982
+[1618937145628155] [EccDecode] Header: 476	 CRC checked: No error
+[1618937145628168] [EccDecode] Average processing time: 0.000981
+[1618937145651425] [EccDecode] Header: 477	 CRC checked: No error
+[1618937145651443] [EccDecode] Average processing time: 0.000979
+[1618937145680157] [EccDecode] Header: 478	 CRC checked: No error
+[1618937145680170] [EccDecode] Average processing time: 0.000978
+[1618937145756172] [EccDecode] Header: 478	 CRC checked: No error
+[1618937145756185] [EccDecode] Average processing time: 0.000976
+[1618937145824431] [EccDecode] Header: 479	 CRC checked: No error
+[1618937145824441] [EccDecode] Average processing time: 0.000975
+[1618937145888428] [EccDecode] Header: 480	 CRC checked: No error
+[1618937145888441] [EccDecode] Average processing time: 0.000973
+[1618937145956157] [EccDecode] Header: 481	 CRC checked: No error
+[1618937145956169] [EccDecode] Average processing time: 0.000972
+[1618937145976644] [EccDecode] Header: 482	 CRC checked: No error
+[1618937145976655] [EccDecode] Average processing time: 0.000970
+[1618937146013348] [EccDecode] Header: 483	 CRC checked: No error
+[1618937146013356] [EccDecode] Average processing time: 0.000969
+[1618937146068164] [EccDecode] Header: 484	 CRC checked: No error
+[1618937146068172] [EccDecode] Average processing time: 0.000967
+[1618937146148735] [EccDecode] Header: 484	 CRC checked: No error
+[1618937146148753] [EccDecode] Average processing time: 0.000965
+[1618937146204155] [EccDecode] Header: 485	 CRC checked: No error
+[1618937146204166] [EccDecode] Average processing time: 0.000964
+[1618937146260170] [EccDecode] Header: 486	 CRC checked: No error
+[1618937146260184] [EccDecode] Average processing time: 0.000962
+[1618937146340154] [EccDecode] Header: 487	 CRC checked: No error
+[1618937146340164] [EccDecode] Average processing time: 0.000961
+[1618937146436154] [EccDecode] Header: 488	 CRC checked: No error
+[1618937146436169] [EccDecode] Average processing time: 0.000959
+[1618937146508154] [EccDecode] Header: 489	 CRC checked: No error
+[1618937146508161] [EccDecode] Average processing time: 0.000958
+[1618937146581092] [EccDecode] Header: 490	 CRC checked: No error
+[1618937146581102] [EccDecode] Average processing time: 0.000956
+[1618937146644509] [EccDecode] Header: 491	 CRC checked: No error
+[1618937146644516] [EccDecode] Average processing time: 0.000955
+[1618937146728155] [EccDecode] Header: 492	 CRC checked: No error
+[1618937146728164] [EccDecode] Average processing time: 0.000953
+[1618937146792671] [EccDecode] Header: 492	 CRC checked: No error
+[1618937146792680] [EccDecode] Average processing time: 0.000952
+[1618937146844960] [EccDecode] Header: 493	 CRC checked: No error
+[1618937146844970] [EccDecode] Average processing time: 0.000951
+[1618937146876518] [EccDecode] Header: 494	 CRC checked: No error
+[1618937146876535] [EccDecode] Average processing time: 0.000949
+[1618937146928720] [EccDecode] Header: 494	 CRC checked: No error
+[1618937146928731] [EccDecode] Average processing time: 0.000948
+[1618937147008157] [EccDecode] Header: 495	 CRC checked: No error
+[1618937147008176] [EccDecode] Average processing time: 0.000946
+[1618937147088164] [EccDecode] Header: 496	 CRC checked: No error
+[1618937147088172] [EccDecode] Average processing time: 0.000945
+[1618937147152160] [EccDecode] Header: 496	 CRC checked: No error
+[1618937147152177] [EccDecode] Average processing time: 0.000943
+[1618937147208385] [EccDecode] Header: 497	 CRC checked: No error
+[1618937147208392] [EccDecode] Average processing time: 0.000942
+[1618937147248402] [EccDecode] Header: 497	 CRC checked: No error
+[1618937147248417] [EccDecode] Average processing time: 0.000940
+[1618937147296527] [EccDecode] Header: 498	 CRC checked: No error
+[1618937147300160] [EccDecode] Average processing time: 0.000945
+[1618937147348561] [EccDecode] Header: 499	 CRC checked: No error
+[1618937147348570] [EccDecode] Average processing time: 0.000943
+[1618937147391662] [EccDecode] Header: 499	 CRC checked: No error
+[1618937147391671] [EccDecode] Average processing time: 0.000942
+[1618937147441486] [EccDecode] Header: 500	 CRC checked: No error
+[1618937147441495] [EccDecode] Average processing time: 0.000940
+[1618937147516231] [EccDecode] Header: 501	 CRC checked: No error
+[1618937147516240] [EccDecode] Average processing time: 0.000939
+[1618937147596154] [EccDecode] Header: 502	 CRC checked: No error
+[1618937147596162] [EccDecode] Average processing time: 0.000937
+[1618937147628538] [EccDecode] Header: 503	 CRC checked: No error
+[1618937147628551] [EccDecode] Average processing time: 0.000936
+[1618937147688456] [EccDecode] Header: 504	 CRC checked: No error
+[1618937147688464] [EccDecode] Average processing time: 0.000935
+[1618937147740462] [EccDecode] Header: 505	 CRC checked: No error
+[1618937147746769] [EccDecode] Average processing time: 0.000943
+[1618937147792454] [EccDecode] Header: 506	 CRC checked: No error
+[1618937147792462] [EccDecode] Average processing time: 0.000941
+[1618937147816929] [EccDecode] Header: 507	 CRC checked: No error
+[1618937147816940] [EccDecode] Average processing time: 0.000940
+[1618937147856856] [EccDecode] Header: 507	 CRC checked: No error
+[1618937147856863] [EccDecode] Average processing time: 0.000939
+[1618937147888429] [EccDecode] Header: 507	 CRC checked: No error
+[1618937147888443] [EccDecode] Average processing time: 0.000937
+[1618937147944449] [EccDecode] Header: 508	 CRC checked: No error
+[1618937147944457] [EccDecode] Average processing time: 0.000936
+[1618937147990708] [EccDecode] Header: 508	 CRC checked: No error
+[1618937148004242] [EccDecode] Average processing time: 0.000955
+[1618937148060523] [EccDecode] Header: 508	 CRC checked: No error
+[1618937148060531] [EccDecode] Average processing time: 0.000954
+[1618937148094900] [EccDecode] Header: 509	 CRC checked: No error
+[1618937148094907] [EccDecode] Average processing time: 0.000952
+[1618937148115225] [EccDecode] Header: 510	 CRC checked: No error
+[1618937148116159] [EccDecode] Average processing time: 0.000952
+[1618937148136393] [EccDecode] Header: 511	 CRC checked: No error
+[1618937148136402] [EccDecode] Average processing time: 0.000951
+[1618937148168410] [EccDecode] Header: 512	 CRC checked: No error
+[1618937148184153] [EccDecode] Average processing time: 0.000973
+[1618937148252153] [EccDecode] Header: 513	 CRC checked: No error
+[1618937148252161] [EccDecode] Average processing time: 0.000972
+[1618937148301657] [EccDecode] Header: 513	 CRC checked: No error
+[1618937148301676] [EccDecode] Average processing time: 0.000970
+[1618937148368156] [EccDecode] Header: 514	 CRC checked: No error
+[1618937148376156] [EccDecode] Average processing time: 0.000981
+[1618937148420459] [EccDecode] Header: 515	 CRC checked: No error
+[1618937148424162] [EccDecode] Average processing time: 0.000985
+[1618937148529072] [EccDecode] Header: 515	 CRC checked: No error
+[1618937148529083] [EccDecode] Average processing time: 0.000983
+[1618937148582238] [EccDecode] Header: 516	 CRC checked: No error
+[1618937148588159] [EccDecode] Average processing time: 0.000991
+[1618937148641150] [EccDecode] Header: 517	 CRC checked: No error
+[1618937148664156] [EccDecode] Average processing time: 0.001024
+[1618937148720176] [EccDecode] Header: 518	 CRC checked: No error
+[1618937148720186] [EccDecode] Average processing time: 0.001022
+[1618937148786761] [EccDecode] Header: 519	 CRC checked: No error
+[1618937148792157] [EccDecode] Average processing time: 0.001032
+[1618937148867070] [EccDecode] Header: 520	 CRC checked: No error
+[1618937148867080] [EccDecode] Average processing time: 0.001030
+[1618937148940538] [EccDecode] Header: 520	 CRC checked: No error
+[1618937148948187] [EccDecode] Average processing time: 0.001040
+[1618937149028408] [EccDecode] Header: 521	 CRC checked: No error
+[1618937149028420] [EccDecode] Average processing time: 0.001039
+[1618937149084405] [EccDecode] Header: 522	 CRC checked: No error
+[1618937149084421] [EccDecode] Average processing time: 0.001037
+[1618937149124424] [EccDecode] Header: 523	 CRC checked: No error
+[1618937149128165] [EccDecode] Average processing time: 0.001041
+[1618937149192159] [EccDecode] Header: 524	 CRC checked: No error
+[1618937149192179] [EccDecode] Average processing time: 0.001040
+[1618937149236155] [EccDecode] Header: 524	 CRC checked: No error
+[1618937149236162] [EccDecode] Average processing time: 0.001038
+[1618937149284153] [EccDecode] Header: 525	 CRC checked: No error
+[1618937149284166] [EccDecode] Average processing time: 0.001037
+[1618937149368398] [EccDecode] Header: 526	 CRC checked: No error
+[1618937149368409] [EccDecode] Average processing time: 0.001035
+[1618937149416154] [EccDecode] Header: 527	 CRC checked: No error
+[1618937149416170] [EccDecode] Average processing time: 0.001034
+[1618937149472156] [EccDecode] Header: 528	 CRC checked: No error
+[1618937149472166] [EccDecode] Average processing time: 0.001032
+[1618937149508166] [EccDecode] Header: 529	 CRC checked: No error
+[1618937149508172] [EccDecode] Average processing time: 0.001031
+[1618937149544154] [EccDecode] Header: 530	 CRC checked: No error
+[1618937149544161] [EccDecode] Average processing time: 0.001029
+[1618937149636401] [EccDecode] Header: 530	 CRC checked: No error
+[1618937149636411] [EccDecode] Average processing time: 0.001028
+[1618937149684446] [EccDecode] Header: 531	 CRC checked: No error
+[1618937149684456] [EccDecode] Average processing time: 0.001026
+[1618937149740427] [EccDecode] Header: 531	 CRC checked: No error
+[1618937149740434] [EccDecode] Average processing time: 0.001025
+[1618937149812418] [EccDecode] Header: 532	 CRC checked: No error
+[1618937149812439] [EccDecode] Average processing time: 0.001023
+[1618937149900434] [EccDecode] Header: 533	 CRC checked: No error
+[1618937149900443] [EccDecode] Average processing time: 0.001022
+[1618937149932174] [EccDecode] Header: 534	 CRC checked: No error
+[1618937149932189] [EccDecode] Average processing time: 0.001021
+[1618937150016413] [EccDecode] Header: 535	 CRC checked: No error
+[1618937150016422] [EccDecode] Average processing time: 0.001019
+[1618937150056155] [EccDecode] Header: 536	 CRC checked: No error
+[1618937150056171] [EccDecode] Average processing time: 0.001018
+[1618937150132173] [EccDecode] Header: 537	 CRC checked: No error
+[1618937150132180] [EccDecode] Average processing time: 0.001016
+[1618937150184154] [EccDecode] Header: 538	 CRC checked: No error
+[1618937150184167] [EccDecode] Average processing time: 0.001015
+[1618937150268156] [EccDecode] Header: 538	 CRC checked: No error
+[1618937150268166] [EccDecode] Average processing time: 0.001013
+[1618937150384158] [EccDecode] Header: 539	 CRC checked: No error
+[1618937150384171] [EccDecode] Average processing time: 0.001012
+[1618937150456157] [EccDecode] Header: 540	 CRC checked: No error
+[1618937150456167] [EccDecode] Average processing time: 0.001010
+[1618937150525502] [EccDecode] Header: 541	 CRC checked: No error
+[1618937150525512] [EccDecode] Average processing time: 0.001009
+[1618937150580429] [EccDecode] Header: 542	 CRC checked: No error
+[1618937150580440] [EccDecode] Average processing time: 0.001008
+[1618937150605014] [EccDecode] Header: 543	 CRC checked: No error
+[1618937150605023] [EccDecode] Average processing time: 0.001006
+[1618937150647123] [EccDecode] Header: 543	 CRC checked: No error
+[1618937150647139] [EccDecode] Average processing time: 0.001005
+[1618937150683036] [EccDecode] Header: 544	 CRC checked: No error
+[1618937150683045] [EccDecode] Average processing time: 0.001003
+[1618937150740760] [EccDecode] Header: 545	 CRC checked: No error
+[1618937150740773] [EccDecode] Average processing time: 0.001002
+[1618937150816699] [EccDecode] Header: 546	 CRC checked: No error
+[1618937150816705] [EccDecode] Average processing time: 0.001001
+[1618937150897227] [EccDecode] Header: 547	 CRC checked: No error
+[1618937150904838] [EccDecode] Average processing time: 0.001010
+[1618937150980170] [EccDecode] Header: 548	 CRC checked: No error
+[1618937150980179] [EccDecode] Average processing time: 0.001009
+[1618937151040404] [EccDecode] Header: 548	 CRC checked: No error
+[1618937151040414] [EccDecode] Average processing time: 0.001007
+[1618937151075092] [EccDecode] Header: 549	 CRC checked: No error
+[1618937151080172] [EccDecode] Average processing time: 0.001013
+[1618937151129102] [EccDecode] Header: 550	 CRC checked: No error
+[1618937151129112] [EccDecode] Average processing time: 0.001011
+[1618937151200395] [EccDecode] Header: 551	 CRC checked: No error
+[1618937151200406] [EccDecode] Average processing time: 0.001010
+[1618937151252410] [EccDecode] Header: 552	 CRC checked: No error
+[1618937151252420] [EccDecode] Average processing time: 0.001009
+[1618937151316398] [EccDecode] Header: 553	 CRC checked: No error
+[1618937151316408] [EccDecode] Average processing time: 0.001007
+[1618937151395164] [EccDecode] Header: 553	 CRC checked: No error
+[1618937151395174] [EccDecode] Average processing time: 0.001006
+[1618937151468399] [EccDecode] Header: 554	 CRC checked: No error
+[1618937151468416] [EccDecode] Average processing time: 0.001005
+[1618937151516905] [EccDecode] Header: 555	 CRC checked: No error
+[1618937151516912] [EccDecode] Average processing time: 0.001003
+[1618937151580407] [EccDecode] Header: 556	 CRC checked: No error
+[1618937151580419] [EccDecode] Average processing time: 0.001002
+[1618937151628470] [EccDecode] Header: 557	 CRC checked: No error
+[1618937151628477] [EccDecode] Average processing time: 0.001000
+[1618937151692743] [EccDecode] Header: 558	 CRC checked: No error
+[1618937151692758] [EccDecode] Average processing time: 0.000999
+[1618937151748156] [EccDecode] Header: 559	 CRC checked: No error
+[1618937151748172] [EccDecode] Average processing time: 0.000998
+[1618937151796407] [EccDecode] Header: 560	 CRC checked: No error
+[1618937151796418] [EccDecode] Average processing time: 0.000996
+[1618937151852399] [EccDecode] Header: 561	 CRC checked: No error
+[1618937151852410] [EccDecode] Average processing time: 0.000995
+[1618937151915059] [EccDecode] Header: 562	 CRC checked: No error
+[1618937151915070] [EccDecode] Average processing time: 0.000994
+[1618937151976167] [EccDecode] Header: 563	 CRC checked: No error
+[1618937151976178] [EccDecode] Average processing time: 0.000992
+[1618937152040157] [EccDecode] Header: 564	 CRC checked: No error
+[1618937152040167] [EccDecode] Average processing time: 0.000991
+[1618937152108175] [EccDecode] Header: 565	 CRC checked: No error
+[1618937152108185] [EccDecode] Average processing time: 0.000990
+[1618937152132158] [EccDecode] Header: 566	 CRC checked: No error
+[1618937152132167] [EccDecode] Average processing time: 0.000988
+[1618937152186645] [EccDecode] Header: 567	 CRC checked: No error
+[1618937152186658] [EccDecode] Average processing time: 0.000987
+[1618937152224769] [EccDecode] Header: 568	 CRC checked: No error
+[1618937152224776] [EccDecode] Average processing time: 0.000986
+[1618937152264649] [EccDecode] Header: 569	 CRC checked: No error
+[1618937152264663] [EccDecode] Average processing time: 0.000984
+[1618937152334699] [EccDecode] Header: 570	 CRC checked: No error
+[1618937152336885] [EccDecode] Average processing time: 0.000994
+[1618937152388868] [EccDecode] Header: 570	 CRC checked: No error
+[1618937152388881] [EccDecode] Average processing time: 0.000998
+[1618937152452155] [EccDecode] Header: 570	 CRC checked: No error
+[1618937152452163] [EccDecode] Average processing time: 0.000997
+[1618937152496155] [EccDecode] Header: 570	 CRC checked: No error
+[1618937152496163] [EccDecode] Average processing time: 0.000995
+[1618937152531409] [EccDecode] Header: 571	 CRC checked: No error
+[1618937152531416] [EccDecode] Average processing time: 0.000994
+[1618937152564838] [EccDecode] Header: 572	 CRC checked: No error
+[1618937152564844] [EccDecode] Average processing time: 0.000998
+[1618937152605264] [EccDecode] Header: 573	 CRC checked: No error
+[1618937152605272] [EccDecode] Average processing time: 0.000997
+[1618937152676913] [EccDecode] Header: 574	 CRC checked: No error
+[1618937152676922] [EccDecode] Average processing time: 0.000995
+[1618937152732913] [EccDecode] Header: 575	 CRC checked: No error
+[1618937152732921] [EccDecode] Average processing time: 0.000997
+[1618937152788817] [EccDecode] Header: 576	 CRC checked: No error
+[1618937152788826] [EccDecode] Average processing time: 0.000996
+[1618937152856771] [EccDecode] Header: 577	 CRC checked: No error
+[1618937152856784] [EccDecode] Average processing time: 0.000995
+[1618937152960441] [EccDecode] Header: 578	 CRC checked: No error
+[1618937152960452] [EccDecode] Average processing time: 0.000993
+[1618937153008407] [EccDecode] Header: 579	 CRC checked: No error
+[1618937153008779] [EccDecode] Average processing time: 0.000992
+[1618937153084404] [EccDecode] Header: 580	 CRC checked: No error
+[1618937153084413] [EccDecode] Average processing time: 0.000991
+[1618937153112408] [EccDecode] Header: 581	 CRC checked: No error
+[1618937153112424] [EccDecode] Average processing time: 0.000990
+[1618937153168155] [EccDecode] Header: 581	 CRC checked: No error
+[1618937153168165] [EccDecode] Average processing time: 0.000988
+[1618937153240169] [EccDecode] Header: 582	 CRC checked: No error
+[1618937153240180] [EccDecode] Average processing time: 0.000987
+[1618937153316160] [EccDecode] Header: 583	 CRC checked: No error
+[1618937153316168] [EccDecode] Average processing time: 0.000986
+[1618937153388455] [EccDecode] Header: 583	 CRC checked: No error
+[1618937153388463] [EccDecode] Average processing time: 0.000985
+[1618937153472701] [EccDecode] Header: 583	 CRC checked: No error
+[1618937153480157] [EccDecode] Average processing time: 0.000999
+[1618937153560163] [EccDecode] Header: 584	 CRC checked: No error
+[1618937153560173] [EccDecode] Average processing time: 0.000997
+[1618937153608383] [EccDecode] Header: 585	 CRC checked: No error
+[1618937153608393] [EccDecode] Average processing time: 0.000996
+[1618937153664406] [EccDecode] Header: 586	 CRC checked: No error
+[1618937153664416] [EccDecode] Average processing time: 0.000995
+[1618937153708432] [EccDecode] Header: 586	 CRC checked: No error
+[1618937153708448] [EccDecode] Average processing time: 0.000993
+[1618937153740694] [EccDecode] Header: 587	 CRC checked: No error
+[1618937153740703] [EccDecode] Average processing time: 0.000992
+[1618937153820389] [EccDecode] Header: 588	 CRC checked: No error
+[1618937153820405] [EccDecode] Average processing time: 0.000991
+[1618937153872431] [EccDecode] Header: 589	 CRC checked: No error
+[1618937153874891] [EccDecode] Average processing time: 0.000993
+[1618937153940424] [EccDecode] Header: 590	 CRC checked: No error
+[1618937153940444] [EccDecode] Average processing time: 0.000991
+[1618937154008413] [EccDecode] Header: 590	 CRC checked: No error
+[1618937154008423] [EccDecode] Average processing time: 0.000990
+[1618937154088407] [EccDecode] Header: 590	 CRC checked: No error
+[1618937154088416] [EccDecode] Average processing time: 0.000989
+[1618937154156416] [EccDecode] Header: 591	 CRC checked: No error
+[1618937154156425] [EccDecode] Average processing time: 0.000988
+[1618937154212419] [EccDecode] Header: 592	 CRC checked: No error
+[1618937154212429] [EccDecode] Average processing time: 0.000986
+[1618937154272444] [EccDecode] Header: 593	 CRC checked: No error
+[1618937154272454] [EccDecode] Average processing time: 0.000985
+[1618937154328419] [EccDecode] Header: 594	 CRC checked: No error
+[1618937154328428] [EccDecode] Average processing time: 0.000984
+[1618937154420429] [EccDecode] Header: 594	 CRC checked: No error
+[1618937154420444] [EccDecode] Average processing time: 0.000982
+[1618937154476424] [EccDecode] Header: 595	 CRC checked: No error
+[1618937154476435] [EccDecode] Average processing time: 0.000981
+[1618937154508404] [EccDecode] Header: 595	 CRC checked: No error
+[1618937154508419] [EccDecode] Average processing time: 0.000980
+[1618937154548385] [EccDecode] Header: 596	 CRC checked: No error
+[1618937154548395] [EccDecode] Average processing time: 0.000979
+[1618937154620422] [EccDecode] Header: 597	 CRC checked: No error
+[1618937154620436] [EccDecode] Average processing time: 0.000977
+[1618937154668402] [EccDecode] Header: 598	 CRC checked: No error
+[1618937154668412] [EccDecode] Average processing time: 0.000976
+[1618937154712855] [EccDecode] Header: 599	 CRC checked: No error
+[1618937154712870] [EccDecode] Average processing time: 0.000975
+[1618937154772412] [EccDecode] Header: 600	 CRC checked: No error
+[1618937154772422] [EccDecode] Average processing time: 0.000974
+[1618937154804409] [EccDecode] Header: 601	 CRC checked: No error
+[1618937154812164] [EccDecode] Average processing time: 0.000983
+[1618937154892417] [EccDecode] Header: 602	 CRC checked: No error
+[1618937154900161] [EccDecode] Average processing time: 0.000991
+[1618937154956420] [EccDecode] Header: 603	 CRC checked: No error
+[1618937154956430] [EccDecode] Average processing time: 0.000990
+[1618937155048420] [EccDecode] Header: 604	 CRC checked: No error
+[1618937155048431] [EccDecode] Average processing time: 0.000989
+[1618937155088419] [EccDecode] Header: 605	 CRC checked: No error
+[1618937155088426] [EccDecode] Average processing time: 0.000987
+[1618937155136422] [EccDecode] Header: 606	 CRC checked: No error
+[1618937155136438] [EccDecode] Average processing time: 0.000986
+[1618937155188574] [EccDecode] Header: 607	 CRC checked: No error
+[1618937155188582] [EccDecode] Average processing time: 0.000987
+[1618937155282609] [EccDecode] Header: 608	 CRC checked: No error
+[1618937155282627] [EccDecode] Average processing time: 0.000988
+[1618937155350856] [EccDecode] Header: 608	 CRC checked: No error
+[1618937155350864] [EccDecode] Average processing time: 0.000990
+[1618937155398769] [EccDecode] Header: 609	 CRC checked: No error
+[1618937155398782] [EccDecode] Average processing time: 0.000991
+[1618937155440969] [EccDecode] Header: 610	 CRC checked: No error
+[1618937155444874] [EccDecode] Average processing time: 0.000995
+[1618937155500409] [EccDecode] Header: 611	 CRC checked: No error
+[1618937155500423] [EccDecode] Average processing time: 0.000994
+[1618937155564699] [EccDecode] Header: 612	 CRC checked: No error
+[1618937155564706] [EccDecode] Average processing time: 0.000993
+[1618937155668422] [EccDecode] Header: 613	 CRC checked: No error
+[1618937155668431] [EccDecode] Average processing time: 0.000991
+[1618937155728441] [EccDecode] Header: 613	 CRC checked: No error
+[1618937155728450] [EccDecode] Average processing time: 0.000990
+[1618937155776476] [EccDecode] Header: 614	 CRC checked: No error
+[1618937155776485] [EccDecode] Average processing time: 0.000989
+[1618937155840426] [EccDecode] Header: 615	 CRC checked: No error
+[1618937155842701] [EccDecode] Average processing time: 0.000991
+[1618937155888422] [EccDecode] Header: 616	 CRC checked: No error
+[1618937155896852] [EccDecode] Average processing time: 0.001000
+[1618937155944431] [EccDecode] Header: 617	 CRC checked: No error
+[1618937155944442] [EccDecode] Average processing time: 0.000999
+[1618937156024178] [EccDecode] Header: 618	 CRC checked: No error
+[1618937156024185] [EccDecode] Average processing time: 0.000998
+[1618937156096406] [EccDecode] Header: 619	 CRC checked: No error
+[1618937156096422] [EccDecode] Average processing time: 0.000996
+[1618937156144425] [EccDecode] Header: 620	 CRC checked: No error
+[1618937156156151] [EccDecode] Average processing time: 0.001010
+[1618937156212155] [EccDecode] Header: 621	 CRC checked: No error
+[1618937156212169] [EccDecode] Average processing time: 0.001009
+[1618937156260400] [EccDecode] Header: 622	 CRC checked: No error
+[1618937156260409] [EccDecode] Average processing time: 0.001007
+[1618937156336235] [EccDecode] Header: 623	 CRC checked: No error
+[1618937156336244] [EccDecode] Average processing time: 0.001006
+[1618937156404633] [EccDecode] Header: 624	 CRC checked: No error
+[1618937156412623] [EccDecode] Average processing time: 0.001020
+[1618937156456427] [EccDecode] Header: 625	 CRC checked: No error
+[1618937156456434] [EccDecode] Average processing time: 0.001019
+[1618937156504441] [EccDecode] Header: 626	 CRC checked: No error
+[1618937156504450] [EccDecode] Average processing time: 0.001017
+[1618937156552428] [EccDecode] Header: 627	 CRC checked: No error
+[1618937156552438] [EccDecode] Average processing time: 0.001016
+[1618937156576415] [EccDecode] Header: 628	 CRC checked: No error
+[1618937156576425] [EccDecode] Average processing time: 0.001015
+[1618937156624396] [EccDecode] Header: 628	 CRC checked: No error
+[1618937156624404] [EccDecode] Average processing time: 0.001014
+[1618937156690757] [EccDecode] Header: 628	 CRC checked: No error
+[1618937156690768] [EccDecode] Average processing time: 0.001012
+[1618937156748754] [EccDecode] Header: 629	 CRC checked: No error
+[1618937156750574] [EccDecode] Average processing time: 0.001018
+[1618937156788676] [EccDecode] Header: 630	 CRC checked: No error
+[1618937156788689] [EccDecode] Average processing time: 0.001017
+[1618937156831040] [EccDecode] Header: 631	 CRC checked: No error
+[1618937156831050] [EccDecode] Average processing time: 0.001016
+[1618937156870941] [EccDecode] Header: 632	 CRC checked: No error
+[1618937156870956] [EccDecode] Average processing time: 0.001015
+[1618937156928155] [EccDecode] Header: 633	 CRC checked: No error
+[1618937156928165] [EccDecode] Average processing time: 0.001013
+[1618937156982819] [EccDecode] Header: 634	 CRC checked: No error
+[1618937156982834] [EccDecode] Average processing time: 0.001012
+[1618937157036155] [EccDecode] Header: 635	 CRC checked: No error
+[1618937157036165] [EccDecode] Average processing time: 0.001011
+[1618937157099018] [EccDecode] Header: 636	 CRC checked: No error
+[1618937157099028] [EccDecode] Average processing time: 0.001010
+[1618937157153128] [EccDecode] Header: 637	 CRC checked: No error
+[1618937157153137] [EccDecode] Average processing time: 0.001008
+[1618937157244861] [EccDecode] Header: 638	 CRC checked: No error
+[1618937157244877] [EccDecode] Average processing time: 0.001007
+[1618937157305117] [EccDecode] Header: 638	 CRC checked: No error
+[1618937157305128] [EccDecode] Average processing time: 0.001006
+[1618937157337217] [EccDecode] Header: 639	 CRC checked: No error
+[1618937157337226] [EccDecode] Average processing time: 0.001005
+[1618937157360424] [EccDecode] Header: 640	 CRC checked: No error
+[1618937157376161] [EccDecode] Average processing time: 0.001023
+[1618937157447143] [EccDecode] Header: 640	 CRC checked: No error
+[1618937157447156] [EccDecode] Average processing time: 0.001022
+[1618937157496783] [EccDecode] Header: 640	 CRC checked: No error
+[1618937157496801] [EccDecode] Average processing time: 0.001020
+[1618937157527002] [EccDecode] Header: 641	 CRC checked: No error
+[1618937157527012] [EccDecode] Average processing time: 0.001019
+[1618937157558976] [EccDecode] Header: 641	 CRC checked: No error
+[1618937157558995] [EccDecode] Average processing time: 0.001018
+[1618937157589536] [EccDecode] Header: 641	 CRC checked: No error
+[1618937157589547] [EccDecode] Average processing time: 0.001017
+[1618937157640860] [EccDecode] Header: 642	 CRC checked: No error
+[1618937157640872] [EccDecode] Average processing time: 0.001016
+[1618937157683043] [EccDecode] Header: 643	 CRC checked: No error
+[1618937157683054] [EccDecode] Average processing time: 0.001014
+[1618937157753102] [EccDecode] Header: 643	 CRC checked: No error
+[1618937157753114] [EccDecode] Average processing time: 0.001013
+[1618937157812403] [EccDecode] Header: 644	 CRC checked: No error
+[1618937157812414] [EccDecode] Average processing time: 0.001012
+[1618937157872437] [EccDecode] Header: 645	 CRC checked: No error
+[1618937157872447] [EccDecode] Average processing time: 0.001011
+[1618937157896155] [EccDecode] Header: 646	 CRC checked: No error
+[1618937157896165] [EccDecode] Average processing time: 0.001010
+[1618937157944156] [EccDecode] Header: 647	 CRC checked: No error
+[1618937157944169] [EccDecode] Average processing time: 0.001008
+[1618937158024155] [EccDecode] Header: 648	 CRC checked: No error
+[1618937158024174] [EccDecode] Average processing time: 0.001007
+[1618937158096157] [EccDecode] Header: 649	 CRC checked: No error
+[1618937158096169] [EccDecode] Average processing time: 0.001006
+[1618937158125231] [EccDecode] Header: 649	 CRC checked: No error
+[1618937158125248] [EccDecode] Average processing time: 0.001005
+[1618937158193127] [EccDecode] Header: 649	 CRC checked: No error
+[1618937158193137] [EccDecode] Average processing time: 0.001004
+[1618937158248912] [EccDecode] Header: 650	 CRC checked: No error
+[1618937158248928] [EccDecode] Average processing time: 0.001002
+[1618937158320787] [EccDecode] Header: 650	 CRC checked: No error
+[1618937158320798] [EccDecode] Average processing time: 0.001001
+[1618937158345146] [EccDecode] Header: 651	 CRC checked: No error
+[1618937158345157] [EccDecode] Average processing time: 0.001000
+[1618937158377020] [EccDecode] Header: 651	 CRC checked: No error
+[1618937158377030] [EccDecode] Average processing time: 0.000999
+[1618937158416457] [EccDecode] Header: 651	 CRC checked: No error
+[1618937158416465] [EccDecode] Average processing time: 0.000998
+[1618937158452407] [EccDecode] Header: 651	 CRC checked: No error
+[1618937158452415] [EccDecode] Average processing time: 0.000997
+[1618937158496407] [EccDecode] Header: 652	 CRC checked: No error
+[1618937158496416] [EccDecode] Average processing time: 0.000995
+[1618937158524438] [EccDecode] Header: 653	 CRC checked: No error
+[1618937158524445] [EccDecode] Average processing time: 0.000994
+[1618937158580446] [EccDecode] Header: 654	 CRC checked: No error
+[1618937158580454] [EccDecode] Average processing time: 0.000993
+[1618937158608437] [EccDecode] Header: 654	 CRC checked: No error
+[1618937158608451] [EccDecode] Average processing time: 0.000992
+[1618937158628418] [EccDecode] Header: 654	 CRC checked: No error
+[1618937158628816] [EccDecode] Average processing time: 0.000991
+[1618937158660671] [EccDecode] Header: 655	 CRC checked: No error
+[1618937158660688] [EccDecode] Average processing time: 0.000995
+[1618937158684985] [EccDecode] Header: 655	 CRC checked: No error
+[1618937158684992] [EccDecode] Average processing time: 0.000994
+[1618937158708411] [EccDecode] Header: 656	 CRC checked: No error
+[1618937158708428] [EccDecode] Average processing time: 0.000992
+[1618937158780155] [EccDecode] Header: 657	 CRC checked: No error
+[1618937158780166] [EccDecode] Average processing time: 0.000991
+[1618937158839252] [EccDecode] Header: 658	 CRC checked: No error
+[1618937158848152] [EccDecode] Average processing time: 0.001001
+[1618937158907166] [EccDecode] Header: 659	 CRC checked: No error
+[1618937158907176] [EccDecode] Average processing time: 0.000999
+[1618937158952863] [EccDecode] Header: 660	 CRC checked: No error
+[1618937158952872] [EccDecode] Average processing time: 0.000998
+[1618937159013157] [EccDecode] Header: 661	 CRC checked: No error
+[1618937159013169] [EccDecode] Average processing time: 0.000997
+[1618937159080157] [EccDecode] Header: 662	 CRC checked: No error
+[1618937159080168] [EccDecode] Average processing time: 0.000996
+[1618937159184405] [EccDecode] Header: 663	 CRC checked: No error
+[1618937159184415] [EccDecode] Average processing time: 0.000995
+[1618937159232396] [EccDecode] Header: 664	 CRC checked: No error
+[1618937159232407] [EccDecode] Average processing time: 0.000994
+[1618937159296468] [EccDecode] Header: 665	 CRC checked: No error
+[1618937159296483] [EccDecode] Average processing time: 0.000993
+[1618937159343060] [EccDecode] Header: 665	 CRC checked: No error
+[1618937159343069] [EccDecode] Average processing time: 0.000991
+[1618937159382957] [EccDecode] Header: 666	 CRC checked: No error
+[1618937159382972] [EccDecode] Average processing time: 0.000990
+[1618937159421231] [EccDecode] Header: 667	 CRC checked: No error
+[1618937159421239] [EccDecode] Average processing time: 0.000989
+[1618937159484432] [EccDecode] Header: 668	 CRC checked: No error
+[1618937159484448] [EccDecode] Average processing time: 0.000988
+[1618937159548436] [EccDecode] Header: 669	 CRC checked: No error
+[1618937159548444] [EccDecode] Average processing time: 0.000987
+[1618937159612426] [EccDecode] Header: 669	 CRC checked: No error
+[1618937159612437] [EccDecode] Average processing time: 0.000986
+[1618937159684406] [EccDecode] Header: 670	 CRC checked: No error
+[1618937159684415] [EccDecode] Average processing time: 0.000985
+[1618937159744394] [EccDecode] Header: 671	 CRC checked: No error
+[1618937159744404] [EccDecode] Average processing time: 0.000984
+[1618937159788430] [EccDecode] Header: 672	 CRC checked: No error
+[1618937159788440] [EccDecode] Average processing time: 0.000982
+[1618937159840156] [EccDecode] Header: 672	 CRC checked: No error
+[1618937159840166] [EccDecode] Average processing time: 0.000981
+[1618937159885060] [EccDecode] Header: 672	 CRC checked: No error
+[1618937159885068] [EccDecode] Average processing time: 0.000980
+[1618937159939252] [EccDecode] Header: 673	 CRC checked: No error
+[1618937159939260] [EccDecode] Average processing time: 0.000979
+[1618937159988404] [EccDecode] Header: 674	 CRC checked: No error
+[1618937159988420] [EccDecode] Average processing time: 0.000978
+[1618937160052429] [EccDecode] Header: 675	 CRC checked: No error
+[1618937160052438] [EccDecode] Average processing time: 0.000977
+[1618937160108418] [EccDecode] Header: 676	 CRC checked: No error
+[1618937160108434] [EccDecode] Average processing time: 0.000976
+[1618937160164167] [EccDecode] Header: 676	 CRC checked: No error
+[1618937160164177] [EccDecode] Average processing time: 0.000975
+[1618937160220155] [EccDecode] Header: 677	 CRC checked: No error
+[1618937160220170] [EccDecode] Average processing time: 0.000974
+[1618937160276155] [EccDecode] Header: 677	 CRC checked: No error
+[1618937160276164] [EccDecode] Average processing time: 0.000972
+[1618937160360156] [EccDecode] Header: 677	 CRC checked: No error
+[1618937160360166] [EccDecode] Average processing time: 0.000971
+[1618937160432182] [EccDecode] Header: 678	 CRC checked: No error
+[1618937160432191] [EccDecode] Average processing time: 0.000970
+[1618937160474573] [EccDecode] Header: 679	 CRC checked: No error
+[1618937160474581] [EccDecode] Average processing time: 0.000969
+[1618937160504273] [EccDecode] Header: 679	 CRC checked: No error
+[1618937160508677] [EccDecode] Average processing time: 0.000973
+[1618937160559046] [EccDecode] Header: 680	 CRC checked: No error
+[1618937160559055] [EccDecode] Average processing time: 0.000972
+[1618937160656430] [EccDecode] Header: 681	 CRC checked: No error
+[1618937160656439] [EccDecode] Average processing time: 0.000971
+[1618937160707438] [EccDecode] Header: 682	 CRC checked: No error
+[1618937160707447] [EccDecode] Average processing time: 0.000970
+[1618937160760429] [EccDecode] Header: 683	 CRC checked: No error
+[1618937160768164] [EccDecode] Average processing time: 0.000978
+[1618937160844488] [EccDecode] Header: 683	 CRC checked: No error
+[1618937160844497] [EccDecode] Average processing time: 0.000976
+[1618937160924458] [EccDecode] Header: 684	 CRC checked: No error
+[1618937160924476] [EccDecode] Average processing time: 0.000975
+[1618937160992392] [EccDecode] Header: 685	 CRC checked: No error
+[1618937160992403] [EccDecode] Average processing time: 0.000974
+[1618937161028823] [EccDecode] Header: 686	 CRC checked: No error
+[1618937161032160] [EccDecode] Average processing time: 0.000977
+[1618937161084393] [EccDecode] Header: 687	 CRC checked: No error
+[1618937161096159] [EccDecode] Average processing time: 0.000989
+[1618937161140452] [EccDecode] Header: 688	 CRC checked: No error
+[1618937161140461] [EccDecode] Average processing time: 0.000988
+[1618937161204451] [EccDecode] Header: 688	 CRC checked: No error
+[1618937161208175] [EccDecode] Average processing time: 0.000991
+[1618937161264861] [EccDecode] Header: 689	 CRC checked: No error
+[1618937161264869] [EccDecode] Average processing time: 0.000990
+[1618937161324395] [EccDecode] Header: 690	 CRC checked: No error
+[1618937161324409] [EccDecode] Average processing time: 0.000989
+[1618937161384157] [EccDecode] Header: 691	 CRC checked: No error
+[1618937161384166] [EccDecode] Average processing time: 0.000988
+[1618937161428392] [EccDecode] Header: 692	 CRC checked: No error
+[1618937161428407] [EccDecode] Average processing time: 0.000987
+[1618937161488438] [EccDecode] Header: 693	 CRC checked: No error
+[1618937161488447] [EccDecode] Average processing time: 0.000986
+[1618937161568156] [EccDecode] Header: 694	 CRC checked: No error
+[1618937161568172] [EccDecode] Average processing time: 0.000985
+[1618937161628169] [EccDecode] Header: 695	 CRC checked: No error
+[1618937161628178] [EccDecode] Average processing time: 0.000984
+[1618937161672419] [EccDecode] Header: 696	 CRC checked: No error
+[1618937161672434] [EccDecode] Average processing time: 0.000982
+[1618937161732703] [EccDecode] Header: 697	 CRC checked: No error
+[1618937161732711] [EccDecode] Average processing time: 0.000981
+[1618937161822724] [EccDecode] Header: 697	 CRC checked: No error
+[1618937161822739] [EccDecode] Average processing time: 0.000980
+[1618937161884398] [EccDecode] Header: 698	 CRC checked: No error
+[1618937161884408] [EccDecode] Average processing time: 0.000979
+[1618937161948401] [EccDecode] Header: 699	 CRC checked: No error
+[1618937161948410] [EccDecode] Average processing time: 0.000978
+[1618937161996442] [EccDecode] Header: 700	 CRC checked: No error
+[1618937161996450] [EccDecode] Average processing time: 0.000977
+[1618937162052155] [EccDecode] Header: 701	 CRC checked: No error
+[1618937162052167] [EccDecode] Average processing time: 0.000976
+[1618937162108462] [EccDecode] Header: 702	 CRC checked: No error
+[1618937162108469] [EccDecode] Average processing time: 0.000975
+[1618937162140454] [EccDecode] Header: 703	 CRC checked: No error
+[1618937162140461] [EccDecode] Average processing time: 0.000974
+[1618937162188166] [EccDecode] Header: 704	 CRC checked: No error
+[1618937162188180] [EccDecode] Average processing time: 0.000973
+[1618937162240154] [EccDecode] Header: 705	 CRC checked: No error
+[1618937162248150] [EccDecode] Average processing time: 0.000981
+[1618937162284395] [EccDecode] Header: 706	 CRC checked: No error
+[1618937162296149] [EccDecode] Average processing time: 0.000992
+[1618937162324395] [EccDecode] Header: 707	 CRC checked: No error
+[1618937162324402] [EccDecode] Average processing time: 0.000991
+[1618937162364425] [EccDecode] Header: 708	 CRC checked: No error
+[1618937162364437] [EccDecode] Average processing time: 0.000990
+[1618937162416391] [EccDecode] Header: 708	 CRC checked: No error
+[1618937162416404] [EccDecode] Average processing time: 0.000989
+[1618937162484420] [EccDecode] Header: 709	 CRC checked: No error
+[1618937162484435] [EccDecode] Average processing time: 0.000988
+[1618937162548154] [EccDecode] Header: 710	 CRC checked: No error
+[1618937162548163] [EccDecode] Average processing time: 0.000987
+[1618937162596167] [EccDecode] Header: 711	 CRC checked: No error
+[1618937162596177] [EccDecode] Average processing time: 0.000986
+[1618937162656155] [EccDecode] Header: 712	 CRC checked: No error
+[1618937162656164] [EccDecode] Average processing time: 0.000985
+[1618937162731825] [EccDecode] Header: 713	 CRC checked: No error
+[1618937162731834] [EccDecode] Average processing time: 0.000984
+[1618937162804155] [EccDecode] Header: 714	 CRC checked: No error
+[1618937162804163] [EccDecode] Average processing time: 0.000983
+[1618937162860155] [EccDecode] Header: 715	 CRC checked: No error
+[1618937162860165] [EccDecode] Average processing time: 0.000982
+[1618937162928155] [EccDecode] Header: 715	 CRC checked: No error
+[1618937162928171] [EccDecode] Average processing time: 0.000981
+[1618937162992420] [EccDecode] Header: 716	 CRC checked: No error
+[1618937162992428] [EccDecode] Average processing time: 0.000980
+[1618937163024424] [EccDecode] Header: 717	 CRC checked: No error
+[1618937163024437] [EccDecode] Average processing time: 0.000979
+[1618937163064153] [EccDecode] Header: 718	 CRC checked: No error
+[1618937163064161] [EccDecode] Average processing time: 0.000978
+[1618937163116153] [EccDecode] Header: 719	 CRC checked: No error
+[1618937163116168] [EccDecode] Average processing time: 0.000977
+[1618937163188462] [EccDecode] Header: 719	 CRC checked: No error
+[1618937163188471] [EccDecode] Average processing time: 0.000976
+[1618937163260432] [EccDecode] Header: 720	 CRC checked: No error
+[1618937163260446] [EccDecode] Average processing time: 0.000975
+[1618937163320154] [EccDecode] Header: 721	 CRC checked: No error
+[1618937163320162] [EccDecode] Average processing time: 0.000973
+[1618937163376160] [EccDecode] Header: 722	 CRC checked: No error
+[1618937163376168] [EccDecode] Average processing time: 0.000972
+[1618937163431823] [EccDecode] Header: 723	 CRC checked: No error
+[1618937163431831] [EccDecode] Average processing time: 0.000971
+[1618937163480155] [EccDecode] Header: 724	 CRC checked: No error
+[1618937163480166] [EccDecode] Average processing time: 0.000970
+[1618937163532155] [EccDecode] Header: 725	 CRC checked: No error
+[1618937163532164] [EccDecode] Average processing time: 0.000969
+[1618937163580155] [EccDecode] Header: 726	 CRC checked: No error
+[1618937163580722] [EccDecode] Average processing time: 0.000969
+[1618937163632440] [EccDecode] Header: 727	 CRC checked: No error
+[1618937163632454] [EccDecode] Average processing time: 0.000968
+[1618937163704155] [EccDecode] Header: 728	 CRC checked: No error
+[1618937163704163] [EccDecode] Average processing time: 0.000967
+[1618937163768156] [EccDecode] Header: 729	 CRC checked: No error
+[1618937163768173] [EccDecode] Average processing time: 0.000966
+[1618937163812381] [EccDecode] Header: 729	 CRC checked: No error
+[1618937163812391] [EccDecode] Average processing time: 0.000965
+[1618937163856175] [EccDecode] Header: 730	 CRC checked: No error
+[1618937163856189] [EccDecode] Average processing time: 0.000964
+[1618937163904432] [EccDecode] Header: 730	 CRC checked: No error
+[1618937163904442] [EccDecode] Average processing time: 0.000963
+[1618937163940154] [EccDecode] Header: 731	 CRC checked: No error
+[1618937163940169] [EccDecode] Average processing time: 0.000962
+[1618937163996431] [EccDecode] Header: 732	 CRC checked: No error
+[1618937163996447] [EccDecode] Average processing time: 0.000961
+[1618937164044430] [EccDecode] Header: 733	 CRC checked: No error
+[1618937164044439] [EccDecode] Average processing time: 0.000960
+[1618937164136160] [EccDecode] Header: 734	 CRC checked: No error
+[1618937164136169] [EccDecode] Average processing time: 0.000959
+[1618937164204154] [EccDecode] Header: 735	 CRC checked: No error
+[1618937164204161] [EccDecode] Average processing time: 0.000958
+[1618937164236476] [EccDecode] Header: 736	 CRC checked: No error
+[1618937164236485] [EccDecode] Average processing time: 0.000957
+[1618937164312406] [EccDecode] Header: 737	 CRC checked: No error
+[1618937164312414] [EccDecode] Average processing time: 0.000956
+[1618937164344403] [EccDecode] Header: 738	 CRC checked: No error
+[1618937164344419] [EccDecode] Average processing time: 0.000955
+[1618937164400155] [EccDecode] Header: 738	 CRC checked: No error
+[1618937164400164] [EccDecode] Average processing time: 0.000954
+[1618937164464154] [EccDecode] Header: 739	 CRC checked: No error
+[1618937164464169] [EccDecode] Average processing time: 0.000953
+[1618937164560463] [EccDecode] Header: 740	 CRC checked: No error
+[1618937164560471] [EccDecode] Average processing time: 0.000952
+[1618937164608425] [EccDecode] Header: 740	 CRC checked: No error
+[1618937164608439] [EccDecode] Average processing time: 0.000951
+[1618937164624532] [EccDecode] Header: 741	 CRC checked: No error
+[1618937164632152] [EccDecode] Average processing time: 0.000958
+[1618937164696469] [EccDecode] Header: 741	 CRC checked: No error
+[1618937164696482] [EccDecode] Average processing time: 0.000957
+[1618937164736443] [EccDecode] Header: 742	 CRC checked: No error
+[1618937164736451] [EccDecode] Average processing time: 0.000956
+[1618937164784427] [EccDecode] Header: 743	 CRC checked: No error
+[1618937164784437] [EccDecode] Average processing time: 0.000955
+[1618937164848175] [EccDecode] Header: 743	 CRC checked: No error
+[1618937164848182] [EccDecode] Average processing time: 0.000954
+[1618937164901307] [EccDecode] Header: 744	 CRC checked: No error
+[1618937164901318] [EccDecode] Average processing time: 0.000953
+[1618937164952170] [EccDecode] Header: 745	 CRC checked: No error
+[1618937164952180] [EccDecode] Average processing time: 0.000952
+[1618937165008166] [EccDecode] Header: 745	 CRC checked: No error
+[1618937165008177] [EccDecode] Average processing time: 0.000951
+[1618937165056436] [EccDecode] Header: 745	 CRC checked: No error
+[1618937165056451] [EccDecode] Average processing time: 0.000950
+[1618937165108598] [EccDecode] Header: 746	 CRC checked: No error
+[1618937165108610] [EccDecode] Average processing time: 0.000949
+[1618937165148870] [EccDecode] Header: 746	 CRC checked: No error
+[1618937165148887] [EccDecode] Average processing time: 0.000948
+[1618937165196429] [EccDecode] Header: 747	 CRC checked: No error
+[1618937165196440] [EccDecode] Average processing time: 0.000947
+[1618937165229095] [EccDecode] Header: 748	 CRC checked: No error
+[1618937165229111] [EccDecode] Average processing time: 0.000946
+[1618937165260682] [EccDecode] Header: 749	 CRC checked: No error
+[1618937165260692] [EccDecode] Average processing time: 0.000945
+[1618937165320157] [EccDecode] Header: 749	 CRC checked: No error
+[1618937165320168] [EccDecode] Average processing time: 0.000944
+[1618937165344941] [EccDecode] Header: 750	 CRC checked: No error
+[1618937165344950] [EccDecode] Average processing time: 0.000943
+[1618937165393535] [EccDecode] Header: 751	 CRC checked: No error
+[1618937165393545] [EccDecode] Average processing time: 0.000942
+[1618937165472156] [EccDecode] Header: 751	 CRC checked: No error
+[1618937165476160] [EccDecode] Average processing time: 0.000945
+[1618937165556418] [EccDecode] Header: 752	 CRC checked: No error
+[1618937165556424] [EccDecode] Average processing time: 0.000945
+[1618937165630936] [EccDecode] Header: 753	 CRC checked: No error
+[1618937165630948] [EccDecode] Average processing time: 0.000944
+[1618937165688158] [EccDecode] Header: 754	 CRC checked: No error
+[1618937165688177] [EccDecode] Average processing time: 0.000943
+[1618937165772157] [EccDecode] Header: 755	 CRC checked: No error
+[1618937165772173] [EccDecode] Average processing time: 0.000942
+[1618937165828156] [EccDecode] Header: 756	 CRC checked: No error
+[1618937165828166] [EccDecode] Average processing time: 0.000941
+[1618937165897278] [EccDecode] Header: 757	 CRC checked: No error
+[1618937165897293] [EccDecode] Average processing time: 0.000940
+[1618937165939378] [EccDecode] Header: 758	 CRC checked: No error
+[1618937165939386] [EccDecode] Average processing time: 0.000939
+[1618937166033512] [EccDecode] Header: 759	 CRC checked: No error
+[1618937166033526] [EccDecode] Average processing time: 0.000938
+[1618937166069446] [EccDecode] Header: 760	 CRC checked: No error
+[1618937166069453] [EccDecode] Average processing time: 0.000937
+[1618937166099938] [EccDecode] Header: 761	 CRC checked: No error
+[1618937166100287] [EccDecode] Average processing time: 0.000936
+[1618937166156427] [EccDecode] Header: 762	 CRC checked: No error
+[1618937166156436] [EccDecode] Average processing time: 0.000935
+[1618937166196417] [EccDecode] Header: 762	 CRC checked: No error
+[1618937166196426] [EccDecode] Average processing time: 0.000934
+[1618937166244426] [EccDecode] Header: 763	 CRC checked: No error
+[1618937166244436] [EccDecode] Average processing time: 0.000934
+[1618937166284429] [EccDecode] Header: 764	 CRC checked: No error
+[1618937166284440] [EccDecode] Average processing time: 0.000933
+[1618937166372163] [EccDecode] Header: 765	 CRC checked: No error
+[1618937166372172] [EccDecode] Average processing time: 0.000932
+[1618937166412156] [EccDecode] Header: 766	 CRC checked: No error
+[1618937166412167] [EccDecode] Average processing time: 0.000931
+[1618937166452165] [EccDecode] Header: 767	 CRC checked: No error
+[1618937166452180] [EccDecode] Average processing time: 0.000930
+[1618937166516157] [EccDecode] Header: 767	 CRC checked: No error
+[1618937166516168] [EccDecode] Average processing time: 0.000929
+[1618937166572567] [EccDecode] Header: 768	 CRC checked: No error
+[1618937166572580] [EccDecode] Average processing time: 0.000928
+[1618937166609107] [EccDecode] Header: 768	 CRC checked: No error
+[1618937166609114] [EccDecode] Average processing time: 0.000927
+[1618937166657044] [EccDecode] Header: 769	 CRC checked: No error
+[1618937166657054] [EccDecode] Average processing time: 0.000926
+[1618937166693074] [EccDecode] Header: 770	 CRC checked: No error
+[1618937166693081] [EccDecode] Average processing time: 0.000925
+[1618937166752420] [EccDecode] Header: 770	 CRC checked: No error
+[1618937166752430] [EccDecode] Average processing time: 0.000924
+[1618937166784425] [EccDecode] Header: 771	 CRC checked: No error
+[1618937166784435] [EccDecode] Average processing time: 0.000923
+[1618937166868441] [EccDecode] Header: 772	 CRC checked: No error
+[1618937166868453] [EccDecode] Average processing time: 0.000922
+[1618937166928437] [EccDecode] Header: 773	 CRC checked: No error
+[1618937166928449] [EccDecode] Average processing time: 0.000922
+[1618937167004427] [EccDecode] Header: 773	 CRC checked: No error
+[1618937167004438] [EccDecode] Average processing time: 0.000921
+[1618937167044446] [EccDecode] Header: 774	 CRC checked: No error
+[1618937167044456] [EccDecode] Average processing time: 0.000920
+[1618937167120433] [EccDecode] Header: 775	 CRC checked: No error
+[1618937167120443] [EccDecode] Average processing time: 0.000919
+[1618937167168441] [EccDecode] Header: 776	 CRC checked: No error
+[1618937167168456] [EccDecode] Average processing time: 0.000918
+[1618937167228495] [EccDecode] Header: 776	 CRC checked: No error
+[1618937167228506] [EccDecode] Average processing time: 0.000917
+[1618937167312167] [EccDecode] Header: 777	 CRC checked: No error
+[1618937167312182] [EccDecode] Average processing time: 0.000916
+[1618937167393444] [EccDecode] Header: 778	 CRC checked: No error
+[1618937167393455] [EccDecode] Average processing time: 0.000915
+[1618937167459030] [EccDecode] Header: 779	 CRC checked: No error
+[1618937167459048] [EccDecode] Average processing time: 0.000914
+[1618937167558820] [EccDecode] Header: 779	 CRC checked: No error
+[1618937167558830] [EccDecode] Average processing time: 0.000913
+[1618937167660165] [EccDecode] Header: 779	 CRC checked: No error
+[1618937167660176] [EccDecode] Average processing time: 0.000913
+[1618937167729057] [EccDecode] Header: 779	 CRC checked: No error
+[1618937167729067] [EccDecode] Average processing time: 0.000912
+[1618937167795140] [EccDecode] Header: 780	 CRC checked: No error
+[1618937167795152] [EccDecode] Average processing time: 0.000911
+[1618937167839094] [EccDecode] Header: 781	 CRC checked: No error
+[1618937167848151] [EccDecode] Average processing time: 0.000919
+[1618937167902887] [EccDecode] Header: 782	 CRC checked: No error
+[1618937167902896] [EccDecode] Average processing time: 0.000918
+[1618937167950878] [EccDecode] Header: 783	 CRC checked: No error
+[1618937167950888] [EccDecode] Average processing time: 0.000917
+[1618937167974771] [EccDecode] Header: 783	 CRC checked: No error
+[1618937167974781] [EccDecode] Average processing time: 0.000916
+[1618937168032880] [EccDecode] Header: 783	 CRC checked: No error
+[1618937168032896] [EccDecode] Average processing time: 0.000915
+[1618937168076786] [EccDecode] Header: 784	 CRC checked: No error
+[1618937168076797] [EccDecode] Average processing time: 0.000914
+[1618937168136156] [EccDecode] Header: 784	 CRC checked: No error
+[1618937168136171] [EccDecode] Average processing time: 0.000913
+[1618937168191188] [EccDecode] Header: 785	 CRC checked: No error
+[1618937168191198] [EccDecode] Average processing time: 0.000913
+[1618937168220956] [EccDecode] Header: 786	 CRC checked: No error
+[1618937168220971] [EccDecode] Average processing time: 0.000912
+[1618937168292432] [EccDecode] Header: 786	 CRC checked: No error
+[1618937168292442] [EccDecode] Average processing time: 0.000911
+[1618937168340418] [EccDecode] Header: 786	 CRC checked: No error
+[1618937168340427] [EccDecode] Average processing time: 0.000910
+[1618937168392424] [EccDecode] Header: 786	 CRC checked: No error
+[1618937168392434] [EccDecode] Average processing time: 0.000909
+[1618937168424874] [EccDecode] Header: 786	 CRC checked: No error
+[1618937168432180] [EccDecode] Average processing time: 0.000915
+[1618937168552402] [EccDecode] Header: 787	 CRC checked: No error
+[1618937168552414] [EccDecode] Average processing time: 0.000914
+[1618937168624421] [EccDecode] Header: 788	 CRC checked: No error
+[1618937168632158] [EccDecode] Average processing time: 0.000921
+[1618937168716480] [EccDecode] Header: 789	 CRC checked: No error
+[1618937168716500] [EccDecode] Average processing time: 0.000920
+[1618937168776456] [EccDecode] Header: 790	 CRC checked: No error
+[1618937168776469] [EccDecode] Average processing time: 0.000919
+[1618937168824418] [EccDecode] Header: 791	 CRC checked: No error
+[1618937168824435] [EccDecode] Average processing time: 0.000919
+[1618937168872391] [EccDecode] Header: 792	 CRC checked: No error
+[1618937168872403] [EccDecode] Average processing time: 0.000918
+[1618937168944444] [EccDecode] Header: 793	 CRC checked: No error
+[1618937168944463] [EccDecode] Average processing time: 0.000917
+[1618937168996437] [EccDecode] Header: 794	 CRC checked: No error
+[1618937168996448] [EccDecode] Average processing time: 0.000916
+[1618937169032415] [EccDecode] Header: 795	 CRC checked: No error
+[1618937169032431] [EccDecode] Average processing time: 0.000915
+[1618937169088180] [EccDecode] Header: 796	 CRC checked: No error
+[1618937169090669] [EccDecode] Average processing time: 0.000917
+[1618937169136792] [EccDecode] Header: 797	 CRC checked: No error
+[1618937169152158] [EccDecode] Average processing time: 0.000931
+[1618937169204409] [EccDecode] Header: 798	 CRC checked: No error
+[1618937169216169] [EccDecode] Average processing time: 0.000941
+[1618937169248157] [EccDecode] Header: 798	 CRC checked: No error
+[1618937169248168] [EccDecode] Average processing time: 0.000940
+[1618937169292396] [EccDecode] Header: 799	 CRC checked: No error
+[1618937169292406] [EccDecode] Average processing time: 0.000939
+[1618937169372830] [EccDecode] Header: 800	 CRC checked: No error
+[1618937169376343] [EccDecode] Average processing time: 0.000942
+[1618937169404553] [EccDecode] Header: 800	 CRC checked: No error
+[1618937169404565] [EccDecode] Average processing time: 0.000941
+[1618937169468413] [EccDecode] Header: 801	 CRC checked: No error
+[1618937169468423] [EccDecode] Average processing time: 0.000940
+[1618937169532408] [EccDecode] Header: 802	 CRC checked: No error
+[1618937169532447] [EccDecode] Average processing time: 0.000939
+[1618937169588703] [EccDecode] Header: 803	 CRC checked: No error
+[1618937169588714] [EccDecode] Average processing time: 0.000938
+[1618937169628425] [EccDecode] Header: 804	 CRC checked: No error
+[1618937169628441] [EccDecode] Average processing time: 0.000937
+[1618937169676409] [EccDecode] Header: 804	 CRC checked: No error
+[1618937169676420] [EccDecode] Average processing time: 0.000937
+[1618937169720407] [EccDecode] Header: 805	 CRC checked: No error
+[1618937169720424] [EccDecode] Average processing time: 0.000936
+[1618937169790543] [EccDecode] Header: 806	 CRC checked: No error
+[1618937169792727] [EccDecode] Average processing time: 0.000942
+[1618937169852174] [EccDecode] Header: 807	 CRC checked: No error
+[1618937169852184] [EccDecode] Average processing time: 0.000942
+[1618937169952435] [EccDecode] Header: 808	 CRC checked: No error
+[1618937169956843] [EccDecode] Average processing time: 0.000945
+[1618937169970985] [EccDecode] Header: 809	 CRC checked: No error
+[1618937169970995] [EccDecode] Average processing time: 0.000944
+[1618937170044265] [EccDecode] Header: 810	 CRC checked: No error
+[1618937170044276] [EccDecode] Average processing time: 0.000943
+[1618937170092392] [EccDecode] Header: 811	 CRC checked: No error
+[1618937170100167] [EccDecode] Average processing time: 0.000950
+[1618937170172408] [EccDecode] Header: 812	 CRC checked: No error
+[1618937170172426] [EccDecode] Average processing time: 0.000949
+[1618937170204419] [EccDecode] Header: 813	 CRC checked: No error
+[1618937170204430] [EccDecode] Average processing time: 0.000948
+[1618937170248434] [EccDecode] Header: 814	 CRC checked: No error
+[1618937170254444] [EccDecode] Average processing time: 0.000953
+[1618937170300438] [EccDecode] Header: 815	 CRC checked: No error
+[1618937170300450] [EccDecode] Average processing time: 0.000952
+[1618937170376426] [EccDecode] Header: 815	 CRC checked: No error
+[1618937170376442] [EccDecode] Average processing time: 0.000951
+[1618937170416980] [EccDecode] Header: 816	 CRC checked: No error
+[1618937170416991] [EccDecode] Average processing time: 0.000950
+[1618937170475440] [EccDecode] Header: 817	 CRC checked: No error
+[1618937170475458] [EccDecode] Average processing time: 0.000949
+[1618937170520793] [EccDecode] Header: 817	 CRC checked: No error
+[1618937170520801] [EccDecode] Average processing time: 0.000948
+[1618937170584156] [EccDecode] Header: 818	 CRC checked: No error
+[1618937170584167] [EccDecode] Average processing time: 0.000947
+[1618937170604533] [EccDecode] Header: 819	 CRC checked: No error
+[1618937170604541] [EccDecode] Average processing time: 0.000946
+[1618937170644234] [EccDecode] Header: 820	 CRC checked: No error
+[1618937170644245] [EccDecode] Average processing time: 0.000946
+[1618937170680901] [EccDecode] Header: 821	 CRC checked: No error
+[1618937170680912] [EccDecode] Average processing time: 0.000945
+[1618937170748766] [EccDecode] Header: 822	 CRC checked: No error
+[1618937170748777] [EccDecode] Average processing time: 0.000944
+[1618937170860158] [EccDecode] Header: 823	 CRC checked: No error
+[1618937170860174] [EccDecode] Average processing time: 0.000943
+[1618937170956156] [EccDecode] Header: 823	 CRC checked: No error
+[1618937170956167] [EccDecode] Average processing time: 0.000942
+[1618937171056465] [EccDecode] Header: 824	 CRC checked: No error
+[1618937171060164] [EccDecode] Average processing time: 0.000945
+[1618937171160157] [EccDecode] Header: 825	 CRC checked: No error
+[1618937171160167] [EccDecode] Average processing time: 0.000944
+[1618937171260421] [EccDecode] Header: 826	 CRC checked: No error
+[1618937171260442] [EccDecode] Average processing time: 0.000943
+[1618937171348155] [EccDecode] Header: 827	 CRC checked: No error
+[1618937171348165] [EccDecode] Average processing time: 0.000942
+[1618937171437129] [EccDecode] Header: 828	 CRC checked: No error
+[1618937171437144] [EccDecode] Average processing time: 0.000941
+[1618937171507505] [EccDecode] Header: 829	 CRC checked: No error
+[1618937171507515] [EccDecode] Average processing time: 0.000940
+[1618937171580415] [EccDecode] Header: 830	 CRC checked: No error
+[1618937171580424] [EccDecode] Average processing time: 0.000939
+[1618937171653002] [EccDecode] Header: 831	 CRC checked: No error
+[1618937171653012] [EccDecode] Average processing time: 0.000939
+[1618937171688699] [EccDecode] Header: 832	 CRC checked: No error
+[1618937171688707] [EccDecode] Average processing time: 0.000938
+[1618937171740420] [EccDecode] Header: 833	 CRC checked: No error
+[1618937171740433] [EccDecode] Average processing time: 0.000937
+[1618937171774727] [EccDecode] Header: 834	 CRC checked: No error
+[1618937171774734] [EccDecode] Average processing time: 0.000936
+[1618937171836595] [EccDecode] Header: 834	 CRC checked: No error
+[1618937171836609] [EccDecode] Average processing time: 0.000935
+[1618937171876420] [EccDecode] Header: 835	 CRC checked: No error
+[1618937171888674] [EccDecode] Average processing time: 0.000946
+[1618937171974975] [EccDecode] Header: 835	 CRC checked: No error
+[1618937171974992] [EccDecode] Average processing time: 0.000945
+[1618937172038602] [EccDecode] Header: 836	 CRC checked: No error
+[1618937172038613] [EccDecode] Average processing time: 0.000944
+[1618937172082879] [EccDecode] Header: 837	 CRC checked: No error
+[1618937172082895] [EccDecode] Average processing time: 0.000943
+[1618937172116996] [EccDecode] Header: 837	 CRC checked: No error
+[1618937172117005] [EccDecode] Average processing time: 0.000942
+[1618937172159345] [EccDecode] Header: 838	 CRC checked: No error
+[1618937172159357] [EccDecode] Average processing time: 0.000941
+[1618937172177974] [EccDecode] Header: 839	 CRC checked: No error
+[1618937172179052] [EccDecode] Average processing time: 0.000942
+[1618937172241142] [EccDecode] Header: 840	 CRC checked: No error
+[1618937172241150] [EccDecode] Average processing time: 0.000941
+[1618937172298873] [EccDecode] Header: 841	 CRC checked: No error
+[1618937172298883] [EccDecode] Average processing time: 0.000940
+[1618937172344156] [EccDecode] Header: 842	 CRC checked: No error
+[1618937172344167] [EccDecode] Average processing time: 0.000939
+[1618937172384157] [EccDecode] Header: 843	 CRC checked: No error
+[1618937172384168] [EccDecode] Average processing time: 0.000938
+[1618937172456177] [EccDecode] Header: 843	 CRC checked: No error
+[1618937172456189] [EccDecode] Average processing time: 0.000937
+[1618937172505156] [EccDecode] Header: 844	 CRC checked: No error
+[1618937172505173] [EccDecode] Average processing time: 0.000936
+[1618937172545072] [EccDecode] Header: 845	 CRC checked: No error
+[1618937172545084] [EccDecode] Average processing time: 0.000936
+[1618937172618661] [EccDecode] Header: 846	 CRC checked: No error
+[1618937172620494] [EccDecode] Average processing time: 0.000940
+[1618937172652780] [EccDecode] Header: 847	 CRC checked: No error
+[1618937172654605] [EccDecode] Average processing time: 0.000945
+[1618937172686542] [EccDecode] Header: 848	 CRC checked: No error
+[1618937172686559] [EccDecode] Average processing time: 0.000945
+[1618937172730466] [EccDecode] Header: 849	 CRC checked: No error
+[1618937172730477] [EccDecode] Average processing time: 0.000946
+[1618937172808756] [EccDecode] Header: 850	 CRC checked: No error
+[1618937172808768] [EccDecode] Average processing time: 0.000945
+[1618937172856315] [EccDecode] Header: 851	 CRC checked: No error
+[1618937172856328] [EccDecode] Average processing time: 0.000945
+[1618937172906686] [EccDecode] Header: 852	 CRC checked: No error
+[1618937172906699] [EccDecode] Average processing time: 0.000944
+[1618937172982750] [EccDecode] Header: 853	 CRC checked: No error
+[1618937172982766] [EccDecode] Average processing time: 0.000944
+[1618937173060044] [EccDecode] Header: 854	 CRC checked: No error
+[1618937173060055] [EccDecode] Average processing time: 0.000944
+[1618937173140156] [EccDecode] Header: 854	 CRC checked: No error
+[1618937173140168] [EccDecode] Average processing time: 0.000943
+[1618937173216157] [EccDecode] Header: 855	 CRC checked: No error
+[1618937173216167] [EccDecode] Average processing time: 0.000942
+[1618937173260156] [EccDecode] Header: 856	 CRC checked: No error
+[1618937173260171] [EccDecode] Average processing time: 0.000941
+[1618937173304156] [EccDecode] Header: 857	 CRC checked: No error
+[1618937173304167] [EccDecode] Average processing time: 0.000940
+[1618937173360173] [EccDecode] Header: 858	 CRC checked: No error
+[1618937173360188] [EccDecode] Average processing time: 0.000939
+[1618937173436176] [EccDecode] Header: 859	 CRC checked: No error
+[1618937173436187] [EccDecode] Average processing time: 0.000939
+[1618937173508738] [EccDecode] Header: 860	 CRC checked: No error
+[1618937173508754] [EccDecode] Average processing time: 0.000938
+[1618937173571033] [EccDecode] Header: 861	 CRC checked: No error
+[1618937173571041] [EccDecode] Average processing time: 0.000937
+[1618937173629602] [EccDecode] Header: 861	 CRC checked: No error
+[1618937173629609] [EccDecode] Average processing time: 0.000936
+[1618937173669043] [EccDecode] Header: 862	 CRC checked: No error
+[1618937173669050] [EccDecode] Average processing time: 0.000935
+[1618937173708382] [EccDecode] Header: 863	 CRC checked: No error
+[1618937173708390] [EccDecode] Average processing time: 0.000934
+[1618937173768884] [EccDecode] Header: 863	 CRC checked: No error
+[1618937173768891] [EccDecode] Average processing time: 0.000934
+[1618937173827806] [EccDecode] Header: 864	 CRC checked: No error
+[1618937173827814] [EccDecode] Average processing time: 0.000933
+[1618937173847280] [EccDecode] Header: 864	 CRC checked: No error
+[1618937173847287] [EccDecode] Average processing time: 0.000932
+[1618937173871592] [EccDecode] Header: 864	 CRC checked: No error
+[1618937173871600] [EccDecode] Average processing time: 0.000931
+[1618937173944233] [EccDecode] Header: 865	 CRC checked: No error
+[1618937173944249] [EccDecode] Average processing time: 0.000930
+[1618937174024431] [EccDecode] Header: 865	 CRC checked: No error
+[1618937174024441] [EccDecode] Average processing time: 0.000929
+[1618937174052780] [EccDecode] Header: 866	 CRC checked: No error
+[1618937174052796] [EccDecode] Average processing time: 0.000929
+[1618937174101062] [EccDecode] Header: 867	 CRC checked: No error
+[1618937174112764] [EccDecode] Average processing time: 0.000938
+[1618937174156924] [EccDecode] Header: 868	 CRC checked: No error
+[1618937174156933] [EccDecode] Average processing time: 0.000938
+[1618937174208181] [EccDecode] Header: 869	 CRC checked: No error
+[1618937174208191] [EccDecode] Average processing time: 0.000937
+[1618937174540158] [EccDecode] Header: 869	 CRC checked: No error
+[1618937174540170] [EccDecode] Average processing time: 0.000936
+[1618937174596157] [EccDecode] Header: 870	 CRC checked: No error
+[1618937174596174] [EccDecode] Average processing time: 0.000935
+[1618937174628156] [EccDecode] Header: 870	 CRC checked: No error
+[1618937174628167] [EccDecode] Average processing time: 0.000934
+[1618937174660158] [EccDecode] Header: 871	 CRC checked: No error
+[1618937174660169] [EccDecode] Average processing time: 0.000933
+[1618937174668157] [EccDecode] Header: 871	 CRC checked: No error
+[1618937174668166] [EccDecode] Average processing time: 0.000933
+[1618937174692156] [EccDecode] Header: 871	 CRC checked: No error
+[1618937174692176] [EccDecode] Average processing time: 0.000932
+[1618937174724156] [EccDecode] Header: 872	 CRC checked: No error
+[1618937174724165] [EccDecode] Average processing time: 0.000931
+[1618937174754689] [EccDecode] Header: 872	 CRC checked: No error
+[1618937174754703] [EccDecode] Average processing time: 0.000930
+[1618937174754966] [EccDecode] Header: 873	 CRC checked: No error
+[1618937174754971] [EccDecode] Average processing time: 0.000929
+[1618937174820156] [EccDecode] Header: 873	 CRC checked: No error
+[1618937174820171] [EccDecode] Average processing time: 0.000929
+[1618937174828183] [EccDecode] Header: 873	 CRC checked: No error
+[1618937174828192] [EccDecode] Average processing time: 0.000928
+[1618937174884420] [EccDecode] Header: 874	 CRC checked: No error
+[1618937174884430] [EccDecode] Average processing time: 0.000927
+[1618937174964156] [EccDecode] Header: 875	 CRC checked: No error
+[1618937174964166] [EccDecode] Average processing time: 0.000926
+[1618937175040966] [EccDecode] Header: 876	 CRC checked: No error
+[1618937175040976] [EccDecode] Average processing time: 0.000925
+[1618937175074987] [EccDecode] Header: 877	 CRC checked: No error
+[1618937175074998] [EccDecode] Average processing time: 0.000924
+[1618937175132429] [EccDecode] Header: 878	 CRC checked: No error
+[1618937175132440] [EccDecode] Average processing time: 0.000924
+[1618937175172818] [EccDecode] Header: 879	 CRC checked: No error
+[1618937175172827] [EccDecode] Average processing time: 0.000923
+[1618937175228860] [EccDecode] Header: 880	 CRC checked: No error
+[1618937175228869] [EccDecode] Average processing time: 0.000922
+[1618937175280731] [EccDecode] Header: 880	 CRC checked: No error
+[1618937175280741] [EccDecode] Average processing time: 0.000921
+[1618937175344573] [EccDecode] Header: 881	 CRC checked: No error
+[1618937175344583] [EccDecode] Average processing time: 0.000920
+[1618937175400446] [EccDecode] Header: 882	 CRC checked: No error
+[1618937175408182] [EccDecode] Average processing time: 0.000926
+[1618937175456448] [EccDecode] Header: 883	 CRC checked: No error
+[1618937175460153] [EccDecode] Average processing time: 0.000929
+[1618937175500489] [EccDecode] Header: 884	 CRC checked: No error
+[1618937175500504] [EccDecode] Average processing time: 0.000928
+[1618937175544778] [EccDecode] Header: 885	 CRC checked: No error
+[1618937175544786] [EccDecode] Average processing time: 0.000927
+[1618937175584585] [EccDecode] Header: 885	 CRC checked: No error
+[1618937175584597] [EccDecode] Average processing time: 0.000927
+[1618937175637220] [EccDecode] Header: 886	 CRC checked: No error
+[1618937175637227] [EccDecode] Average processing time: 0.000926
+[1618937175680434] [EccDecode] Header: 887	 CRC checked: No error
+[1618937175680444] [EccDecode] Average processing time: 0.000925
+[1618937175728454] [EccDecode] Header: 888	 CRC checked: No error
+[1618937175728465] [EccDecode] Average processing time: 0.000924
+[1618937175792989] [EccDecode] Header: 888	 CRC checked: No error
+[1618937175792999] [EccDecode] Average processing time: 0.000923
+[1618937175864452] [EccDecode] Header: 889	 CRC checked: No error
+[1618937175864461] [EccDecode] Average processing time: 0.000923
+[1618937175904155] [EccDecode] Header: 890	 CRC checked: No error
+[1618937175904166] [EccDecode] Average processing time: 0.000922
+[1618937175964501] [EccDecode] Header: 891	 CRC checked: No error
+[1618937175964516] [EccDecode] Average processing time: 0.000921
+[1618937176040507] [EccDecode] Header: 892	 CRC checked: No error
+[1618937176040517] [EccDecode] Average processing time: 0.000920
+[1618937176108406] [EccDecode] Header: 893	 CRC checked: No error
+[1618937176108422] [EccDecode] Average processing time: 0.000919
+[1618937176164155] [EccDecode] Header: 894	 CRC checked: No error
+[1618937176164166] [EccDecode] Average processing time: 0.000919
+[1618937176196420] [EccDecode] Header: 895	 CRC checked: No error
+[1618937176196440] [EccDecode] Average processing time: 0.000918
+[1618937176232547] [EccDecode] Header: 896	 CRC checked: No error
+[1618937176232557] [EccDecode] Average processing time: 0.000917
+[1618937176272170] [EccDecode] Header: 896	 CRC checked: No error
+[1618937176272185] [EccDecode] Average processing time: 0.000916
+[1618937176320155] [EccDecode] Header: 897	 CRC checked: No error
+[1618937176320166] [EccDecode] Average processing time: 0.000916
+[1618937176388161] [EccDecode] Header: 898	 CRC checked: No error
+[1618937176388170] [EccDecode] Average processing time: 0.000915
+[1618937176436494] [EccDecode] Header: 899	 CRC checked: No error
+[1618937176436508] [EccDecode] Average processing time: 0.000914
+[1618937176500476] [EccDecode] Header: 900	 CRC checked: No error
+[1618937176500485] [EccDecode] Average processing time: 0.000913
+[1618937176568440] [EccDecode] Header: 901	 CRC checked: No error
+[1618937176568450] [EccDecode] Average processing time: 0.000912
+[1618937176632154] [EccDecode] Header: 901	 CRC checked: No error
+[1618937176632164] [EccDecode] Average processing time: 0.000912
+[1618937176688458] [EccDecode] Header: 902	 CRC checked: No error
+[1618937176688478] [EccDecode] Average processing time: 0.000911
+[1618937176760156] [EccDecode] Header: 903	 CRC checked: No error
+[1618937176760167] [EccDecode] Average processing time: 0.000910
+[1618937176816615] [EccDecode] Header: 904	 CRC checked: No error
+[1618937176816633] [EccDecode] Average processing time: 0.000909
+[1618937176872155] [EccDecode] Header: 905	 CRC checked: No error
+[1618937176872165] [EccDecode] Average processing time: 0.000909
+[1618937176936430] [EccDecode] Header: 905	 CRC checked: No error
+[1618937176936448] [EccDecode] Average processing time: 0.000908
+[1618937176955050] [EccDecode] Header: 906	 CRC checked: No error
+[1618937176955059] [EccDecode] Average processing time: 0.000907
+[1618937177000455] [EccDecode] Header: 907	 CRC checked: No error
+[1618937177000472] [EccDecode] Average processing time: 0.000906
+[1618937177096155] [EccDecode] Header: 908	 CRC checked: No error
+[1618937177096166] [EccDecode] Average processing time: 0.000906
+[1618937177136802] [EccDecode] Header: 908	 CRC checked: No error
+[1618937177138714] [EccDecode] Average processing time: 0.000906
+[1618937177192158] [EccDecode] Header: 908	 CRC checked: No error
+[1618937177192169] [EccDecode] Average processing time: 0.000906
+[1618937177252433] [EccDecode] Header: 909	 CRC checked: No error
+[1618937177252443] [EccDecode] Average processing time: 0.000905
+[1618937177324420] [EccDecode] Header: 910	 CRC checked: No error
+[1618937177324432] [EccDecode] Average processing time: 0.000904
+[1618937177344418] [EccDecode] Header: 911	 CRC checked: No error
+[1618937177352159] [EccDecode] Average processing time: 0.000910
+[1618937177404154] [EccDecode] Header: 911	 CRC checked: No error
+[1618937177404170] [EccDecode] Average processing time: 0.000909
+[1618937177444155] [EccDecode] Header: 912	 CRC checked: No error
+[1618937177444165] [EccDecode] Average processing time: 0.000908
+[1618937177484155] [EccDecode] Header: 913	 CRC checked: No error
+[1618937177484170] [EccDecode] Average processing time: 0.000908
+[1618937177780392] [EccDecode] Header: 913	 CRC checked: No error
+[1618937177780405] [EccDecode] Average processing time: 0.000907
+[1618937178076169] [EccDecode] Header: 913	 CRC checked: No error
+[1618937178076188] [EccDecode] Average processing time: 0.000906
+[1618937178099079] [EccDecode] Header: 914	 CRC checked: No error
+[1618937178099086] [EccDecode] Average processing time: 0.000905
+[1618937178184426] [EccDecode] Header: 915	 CRC checked: No error
+[1618937178184445] [EccDecode] Average processing time: 0.000905
+[1618937178248416] [EccDecode] Header: 916	 CRC checked: No error
+[1618937178248425] [EccDecode] Average processing time: 0.000904
+[1618937178308412] [EccDecode] Header: 917	 CRC checked: No error
+[1618937178308420] [EccDecode] Average processing time: 0.000903
+[1618937178364418] [EccDecode] Header: 918	 CRC checked: No error
+[1618937178364428] [EccDecode] Average processing time: 0.000902
+[1618937178412433] [EccDecode] Header: 919	 CRC checked: No error
+[1618937178412441] [EccDecode] Average processing time: 0.000902
+[1618937178460451] [EccDecode] Header: 920	 CRC checked: No error
+[1618937178460460] [EccDecode] Average processing time: 0.000901
+[1618937178492533] [EccDecode] Header: 921	 CRC checked: No error
+[1618937178492542] [EccDecode] Average processing time: 0.000900
+[1618937178616158] [EccDecode] Header: 922	 CRC checked: No error
+[1618937178616176] [EccDecode] Average processing time: 0.000899
+[1618937178684158] [EccDecode] Header: 922	 CRC checked: No error
+[1618937178684179] [EccDecode] Average processing time: 0.000899
+[1618937178748847] [EccDecode] Header: 923	 CRC checked: No error
+[1618937178748863] [EccDecode] Average processing time: 0.000898
+[1618937178828819] [EccDecode] Header: 923	 CRC checked: No error
+[1618937178828825] [EccDecode] Average processing time: 0.000897
+[1618937178864155] [EccDecode] Header: 924	 CRC checked: No error
+[1618937178868158] [EccDecode] Average processing time: 0.000900
+[1618937178924409] [EccDecode] Header: 925	 CRC checked: No error
+[1618937178924419] [EccDecode] Average processing time: 0.000899
+[1618937179016157] [EccDecode] Header: 926	 CRC checked: No error
+[1618937179016175] [EccDecode] Average processing time: 0.000898
+[1618937179072156] [EccDecode] Header: 927	 CRC checked: No error
+[1618937179072169] [EccDecode] Average processing time: 0.000898
+[1618937179136920] [EccDecode] Header: 928	 CRC checked: No error
+[1618937179136929] [EccDecode] Average processing time: 0.000897
+[1618937179234656] [EccDecode] Header: 929	 CRC checked: No error
+[1618937179236482] [EccDecode] Average processing time: 0.000901
+[1618937179312421] [EccDecode] Header: 930	 CRC checked: No error
+[1618937179312430] [EccDecode] Average processing time: 0.000900
+[1618937179392420] [EccDecode] Header: 931	 CRC checked: No error
+[1618937179408163] [EccDecode] Average processing time: 0.000913
+[1618937179504156] [EccDecode] Header: 932	 CRC checked: No error
+[1618937179504167] [EccDecode] Average processing time: 0.000912
+[1618937179580163] [EccDecode] Header: 933	 CRC checked: No error
+[1618937179580179] [EccDecode] Average processing time: 0.000911
+[1618937179620485] [EccDecode] Header: 934	 CRC checked: No error
+[1618937179620494] [EccDecode] Average processing time: 0.000910
+[1618937179680451] [EccDecode] Header: 935	 CRC checked: No error
+[1618937179680468] [EccDecode] Average processing time: 0.000910
+[1618937179732396] [EccDecode] Header: 936	 CRC checked: No error
+[1618937179732405] [EccDecode] Average processing time: 0.000909
+[1618937179780396] [EccDecode] Header: 937	 CRC checked: No error
+[1618937179780412] [EccDecode] Average processing time: 0.000908
+[1618937179852157] [EccDecode] Header: 937	 CRC checked: No error
+[1618937179852165] [EccDecode] Average processing time: 0.000907
+[1618937179932154] [EccDecode] Header: 938	 CRC checked: No error
+[1618937179932165] [EccDecode] Average processing time: 0.000907
+[1618937180012407] [EccDecode] Header: 939	 CRC checked: No error
+[1618937180012416] [EccDecode] Average processing time: 0.000906
+[1618937180044398] [EccDecode] Header: 939	 CRC checked: No error
+[1618937180052155] [EccDecode] Average processing time: 0.000912
+[1618937180084405] [EccDecode] Header: 940	 CRC checked: No error
+[1618937180084413] [EccDecode] Average processing time: 0.000911
+[1618937180136154] [EccDecode] Header: 941	 CRC checked: No error
+[1618937180144150] [EccDecode] Average processing time: 0.000917
+[1618937180212165] [EccDecode] Header: 942	 CRC checked: No error
+[1618937180212174] [EccDecode] Average processing time: 0.000916
+[1618937180280154] [EccDecode] Header: 942	 CRC checked: No error
+[1618937180280168] [EccDecode] Average processing time: 0.000915
+[1618937180340427] [EccDecode] Header: 943	 CRC checked: No error
+[1618937180340441] [EccDecode] Average processing time: 0.000915
+[1618937180404166] [EccDecode] Header: 944	 CRC checked: No error
+[1618937180404175] [EccDecode] Average processing time: 0.000914
+[1618937180496401] [EccDecode] Header: 945	 CRC checked: No error
+[1618937180496418] [EccDecode] Average processing time: 0.000913
+[1618937180540156] [EccDecode] Header: 946	 CRC checked: No error
+[1618937180540166] [EccDecode] Average processing time: 0.000912
+[1618937180588443] [EccDecode] Header: 947	 CRC checked: No error
+[1618937180588460] [EccDecode] Average processing time: 0.000912
+[1618937180628154] [EccDecode] Header: 948	 CRC checked: No error
+[1618937180628165] [EccDecode] Average processing time: 0.000911
+[1618937180688161] [EccDecode] Header: 948	 CRC checked: No error
+[1618937180688170] [EccDecode] Average processing time: 0.000910
+[1618937180752395] [EccDecode] Header: 949	 CRC checked: No error
+[1618937180752404] [EccDecode] Average processing time: 0.000909
+[1618937180816392] [EccDecode] Header: 950	 CRC checked: No error
+[1618937180816402] [EccDecode] Average processing time: 0.000909
+[1618937180856388] [EccDecode] Header: 950	 CRC checked: No error
+[1618937180856395] [EccDecode] Average processing time: 0.000908
+[1618937180904437] [EccDecode] Header: 950	 CRC checked: No error
+[1618937180904443] [EccDecode] Average processing time: 0.000907
+[1618937180968490] [EccDecode] Header: 951	 CRC checked: No error
+[1618937180968497] [EccDecode] Average processing time: 0.000907
+[1618937181016465] [EccDecode] Header: 952	 CRC checked: No error
+[1618937181016474] [EccDecode] Average processing time: 0.000906
+[1618937181064425] [EccDecode] Header: 953	 CRC checked: No error
+[1618937181072523] [EccDecode] Average processing time: 0.000912
+[1618937181122621] [EccDecode] Header: 953	 CRC checked: No error
+[1618937181122628] [EccDecode] Average processing time: 0.000911
+[1618937181192458] [EccDecode] Header: 954	 CRC checked: No error
+[1618937181200162] [EccDecode] Average processing time: 0.000916
+[1618937181236452] [EccDecode] Header: 955	 CRC checked: No error
+[1618937181236461] [EccDecode] Average processing time: 0.000916
+[1618937181300153] [EccDecode] Header: 955	 CRC checked: No error
+[1618937181300167] [EccDecode] Average processing time: 0.000915
+[1618937181364165] [EccDecode] Header: 955	 CRC checked: No error
+[1618937181364172] [EccDecode] Average processing time: 0.000914
+[1618937181404154] [EccDecode] Header: 956	 CRC checked: No error
+[1618937181404161] [EccDecode] Average processing time: 0.000914
+[1618937181704423] [EccDecode] Header: 956	 CRC checked: No error
+[1618937181704432] [EccDecode] Average processing time: 0.000913
+[1618937182016167] [EccDecode] Header: 956	 CRC checked: No error
+[1618937182016178] [EccDecode] Average processing time: 0.000912
+[1618937182082994] [EccDecode] Header: 957	 CRC checked: No error
+[1618937182083003] [EccDecode] Average processing time: 0.000911
+[1618937182123276] [EccDecode] Header: 958	 CRC checked: No error
+[1618937182123285] [EccDecode] Average processing time: 0.000911
+[1618937182165018] [EccDecode] Header: 959	 CRC checked: No error
+[1618937182165027] [EccDecode] Average processing time: 0.000910
+[1618937182236156] [EccDecode] Header: 960	 CRC checked: No error
+[1618937182236164] [EccDecode] Average processing time: 0.000909
+[1618937182292417] [EccDecode] Header: 961	 CRC checked: No error
+[1618937182292432] [EccDecode] Average processing time: 0.000908
+[1618937182372155] [EccDecode] Header: 961	 CRC checked: No error
+[1618937182384157] [EccDecode] Average processing time: 0.000917
+[1618937182424390] [EccDecode] Header: 962	 CRC checked: No error
+[1618937182424404] [EccDecode] Average processing time: 0.000917
+[1618937182464389] [EccDecode] Header: 963	 CRC checked: No error
+[1618937182464397] [EccDecode] Average processing time: 0.000916
+[1618937182536153] [EccDecode] Header: 964	 CRC checked: No error
+[1618937182536168] [EccDecode] Average processing time: 0.000915
+[1618937182604155] [EccDecode] Header: 965	 CRC checked: No error
+[1618937182604164] [EccDecode] Average processing time: 0.000914
+[1618937182660155] [EccDecode] Header: 966	 CRC checked: No error
+[1618937182664670] [EccDecode] Average processing time: 0.000917
+[1618937182724155] [EccDecode] Header: 967	 CRC checked: No error
+[1618937182724164] [EccDecode] Average processing time: 0.000917
+[1618937182788155] [EccDecode] Header: 968	 CRC checked: No error
+[1618937182788165] [EccDecode] Average processing time: 0.000916
+[1618937182868164] [EccDecode] Header: 969	 CRC checked: No error
+[1618937182868179] [EccDecode] Average processing time: 0.000915
+[1618937182972404] [EccDecode] Header: 969	 CRC checked: No error
+[1618937182972411] [EccDecode] Average processing time: 0.000915
+[1618937183040155] [EccDecode] Header: 970	 CRC checked: No error
+[1618937183040163] [EccDecode] Average processing time: 0.000914
+[1618937183072156] [EccDecode] Header: 971	 CRC checked: No error
+[1618937183072165] [EccDecode] Average processing time: 0.000913
+[1618937183124155] [EccDecode] Header: 972	 CRC checked: No error
+[1618937183124173] [EccDecode] Average processing time: 0.000912
+[1618937183180156] [EccDecode] Header: 973	 CRC checked: No error
+[1618937183180165] [EccDecode] Average processing time: 0.000912
+[1618937183220428] [EccDecode] Header: 974	 CRC checked: No error
+[1618937183236157] [EccDecode] Average processing time: 0.000923
+[1618937183260404] [EccDecode] Header: 975	 CRC checked: No error
+[1618937183260414] [EccDecode] Average processing time: 0.000923
+[1618937183308404] [EccDecode] Header: 976	 CRC checked: No error
+[1618937183308425] [EccDecode] Average processing time: 0.000922
+[1618937183348421] [EccDecode] Header: 977	 CRC checked: No error
+[1618937183348431] [EccDecode] Average processing time: 0.000921
+[1618937183380155] [EccDecode] Header: 978	 CRC checked: No error
+[1618937183380165] [EccDecode] Average processing time: 0.000921
+[1618937183396723] [EccDecode] Header: 979	 CRC checked: No error
+[1618937183396732] [EccDecode] Average processing time: 0.000920
+[1618937183444155] [EccDecode] Header: 980	 CRC checked: No error
+[1618937183444164] [EccDecode] Average processing time: 0.000919
+[1618937183492155] [EccDecode] Header: 981	 CRC checked: No error
+[1618937183492164] [EccDecode] Average processing time: 0.000918
+[1618937183532450] [EccDecode] Header: 982	 CRC checked: No error
+[1618937183532460] [EccDecode] Average processing time: 0.000918
+[1618937183580435] [EccDecode] Header: 983	 CRC checked: No error
+[1618937183580446] [EccDecode] Average processing time: 0.000917
+[1618937183640403] [EccDecode] Header: 984	 CRC checked: No error
+[1618937183640413] [EccDecode] Average processing time: 0.000916
+[1618937183716399] [EccDecode] Header: 985	 CRC checked: No error
+[1618937183716414] [EccDecode] Average processing time: 0.000916
+[1618937183780417] [EccDecode] Header: 986	 CRC checked: No error
+[1618937183780426] [EccDecode] Average processing time: 0.000915
+[1618937183852394] [EccDecode] Header: 987	 CRC checked: No error
+[1618937183852409] [EccDecode] Average processing time: 0.000914
+[1618937183916418] [EccDecode] Header: 988	 CRC checked: No error
+[1618937183916427] [EccDecode] Average processing time: 0.000913
+[1618937183976495] [EccDecode] Header: 988	 CRC checked: No error
+[1618937183976511] [EccDecode] Average processing time: 0.000913
+[1618937184016154] [EccDecode] Header: 989	 CRC checked: No error
+[1618937184016165] [EccDecode] Average processing time: 0.000912
+[1618937184080912] [EccDecode] Header: 989	 CRC checked: No error
+[1618937184080924] [EccDecode] Average processing time: 0.000911
+[1618937184126716] [EccDecode] Header: 990	 CRC checked: No error
+[1618937184126725] [EccDecode] Average processing time: 0.000911
+[1618937184184503] [EccDecode] Header: 991	 CRC checked: No error
+[1618937184184513] [EccDecode] Average processing time: 0.000910
+[1618937184264457] [EccDecode] Header: 992	 CRC checked: No error
+[1618937184264467] [EccDecode] Average processing time: 0.000909
+[1618937184344482] [EccDecode] Header: 993	 CRC checked: No error
+[1618937184344491] [EccDecode] Average processing time: 0.000909
+[1618937184412438] [EccDecode] Header: 993	 CRC checked: No error
+[1618937184412453] [EccDecode] Average processing time: 0.000908
+[1618937184492437] [EccDecode] Header: 994	 CRC checked: No error
+[1618937184492447] [EccDecode] Average processing time: 0.000907
+[1618937184538729] [EccDecode] Header: 995	 CRC checked: No error
+[1618937184538744] [EccDecode] Average processing time: 0.000906
+[1618937184587006] [EccDecode] Header: 996	 CRC checked: No error
+[1618937184587016] [EccDecode] Average processing time: 0.000906
+[1618937184640403] [EccDecode] Header: 997	 CRC checked: No error
+[1618937184640418] [EccDecode] Average processing time: 0.000905
+[1618937184680435] [EccDecode] Header: 998	 CRC checked: No error
+[1618937184680445] [EccDecode] Average processing time: 0.000904
+[1618937184736424] [EccDecode] Header: 999	 CRC checked: No error
+[1618937184736445] [EccDecode] Average processing time: 0.000904
+[1618937184809122] [EccDecode] Header: 1000	 CRC checked: No error
+[1618937184809131] [EccDecode] Average processing time: 0.000903
+[1618937184853017] [EccDecode] Header: 1000	 CRC checked: No error
+[1618937184853026] [EccDecode] Average processing time: 0.000902
+[1618937184920532] [EccDecode] Header: 1001	 CRC checked: No error
+[1618937184920540] [EccDecode] Average processing time: 0.000902
+[1618937184992157] [EccDecode] Header: 1002	 CRC checked: No error
+[1618937184992165] [EccDecode] Average processing time: 0.000901
+[1618937185060154] [EccDecode] Header: 1003	 CRC checked: No error
+[1618937185060161] [EccDecode] Average processing time: 0.000900
+[1618937185124424] [EccDecode] Header: 1004	 CRC checked: No error
+[1618937185124434] [EccDecode] Average processing time: 0.000900
+[1618937185172411] [EccDecode] Header: 1005	 CRC checked: No error
+[1618937185172426] [EccDecode] Average processing time: 0.000899
+[1618937185236416] [EccDecode] Header: 1006	 CRC checked: No error
+[1618937185236426] [EccDecode] Average processing time: 0.000898
+[1618937185300154] [EccDecode] Header: 1006	 CRC checked: No error
+[1618937185300165] [EccDecode] Average processing time: 0.000898
+[1618937185376154] [EccDecode] Header: 1006	 CRC checked: No error
+[1618937185376161] [EccDecode] Average processing time: 0.000897
+[1618937185416154] [EccDecode] Header: 1006	 CRC checked: No error
+[1618937185416167] [EccDecode] Average processing time: 0.000896
+[1618937185460153] [EccDecode] Header: 1006	 CRC checked: No error
+[1618937185460162] [EccDecode] Average processing time: 0.000895
+[1618937185504428] [EccDecode] Header: 1006	 CRC checked: No error
+[1618937185504443] [EccDecode] Average processing time: 0.000895
+[1618937185568428] [EccDecode] Header: 1007	 CRC checked: No error
+[1618937185568438] [EccDecode] Average processing time: 0.000894
+[1618937185616422] [EccDecode] Header: 1008	 CRC checked: No error
+[1618937185616432] [EccDecode] Average processing time: 0.000893
+[1618937185664421] [EccDecode] Header: 1008	 CRC checked: No error
+[1618937185664431] [EccDecode] Average processing time: 0.000893
+[1618937185712154] [EccDecode] Header: 1008	 CRC checked: No error
+[1618937185712169] [EccDecode] Average processing time: 0.000892
+[1618937185776154] [EccDecode] Header: 1009	 CRC checked: No error
+[1618937185776162] [EccDecode] Average processing time: 0.000891
+[1618937185868156] [EccDecode] Header: 1009	 CRC checked: No error
+[1618937185868164] [EccDecode] Average processing time: 0.000891
+[1618937185908433] [EccDecode] Header: 1010	 CRC checked: No error
+[1618937185908447] [EccDecode] Average processing time: 0.000890
+[1618937185949291] [EccDecode] Header: 1011	 CRC checked: No error
+[1618937185949301] [EccDecode] Average processing time: 0.000889
+[1618937185996425] [EccDecode] Header: 1011	 CRC checked: No error
+[1618937185996441] [EccDecode] Average processing time: 0.000889
+[1618937186044467] [EccDecode] Header: 1012	 CRC checked: No error
+[1618937186044477] [EccDecode] Average processing time: 0.000888
+[1618937186104497] [EccDecode] Header: 1013	 CRC checked: No error
+[1618937186104510] [EccDecode] Average processing time: 0.000887
+[1618937186144704] [EccDecode] Header: 1014	 CRC checked: No error
+[1618937186144716] [EccDecode] Average processing time: 0.000887
+[1618937186228154] [EccDecode] Header: 1015	 CRC checked: No error
+[1618937186228169] [EccDecode] Average processing time: 0.000886
+[1618937186296154] [EccDecode] Header: 1016	 CRC checked: No error
+[1618937186296164] [EccDecode] Average processing time: 0.000885
+[1618937186384156] [EccDecode] Header: 1016	 CRC checked: No error
+[1618937186384164] [EccDecode] Average processing time: 0.000885
+[1618937186468155] [EccDecode] Header: 1017	 CRC checked: No error
+[1618937186468163] [EccDecode] Average processing time: 0.000884
+[1618937186536423] [EccDecode] Header: 1018	 CRC checked: No error
+[1618937186536432] [EccDecode] Average processing time: 0.000883
+[1618937186668154] [EccDecode] Header: 1019	 CRC checked: No error
+[1618937186668169] [EccDecode] Average processing time: 0.000883
+[1618937186756155] [EccDecode] Header: 1020	 CRC checked: No error
+[1618937186756164] [EccDecode] Average processing time: 0.000882
+[1618937186804641] [EccDecode] Header: 1021	 CRC checked: No error
+[1618937186804658] [EccDecode] Average processing time: 0.000881
+[1618937186868156] [EccDecode] Header: 1021	 CRC checked: No error
+[1618937186868165] [EccDecode] Average processing time: 0.000881
+[1618937186920155] [EccDecode] Header: 1022	 CRC checked: No error
+[1618937186920169] [EccDecode] Average processing time: 0.000880
+[1618937187036156] [EccDecode] Header: 1023	 CRC checked: No error
+[1618937187036166] [EccDecode] Average processing time: 0.000879
+[1618937187124155] [EccDecode] Header: 1024	 CRC checked: No error
+[1618937187124170] [EccDecode] Average processing time: 0.000879
+[1618937187181950] [EccDecode] Header: 1025	 CRC checked: No error
+[1618937187181960] [EccDecode] Average processing time: 0.000878
+[1618937187276423] [EccDecode] Header: 1025	 CRC checked: No error
+[1618937187276439] [EccDecode] Average processing time: 0.000878
+[1618937187342995] [EccDecode] Header: 1026	 CRC checked: No error
+[1618937187343006] [EccDecode] Average processing time: 0.000877
+[1618937187390891] [EccDecode] Header: 1027	 CRC checked: No error
+[1618937187390899] [EccDecode] Average processing time: 0.000876
+[1618937187448439] [EccDecode] Header: 1028	 CRC checked: No error
+[1618937187448449] [EccDecode] Average processing time: 0.000876
+[1618937187504431] [EccDecode] Header: 1028	 CRC checked: No error
+[1618937187504440] [EccDecode] Average processing time: 0.000875
+[1618937187576429] [EccDecode] Header: 1028	 CRC checked: No error
+[1618937187576437] [EccDecode] Average processing time: 0.000874
+[1618937187652402] [EccDecode] Header: 1029	 CRC checked: No error
+[1618937187652411] [EccDecode] Average processing time: 0.000874
+[1618937187700154] [EccDecode] Header: 1029	 CRC checked: No error
+[1618937187700170] [EccDecode] Average processing time: 0.000873
+[1618937187735009] [EccDecode] Header: 1029	 CRC checked: No error
+[1618937187735019] [EccDecode] Average processing time: 0.000872
+[1618937187764463] [EccDecode] Header: 1030	 CRC checked: No error
+[1618937187764478] [EccDecode] Average processing time: 0.000872
+[1618937187828155] [EccDecode] Header: 1031	 CRC checked: No error
+[1618937187828163] [EccDecode] Average processing time: 0.000871
+[1618937187920155] [EccDecode] Header: 1031	 CRC checked: No error
+[1618937187920168] [EccDecode] Average processing time: 0.000870
+[1618937187976154] [EccDecode] Header: 1032	 CRC checked: No error
+[1618937187984510] [EccDecode] Average processing time: 0.000876
+[1618937188052155] [EccDecode] Header: 1032	 CRC checked: No error
+[1618937188052167] [EccDecode] Average processing time: 0.000875
+[1618937188116154] [EccDecode] Header: 1033	 CRC checked: No error
+[1618937188116162] [EccDecode] Average processing time: 0.000875
+[1618937188188654] [EccDecode] Header: 1034	 CRC checked: No error
+[1618937188204156] [EccDecode] Average processing time: 0.000886
+[1618937188272156] [EccDecode] Header: 1035	 CRC checked: No error
+[1618937188272170] [EccDecode] Average processing time: 0.000885
+[1618937188328745] [EccDecode] Header: 1036	 CRC checked: No error
+[1618937188328756] [EccDecode] Average processing time: 0.000884
+[1618937188392449] [EccDecode] Header: 1037	 CRC checked: No error
+[1618937188392457] [EccDecode] Average processing time: 0.000884
+[1618937188452629] [EccDecode] Header: 1037	 CRC checked: No error
+[1618937188452638] [EccDecode] Average processing time: 0.000883
+[1618937188500155] [EccDecode] Header: 1038	 CRC checked: No error
+[1618937188500169] [EccDecode] Average processing time: 0.000882
+[1618937188544426] [EccDecode] Header: 1039	 CRC checked: No error
+[1618937188548473] [EccDecode] Average processing time: 0.000885
+[1618937188608437] [EccDecode] Header: 1040	 CRC checked: No error
+[1618937188608450] [EccDecode] Average processing time: 0.000884
+[1618937188692849] [EccDecode] Header: 1041	 CRC checked: No error
+[1618937188692867] [EccDecode] Average processing time: 0.000884
+[1618937188735027] [EccDecode] Header: 1042	 CRC checked: No error
+[1618937188735042] [EccDecode] Average processing time: 0.000883
+[1618937188784156] [EccDecode] Header: 1042	 CRC checked: No error
+[1618937188784165] [EccDecode] Average processing time: 0.000882
+[1618937188852934] [EccDecode] Header: 1043	 CRC checked: No error
+[1618937188852944] [EccDecode] Average processing time: 0.000882
+[1618937188924800] [EccDecode] Header: 1044	 CRC checked: No error
+[1618937188924808] [EccDecode] Average processing time: 0.000881
+[1618937188980753] [EccDecode] Header: 1045	 CRC checked: No error
+[1618937188988179] [EccDecode] Average processing time: 0.000886
+[1618937189056950] [EccDecode] Header: 1046	 CRC checked: No error
+[1618937189056960] [EccDecode] Average processing time: 0.000885
+[1618937189116826] [EccDecode] Header: 1047	 CRC checked: No error
+[1618937189116835] [EccDecode] Average processing time: 0.000885
+[1618937189172416] [EccDecode] Header: 1048	 CRC checked: No error
+[1618937189172425] [EccDecode] Average processing time: 0.000884
+[1618937189228422] [EccDecode] Header: 1049	 CRC checked: No error
+[1618937189228432] [EccDecode] Average processing time: 0.000883
+[1618937189284441] [EccDecode] Header: 1050	 CRC checked: No error
+[1618937189284455] [EccDecode] Average processing time: 0.000883
+[1618937189324411] [EccDecode] Header: 1051	 CRC checked: No error
+[1618937189324422] [EccDecode] Average processing time: 0.000882
+[1618937189352420] [EccDecode] Header: 1052	 CRC checked: No error
+[1618937189352435] [EccDecode] Average processing time: 0.000881
+[1618937189389087] [EccDecode] Header: 1053	 CRC checked: No error
+[1618937189389096] [EccDecode] Average processing time: 0.000881
+[1618937189436456] [EccDecode] Header: 1054	 CRC checked: No error
+[1618937189444160] [EccDecode] Average processing time: 0.000886
+[1618937189492482] [EccDecode] Header: 1055	 CRC checked: No error
+[1618937189492491] [EccDecode] Average processing time: 0.000885
+[1618937189524562] [EccDecode] Header: 1056	 CRC checked: No error
+[1618937189524570] [EccDecode] Average processing time: 0.000884
+[1618937189556521] [EccDecode] Header: 1056	 CRC checked: No error
+[1618937189564159] [EccDecode] Average processing time: 0.000889
+[1618937189620397] [EccDecode] Header: 1056	 CRC checked: No error
+[1618937189620406] [EccDecode] Average processing time: 0.000889
+[1618937189684155] [EccDecode] Header: 1056	 CRC checked: No error
+[1618937189684165] [EccDecode] Average processing time: 0.000888
+[1618937189781685] [EccDecode] Header: 1057	 CRC checked: No error
+[1618937189781694] [EccDecode] Average processing time: 0.000887
+[1618937189828172] [EccDecode] Header: 1058	 CRC checked: No error
+[1618937189828181] [EccDecode] Average processing time: 0.000887
+[1618937189880433] [EccDecode] Header: 1059	 CRC checked: No error
+[1618937189884153] [EccDecode] Average processing time: 0.000889
+[1618937189956164] [EccDecode] Header: 1060	 CRC checked: No error
+[1618937189956177] [EccDecode] Average processing time: 0.000888
+[1618937189981987] [EccDecode] Header: 1060	 CRC checked: No error
+[1618937189981998] [EccDecode] Average processing time: 0.000888
+[1618937190020155] [EccDecode] Header: 1060	 CRC checked: No error
+[1618937190020169] [EccDecode] Average processing time: 0.000887
+[1618937190084156] [EccDecode] Header: 1060	 CRC checked: No error
+[1618937190084165] [EccDecode] Average processing time: 0.000886
+[1618937190180426] [EccDecode] Header: 1061	 CRC checked: No error
+[1618937190184166] [EccDecode] Average processing time: 0.000888
+[1618937190268433] [EccDecode] Header: 1062	 CRC checked: No error
+[1618937190268442] [EccDecode] Average processing time: 0.000888
+[1618937190324157] [EccDecode] Header: 1063	 CRC checked: No error
+[1618937190324165] [EccDecode] Average processing time: 0.000887
+[1618937190396154] [EccDecode] Header: 1064	 CRC checked: No error
+[1618937190396163] [EccDecode] Average processing time: 0.000887
+[1618937190448155] [EccDecode] Header: 1065	 CRC checked: No error
+[1618937190460150] [EccDecode] Average processing time: 0.000895
+[1618937190508634] [EccDecode] Header: 1066	 CRC checked: No error
+[1618937190508642] [EccDecode] Average processing time: 0.000894
+[1618937190544954] [EccDecode] Header: 1067	 CRC checked: No error
+[1618937190544962] [EccDecode] Average processing time: 0.000893
+[1618937190608154] [EccDecode] Header: 1067	 CRC checked: No error
+[1618937190608163] [EccDecode] Average processing time: 0.000893
+[1618937190676153] [EccDecode] Header: 1068	 CRC checked: No error
+[1618937190676161] [EccDecode] Average processing time: 0.000892
+[1618937190724158] [EccDecode] Header: 1069	 CRC checked: No error
+[1618937190724181] [EccDecode] Average processing time: 0.000891
+[1618937190784157] [EccDecode] Header: 1069	 CRC checked: No error
+[1618937190784168] [EccDecode] Average processing time: 0.000891
+[1618937190848155] [EccDecode] Header: 1070	 CRC checked: No error
+[1618937190848170] [EccDecode] Average processing time: 0.000890
+[1618937190916159] [EccDecode] Header: 1070	 CRC checked: No error
+[1618937190916167] [EccDecode] Average processing time: 0.000890
+[1618937190972419] [EccDecode] Header: 1071	 CRC checked: No error
+[1618937190982053] [EccDecode] Average processing time: 0.000896
+[1618937191034936] [EccDecode] Header: 1072	 CRC checked: No error
+[1618937191034945] [EccDecode] Average processing time: 0.000895
+[1618937191096154] [EccDecode] Header: 1073	 CRC checked: No error
+[1618937191096163] [EccDecode] Average processing time: 0.000895
+[1618937191155078] [EccDecode] Header: 1073	 CRC checked: No error
+[1618937191160150] [EccDecode] Average processing time: 0.000898
+[1618937191220889] [EccDecode] Header: 1074	 CRC checked: No error
+[1618937191220897] [EccDecode] Average processing time: 0.000897
+[1618937191260157] [EccDecode] Header: 1075	 CRC checked: No error
+[1618937191260167] [EccDecode] Average processing time: 0.000896
+[1618937191316159] [EccDecode] Header: 1076	 CRC checked: No error
+[1618937191316167] [EccDecode] Average processing time: 0.000896
+[1618937191392155] [EccDecode] Header: 1077	 CRC checked: No error
+[1618937191392164] [EccDecode] Average processing time: 0.000895
+[1618937191424156] [EccDecode] Header: 1078	 CRC checked: No error
+[1618937191424165] [EccDecode] Average processing time: 0.000894
+[1618937191472154] [EccDecode] Header: 1079	 CRC checked: No error
+[1618937191472169] [EccDecode] Average processing time: 0.000894
+[1618937191536155] [EccDecode] Header: 1080	 CRC checked: No error
+[1618937191536164] [EccDecode] Average processing time: 0.000893
+[1618937191592431] [EccDecode] Header: 1081	 CRC checked: No error
+[1618937191592448] [EccDecode] Average processing time: 0.000893
+[1618937191652418] [EccDecode] Header: 1082	 CRC checked: No error
+[1618937191652427] [EccDecode] Average processing time: 0.000892
+[1618937191692629] [EccDecode] Header: 1083	 CRC checked: No error
+[1618937191700155] [EccDecode] Average processing time: 0.000897
+[1618937191746451] [EccDecode] Header: 1084	 CRC checked: No error
+[1618937191746457] [EccDecode] Average processing time: 0.000897
+[1618937191804618] [EccDecode] Header: 1085	 CRC checked: No error
+[1618937191804628] [EccDecode] Average processing time: 0.000897
+[1618937191830568] [EccDecode] Header: 1086	 CRC checked: No error
+[1618937191830582] [EccDecode] Average processing time: 0.000896
+[1618937191884704] [EccDecode] Header: 1087	 CRC checked: No error
+[1618937191884713] [EccDecode] Average processing time: 0.000895
+[1618937191926806] [EccDecode] Header: 1087	 CRC checked: No error
+[1618937191926816] [EccDecode] Average processing time: 0.000895
+[1618937191978408] [EccDecode] Header: 1087	 CRC checked: No error
+[1618937191978416] [EccDecode] Average processing time: 0.000894
+[1618937192036749] [EccDecode] Header: 1087	 CRC checked: No error
+[1618937192036763] [EccDecode] Average processing time: 0.000894
+[1618937192082640] [EccDecode] Header: 1088	 CRC checked: No error
+[1618937192082646] [EccDecode] Average processing time: 0.000893
+[1618937192124156] [EccDecode] Header: 1089	 CRC checked: No error
+[1618937192124175] [EccDecode] Average processing time: 0.000892
+[1618937192156435] [EccDecode] Header: 1090	 CRC checked: No error
+[1618937192156445] [EccDecode] Average processing time: 0.000892
+[1618937192200422] [EccDecode] Header: 1091	 CRC checked: No error
+[1618937192204163] [EccDecode] Average processing time: 0.000894
+[1618937192264460] [EccDecode] Header: 1091	 CRC checked: No error
+[1618937192264471] [EccDecode] Average processing time: 0.000893
+[1618937192328465] [EccDecode] Header: 1092	 CRC checked: No error
+[1618937192328479] [EccDecode] Average processing time: 0.000893
+[1618937192376452] [EccDecode] Header: 1093	 CRC checked: No error
+[1618937192376458] [EccDecode] Average processing time: 0.000892
+[1618937192442320] [EccDecode] Header: 1093	 CRC checked: No error
+[1618937192442327] [EccDecode] Average processing time: 0.000891
+[1618937192508158] [EccDecode] Header: 1094	 CRC checked: No error
+[1618937192512153] [EccDecode] Average processing time: 0.000893
+[1618937192556632] [EccDecode] Header: 1094	 CRC checked: No error
+[1618937192556641] [EccDecode] Average processing time: 0.000893
+[1618937192604580] [EccDecode] Header: 1095	 CRC checked: No error
+[1618937192604588] [EccDecode] Average processing time: 0.000892
+[1618937192652500] [EccDecode] Header: 1096	 CRC checked: No error
+[1618937192652508] [EccDecode] Average processing time: 0.000892
+[1618937192696426] [EccDecode] Header: 1097	 CRC checked: No error
+[1618937192696438] [EccDecode] Average processing time: 0.000891
+[1618937192785252] [EccDecode] Header: 1098	 CRC checked: No error
+[1618937192785261] [EccDecode] Average processing time: 0.000890
+[1618937192884412] [EccDecode] Header: 1099	 CRC checked: No error
+[1618937192884425] [EccDecode] Average processing time: 0.000890
+[1618937192978468] [EccDecode] Header: 1100	 CRC checked: No error
+[1618937192978476] [EccDecode] Average processing time: 0.000889
+[1618937193040437] [EccDecode] Header: 1101	 CRC checked: No error
+[1618937193040455] [EccDecode] Average processing time: 0.000889
+[1618937193088481] [EccDecode] Header: 1102	 CRC checked: No error
+[1618937193088493] [EccDecode] Average processing time: 0.000888
+[1618937193140157] [EccDecode] Header: 1103	 CRC checked: No error
+[1618937193140173] [EccDecode] Average processing time: 0.000887
+[1618937193212421] [EccDecode] Header: 1104	 CRC checked: No error
+[1618937193212433] [EccDecode] Average processing time: 0.000887
+[1618937193288433] [EccDecode] Header: 1105	 CRC checked: No error
+[1618937193292214] [EccDecode] Average processing time: 0.000889
+[1618937193368154] [EccDecode] Header: 1106	 CRC checked: No error
+[1618937193368161] [EccDecode] Average processing time: 0.000888
+[1618937193420525] [EccDecode] Header: 1107	 CRC checked: No error
+[1618937193435737] [EccDecode] Average processing time: 0.000898
+[1618937193488536] [EccDecode] Header: 1108	 CRC checked: No error
+[1618937193496211] [EccDecode] Average processing time: 0.000903
+[1618937193558535] [EccDecode] Header: 1109	 CRC checked: No error
+[1618937193558541] [EccDecode] Average processing time: 0.000905
+[1618937193608966] [EccDecode] Header: 1109	 CRC checked: No error
+[1618937193624158] [EccDecode] Average processing time: 0.000915
+[1618937193692155] [EccDecode] Header: 1110	 CRC checked: No error
+[1618937193692165] [EccDecode] Average processing time: 0.000914
+[1618937193726942] [EccDecode] Header: 1111	 CRC checked: No error
+[1618937193726956] [EccDecode] Average processing time: 0.000914
+[1618937193796155] [EccDecode] Header: 1112	 CRC checked: No error
+[1618937193796168] [EccDecode] Average processing time: 0.000913
+[1618937193868183] [EccDecode] Header: 1113	 CRC checked: No error
+[1618937193868198] [EccDecode] Average processing time: 0.000913
+[1618937193920737] [EccDecode] Header: 1114	 CRC checked: No error
+[1618937193920745] [EccDecode] Average processing time: 0.000912
+[1618937193952287] [EccDecode] Header: 1115	 CRC checked: No error
+[1618937193952300] [EccDecode] Average processing time: 0.000911
+[1618937193995482] [EccDecode] Header: 1116	 CRC checked: No error
+[1618937193995496] [EccDecode] Average processing time: 0.000911
+[1618937194033960] [EccDecode] Header: 1117	 CRC checked: No error
+[1618937194033968] [EccDecode] Average processing time: 0.000910
+[1618937194051032] [EccDecode] Header: 1118	 CRC checked: No error
+[1618937194051039] [EccDecode] Average processing time: 0.000909
+[1618937194104769] [EccDecode] Header: 1119	 CRC checked: No error
+[1618937194104777] [EccDecode] Average processing time: 0.000909
+[1618937194156690] [EccDecode] Header: 1119	 CRC checked: No error
+[1618937194156700] [EccDecode] Average processing time: 0.000908
+[1618937194194841] [EccDecode] Header: 1120	 CRC checked: No error
+[1618937194194849] [EccDecode] Average processing time: 0.000908
+[1618937194248892] [EccDecode] Header: 1120	 CRC checked: No error
+[1618937194248904] [EccDecode] Average processing time: 0.000907
+[1618937194296153] [EccDecode] Header: 1121	 CRC checked: No error
+[1618937194296161] [EccDecode] Average processing time: 0.000906
+[1618937194328701] [EccDecode] Header: 1121	 CRC checked: No error
+[1618937194328714] [EccDecode] Average processing time: 0.000906
+[1618937194376163] [EccDecode] Header: 1122	 CRC checked: No error
+[1618937194376171] [EccDecode] Average processing time: 0.000905
+[1618937194424607] [EccDecode] Header: 1122	 CRC checked: No error
+[1618937194424620] [EccDecode] Average processing time: 0.000905
+[1618937194458672] [EccDecode] Header: 1123	 CRC checked: No error
+[1618937194458680] [EccDecode] Average processing time: 0.000904
+[1618937194568163] [EccDecode] Header: 1124	 CRC checked: No error
+[1618937194568177] [EccDecode] Average processing time: 0.000903
+[1618937194632166] [EccDecode] Header: 1125	 CRC checked: No error
+[1618937194632175] [EccDecode] Average processing time: 0.000903
+[1618937194696396] [EccDecode] Header: 1126	 CRC checked: No error
+[1618937194696405] [EccDecode] Average processing time: 0.000902
+[1618937194736793] [EccDecode] Header: 1127	 CRC checked: No error
+[1618937194736809] [EccDecode] Average processing time: 0.000901
+[1618937194776647] [EccDecode] Header: 1128	 CRC checked: No error
+[1618937194776656] [EccDecode] Average processing time: 0.000901
+[1618937194816154] [EccDecode] Header: 1129	 CRC checked: No error
+[1618937194816162] [EccDecode] Average processing time: 0.000900
+[1618937194896397] [EccDecode] Header: 1130	 CRC checked: No error
+[1618937194896405] [EccDecode] Average processing time: 0.000900
+[1618937194952392] [EccDecode] Header: 1130	 CRC checked: No error
+[1618937194952405] [EccDecode] Average processing time: 0.000899
+[1618937195022817] [EccDecode] Header: 1131	 CRC checked: No error
+[1618937195022829] [EccDecode] Average processing time: 0.000898
+[1618937195048960] [EccDecode] Header: 1132	 CRC checked: No error
+[1618937195048977] [EccDecode] Average processing time: 0.000898
+[1618937195092898] [EccDecode] Header: 1133	 CRC checked: No error
+[1618937195092906] [EccDecode] Average processing time: 0.000897
+[1618937195148154] [EccDecode] Header: 1134	 CRC checked: No error
+[1618937195148168] [EccDecode] Average processing time: 0.000897
+[1618937195192640] [EccDecode] Header: 1135	 CRC checked: No error
+[1618937195192648] [EccDecode] Average processing time: 0.000896
+[1618937195238756] [EccDecode] Header: 1135	 CRC checked: No error
+[1618937195248160] [EccDecode] Average processing time: 0.000902
+[1618937195300901] [EccDecode] Header: 1136	 CRC checked: No error
+[1618937195300911] [EccDecode] Average processing time: 0.000901
+[1618937195384395] [EccDecode] Header: 1137	 CRC checked: No error
+[1618937195384533] [EccDecode] Average processing time: 0.000901
+[1618937195468658] [EccDecode] Header: 1137	 CRC checked: No error
+[1618937195468665] [EccDecode] Average processing time: 0.000900
+[1618937195512156] [EccDecode] Header: 1138	 CRC checked: No error
+[1618937195512167] [EccDecode] Average processing time: 0.000900
+[1618937195552155] [EccDecode] Header: 1138	 CRC checked: No error
+[1618937195552165] [EccDecode] Average processing time: 0.000899
+[1618937195600155] [EccDecode] Header: 1139	 CRC checked: No error
+[1618937195600171] [EccDecode] Average processing time: 0.000898
+[1618937195648151] [EccDecode] Header: 1140	 CRC checked: No error
+[1618937195648163] [EccDecode] Average processing time: 0.000907
+[1618937195680975] [EccDecode] Header: 1141	 CRC checked: No error
+[1618937195680982] [EccDecode] Average processing time: 0.000906
