@@ -46,6 +46,8 @@ namespace po = boost::program_options;
 std::atomic<int> num_packets (-1);
 std::atomic<int> num_bits (-1);
 Timer file_timer;
+Timer wait_timer;
+//std::vector<double> time_stamps (5, 0);
 
 
 /***********************************************************************
@@ -112,6 +114,31 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                         last = true;
                     logger.logf("Got packet: " + std::to_string(block.first) +
                                "\t Current total: " + std::to_string(current_num_packets));
+                    
+                    double rx_iir = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.iir_start - block.ts.rx_end).count();
+                    double iir = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.iir_end - block.ts.iir_start).count();
+                    double iir_ed = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ed_start - block.ts.iir_end).count();
+                    double ed = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ed_end - block.ts.ed_start).count();
+                    double ed_mf = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.mf_start - block.ts.ed_end).count();
+                    double mf = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.mf_end - block.ts.mf_start).count();
+                    double mf_agc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.agc_start - block.ts.mf_end).count();
+                    double agc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.agc_end - block.ts.agc_start).count();
+                    double agc_acq = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_start - block.ts.agc_end).count();
+                    double acq = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_end - block.ts.acq_start).count();
+                    double acq_ecc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_start - block.ts.acq_end).count();
+                    double ecc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_end - block.ts.ecc_start).count();
+                    
+                    logger.logf("rx_iir: " + std::to_string(rx_iir));
+                    logger.logf("iir: " + std::to_string(iir));
+                    logger.logf("iir_ed: " + std::to_string(iir_ed));
+                    logger.logf("ed: " + std::to_string(ed));
+                    logger.logf("ed_mf: " + std::to_string(ed_mf));
+                    logger.logf("mf: " + std::to_string(mf));
+                    logger.logf("mf_agc: " + std::to_string(mf_agc));
+                    logger.logf("agc_acq: " + std::to_string(agc_acq));
+                    logger.logf("acq: " + std::to_string(acq));
+                    logger.logf("acq_ecc: " + std::to_string(acq_ecc));
+                    logger.logf("ecc: " + std::to_string(ecc));
                 }
                 // yield after grabbing block
                 std::this_thread::yield();
@@ -288,7 +315,9 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
     logger.log("Create timer");
     Timer timer;
     Timer packet_timer;
-    double ave_roundtrip = 0;
+    size_t roundtrip_counter = 0;
+    double total_roundtrip = 0;
+    double packet_timer_count = 0;
     // set up retransmission counter
     size_t retransmission_counter = 0;
     // processing timer
@@ -306,8 +335,13 @@ void src_arq_schedule (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // check R
             if (R > S) {
                 // check timer from last packet to this packet
-                //logger.log("Round trip time: " + std::to_string(packet_timer.elapse()) +
-                //           " seconds");
+                packet_timer_count = packet_timer.elapse();
+                roundtrip_counter++;
+                total_roundtrip += packet_timer_count;
+                logger.logf("RTT: " + std::to_string(packet_timer_count) +
+                           " seconds");
+                logger.logf("Ave RTT: " + std::to_string(total_roundtrip/roundtrip_counter) +
+                           " seconds");
                 // push new packet
                 // increment S
                 S++;
@@ -507,6 +541,8 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             timer.reset();
             // pop input block
             fifo_in.pop(in_block);
+            out_block.ts = in_block.ts;
+            out_block.ts.ecc_start = std::chrono::steady_clock::now();
             // get the information and ecc part of the payload
             std::vector<bool> payload_vec (in_block.second.begin(),
                                            in_block.second.begin()+payload_size);
@@ -532,6 +568,7 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
                 out_block.second = info_vec;
                 logger.logf("Header: " + std::to_string(out_block.first) +
                            "\t CRC checked: No error");
+                out_block.ts.ecc_end = std::chrono::steady_clock::now();
                 fifo_out.push(out_block);
             } else { // checksum are different, drop packet if so
                 logger.logf("CRC checked: Error, RX Checksum: " + std::to_string(rx_crc) +
@@ -670,6 +707,8 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             fifo_in.pop(in_block);
             acq_block.first = in_block.first;
             demod_block.first = in_block.first;
+            demod_block.ts = in_block.ts;
+            demod_block.ts.arq_start = std::chrono::steady_clock::now();
             // fine symbol synchronization, i.e. find tao_star
             for (size_t t=0; t<tao_end; t++) {
                 // get temp sequence r[n] = r(nT + tao)
@@ -700,6 +739,7 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     demod_bit = 1;
                 demod_block.second[i] = demod_bit;
             }
+            demod_block.ts.arq_end = std::chrono::steady_clock::now();
             fifo_out.push(demod_block);
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
@@ -747,6 +787,8 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             fifo_in.pop(in_block);
             // set block counter
             out_block.first = in_block.first;
+            out_block.ts = in_block.ts;
+            out_block.ts.agc_start = std::chrono::steady_clock::now();
             // calculate RMS value of block
             rms = 0;
             for (int i=0; i<block_size; i++) {
@@ -760,6 +802,7 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             for (int i=0; i<block_size; i++) {
                 out_block.second[i] = in_block.second[i]/rms;
             }
+            out_block.ts.agc_end = std::chrono::steady_clock::now();
             // push block to fifo
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
@@ -892,17 +935,20 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
             out_block = in_pair.second;
             // threshold_checker
             if (edge_f) {
-                    for (int j=0; j<cap_len-edge_mid_ind; j++)  // capture the remaining samples
-                        cap_block.second[pre_cap_len+edge_mid_ind+j] = in_block.second[j];
-                    fifo_out.push(cap_block);   // push captured block to fifo out
-                    edge_f = false;     // reset boundary case flag
-                    skip_len = cap_len-edge_mid_ind;
+                for (int j=0; j<cap_len-edge_mid_ind; j++)  // capture the remaining samples
+                    cap_block.second[pre_cap_len+edge_mid_ind+j] = in_block.second[j];
+                cap_block.ts.ed_end = std::chrono::steady_clock::now();
+                fifo_out.push(cap_block);   // push captured block to fifo out
+                edge_f = false;     // reset boundary case flag
+                skip_len = cap_len-edge_mid_ind;
             }
             for (int i=0; i<block_size; i++) {
                 if (skip_f == false) {
                     if (out_block.second[i] > threshold) {  // check threshold
                         skip_f = true;
                         if (i > block_size-cap_len) {       // if capture range cross boundary
+                            cap_block.ts = in_block.ts;
+                            cap_block.ts.ed_start = std::chrono::steady_clock::now();
                             edge_f = true;                  // set boundary flag
                             edge_mid_ind = block_size-i;    // find mid point of capture range
                             for (int j=0; j<pre_cap_len; j++) // capture samples before packet
@@ -913,11 +959,14 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
                             logger.logf("Detected a packet at edge");
                             break;
                         } else {    // if capture range in middle
+                            cap_block.ts = in_block.ts;
+                            cap_block.ts.ed_start = std::chrono::steady_clock::now();
                             for (int j=0; j<pre_cap_len; j++) // capture samples before packet
                                 cap_block.second[j] = pre_cap.q[j];
                             for (int j=0; j<cap_len; j++)   // capture 1k samples
                                 cap_block.second[pre_cap_len+j] = in_block.second[i+j];
                             cap_block.first = cap_block_num++; // assign, increment capture counter
+                            cap_block.ts.ed_end = std::chrono::steady_clock::now();
                             fifo_out.push(cap_block);   // push captured block to fifo out
                             logger.logf("Detected a packet in middle");
                         }
@@ -985,6 +1034,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             // pop block from fifo
             fifo_in.pop(in_block);
             iir_out_block.first = in_block.first;
+            in_block.ts.iir_start = std::chrono::steady_clock::now();
             // iir algorithm
             for (int i=0; i<block_size; i++) {
                 sample = in_block.second[i];
@@ -993,6 +1043,7 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
                 previous_out = current_out;
                 iir_out_block.second[i] = current_out;
             }
+            in_block.ts.iir_end = std::chrono::steady_clock::now();
             out_pair.first = in_block;
             out_pair.second = iir_out_block;
             fifo_out.push(out_pair);
@@ -1054,6 +1105,8 @@ void filter(size_t in_len,
             //    logger.logf("Multirate filter output FIFO size: " + std::to_string(fifo_out.size()));
             // pop block from fifo
             fifo_in.pop(in_block);
+            out_block.ts = in_block.ts;
+            out_block.ts.mf_start = std::chrono::steady_clock::now();
             // get input array
             for (int i=0; i<in_len; i++) {
                 in[i] = in_block.second[i];
@@ -1072,6 +1125,7 @@ void filter(size_t in_len,
             // push filter output to fifo out
             out_block.first = in_block.first;
             out_block.second = std::vector<std::complex<float>>(out, out + out_len);
+            out_block.ts.mf_end = std::chrono::steady_clock::now();
             fifo_out.push(out_block);
             // store filter output to file to check with jupyter
             //out_file.write((const char*) out, out_len*sizeof(std::complex<float>));
@@ -1234,6 +1288,7 @@ void recv_to_fifo(uhd::usrp::multi_usrp::sptr usrp,
             // increment block counter
             block.first++;
         }
+        block.ts.rx_end = std::chrono::steady_clock::now();
     } 
     // Shut down receiver
     recv_logger.log("Shut down receiver");
