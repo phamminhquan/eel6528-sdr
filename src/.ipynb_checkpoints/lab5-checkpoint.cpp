@@ -74,6 +74,9 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
     std::vector<bool> file_bool_vec;
     std::vector<unsigned char> file_char_vec;
     
+    // time stamps
+    double rx_iir, iir, iir_ed, ed, ed_mf, mf, mf_agc, agc, agc_acq, acq, acq_ecc, ecc = 0;
+    
     while (not stop_signal_called) {
         if (not done) {
             if (fifo_in.size() != 0) {
@@ -114,32 +117,20 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                         last = true;
                     logger.logf("Got packet: " + std::to_string(block.first) +
                                "\t Current total: " + std::to_string(current_num_packets));
-                    
-                    double rx_iir = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.iir_start - block.ts.rx_end).count();
-                    double iir = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.iir_end - block.ts.iir_start).count();
-                    double iir_ed = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ed_start - block.ts.iir_end).count();
-                    double ed = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ed_end - block.ts.ed_start).count();
-                    double ed_mf = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.mf_start - block.ts.ed_end).count();
-                    double mf = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.mf_end - block.ts.mf_start).count();
-                    double mf_agc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.agc_start - block.ts.mf_end).count();
-                    double agc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.agc_end - block.ts.agc_start).count();
-                    double agc_acq = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_start - block.ts.agc_end).count();
-                    double acq = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_end - block.ts.acq_start).count();
-                    double acq_ecc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_start - block.ts.acq_end).count();
-                    double ecc = std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_end - block.ts.ecc_start).count();
-                    
-                    logger.logf("rx_iir: " + std::to_string(rx_iir));
-                    logger.logf("iir: " + std::to_string(iir));
-                    logger.logf("iir_ed: " + std::to_string(iir_ed));
-                    logger.logf("ed: " + std::to_string(ed));
-                    logger.logf("ed_mf: " + std::to_string(ed_mf));
-                    logger.logf("mf: " + std::to_string(mf));
-                    logger.logf("mf_agc: " + std::to_string(mf_agc));
-                    logger.logf("agc_acq: " + std::to_string(agc_acq));
-                    logger.logf("acq: " + std::to_string(acq));
-                    logger.logf("acq_ecc: " + std::to_string(acq_ecc));
-                    logger.logf("ecc: " + std::to_string(ecc));
                 }
+                // add up time stamps
+                rx_iir += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.iir_start - block.ts.rx_end).count();
+                iir += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.iir_end - block.ts.iir_start).count();
+                iir_ed += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ed_start - block.ts.iir_end).count();
+                ed += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ed_end - block.ts.ed_start).count();
+                ed_mf += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.mf_start - block.ts.ed_end).count();
+                mf += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.mf_end - block.ts.mf_start).count();
+                mf_agc += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.agc_start - block.ts.mf_end).count();
+                agc += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.agc_end - block.ts.agc_start).count();
+                agc_acq += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_start - block.ts.agc_end).count();
+                acq += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_end - block.ts.acq_start).count();
+                acq_ecc += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_start - block.ts.acq_end).count();
+                ecc += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_end - block.ts.ecc_start).count();
                 // yield after grabbing block
                 std::this_thread::yield();
             }
@@ -157,6 +148,19 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
             file.write(reinterpret_cast<char*>(file_char_vec.data()), file_char_vec.size());
             // close file
             file.close();
+            // print out average timestamps
+            logger.log("rx_iir: " + std::to_string(rx_iir/num_packets));
+            logger.log("iir: " + std::to_string(iir/num_packets));
+            logger.log("iir_ed: " + std::to_string(iir_ed/num_packets));
+            logger.log("ed: " + std::to_string(ed/num_packets));
+            logger.log("ed_mf: " + std::to_string(ed_mf/num_packets));
+            logger.log("mf: " + std::to_string(mf/num_packets));
+            logger.log("mf_agc: " + std::to_string(mf_agc/num_packets));
+            logger.log("agc_acq: " + std::to_string(agc_acq/num_packets));
+            logger.log("acq: " + std::to_string(acq/num_packets));
+            logger.log("acq_ecc: " + std::to_string(acq_ecc/num_packets));
+            logger.log("ecc: " + std::to_string(ecc/num_packets));
+            
             // break out of while loop
             break;
         }
