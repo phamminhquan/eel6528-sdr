@@ -134,6 +134,8 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                 // yield after grabbing block
                 std::this_thread::yield();
             }
+            // yield after grabbing block
+            std::this_thread::yield();
         } else {
             // convert boolean vec to char vec
             file_char_vec = to_uchar_vec(file_bool_vec);
@@ -584,6 +586,9 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
+            // yield after grabbing block
             std::this_thread::yield();
         }
     }
@@ -647,6 +652,9 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
                 out_block.second[16+payload_size+32+i] = 0;
             // push output block to fifo out
             fifo_out.push(out_block);
+            // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -751,6 +759,9 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
+            // yield after grabbing block
             std::this_thread::yield();
         }
     }
@@ -818,6 +829,9 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
+            // yield after grabbing block
             std::this_thread::yield();
         }
     }
@@ -883,6 +897,9 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             fifo_out.push(out_block);
             // record samples to file
             //out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
+            // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -991,6 +1008,9 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
             // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
+            // yield after grabbing block
             std::this_thread::yield();
         }
     }
@@ -1059,6 +1079,9 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
+            // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
             // yield after grabbing block
             std::this_thread::yield();
         }
@@ -1138,6 +1161,9 @@ void filter(size_t in_len,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
+            // yield after grabbing block
+            //std::this_thread::yield();
+        } else {
             // yield after grabbing block
             std::this_thread::yield();
         }
