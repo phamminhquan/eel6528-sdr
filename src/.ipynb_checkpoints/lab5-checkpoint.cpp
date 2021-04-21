@@ -708,7 +708,7 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             acq_block.first = in_block.first;
             demod_block.first = in_block.first;
             demod_block.ts = in_block.ts;
-            demod_block.ts.arq_start = std::chrono::steady_clock::now();
+            demod_block.ts.acq_start = std::chrono::steady_clock::now();
             // fine symbol synchronization, i.e. find tao_star
             for (size_t t=0; t<tao_end; t++) {
                 // get temp sequence r[n] = r(nT + tao)
@@ -739,7 +739,7 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
                     demod_bit = 1;
                 demod_block.second[i] = demod_bit;
             }
-            demod_block.ts.arq_end = std::chrono::steady_clock::now();
+            demod_block.ts.acq_end = std::chrono::steady_clock::now();
             fifo_out.push(demod_block);
             // log timer
             //logger.log("Timer: " + std::to_string(timer.elapse()));
