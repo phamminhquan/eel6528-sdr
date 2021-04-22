@@ -131,8 +131,6 @@ void file_reconstruct (tsFIFO<Block<bool>>& fifo_in,
                 acq += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.acq_end - block.ts.acq_start).count();
                 acq_ecc += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_start - block.ts.acq_end).count();
                 ecc += std::chrono::duration_cast<std::chrono::microseconds>(block.ts.ecc_end - block.ts.ecc_start).count();
-                // yield after grabbing block
-                std::this_thread::yield();
             }
             // yield after grabbing block
             std::this_thread::yield();
@@ -585,8 +583,6 @@ void ecc_decode (tsFIFO<Block<bool>>& fifo_in,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -652,8 +648,6 @@ void ecc_encode (tsFIFO<Block<bool>>& fifo_in,
                 out_block.second[16+payload_size+32+i] = 0;
             // push output block to fifo out
             fifo_out.push(out_block);
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -758,8 +752,6 @@ void acq_demod (tsFIFO<Block<std::complex<float>>>& fifo_in,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -828,8 +820,6 @@ void agc (tsFIFO<Block<std::complex<float>>>& fifo_in,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -897,8 +887,6 @@ void modulate (tsFIFO<Block<bool>>& fifo_in,
             fifo_out.push(out_block);
             // record samples to file
             //out_file.write((const char*)& out_block.second[0], block_size*sizeof(std::complex<float>));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -1007,8 +995,6 @@ void energy_detector (tsFIFO<std::pair<Block<std::complex<float>>, Block<float>>
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -1079,8 +1065,6 @@ void iir_filter (tsFIFO<Block<std::complex<float>>>& fifo_in,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -1161,8 +1145,6 @@ void filter(size_t in_len,
             current_num_blocks++;
             total_time += timer.elapse();
             logger.logf("Average processing time: " + std::to_string(total_time/current_num_blocks));
-            // yield after grabbing block
-            //std::this_thread::yield();
         } else {
             // yield after grabbing block
             std::this_thread::yield();
@@ -1384,7 +1366,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rate", po::value<double>(&rate)->default_value(1000000), "rate of transmit outgoing samples")
         ("ff-freq", po::value<double>(&ff_freq)->default_value(915000000), "Feedforward channel center frequency in Hz")
         ("tx-gain", po::value<double>(&tx_gain)->default_value(20), "gain for the transmit RF chain")
-        ("rx-spb", po::value<size_t>(&rx_spb)->default_value(10000), "samples per buffer")
+        ("rx-spb", po::value<size_t>(&rx_spb)->default_value(2000), "samples per buffer")
         //("rx-rate", po::value<double>(&rx_rate)->default_value(1000000), "rate of receive incoming samples")
         ("fb-freq", po::value<double>(&fb_freq)->default_value(2412000000), "Feedback channel center frequency in Hz")
         ("rx-gain", po::value<double>(&rx_gain)->default_value(20), "gain for the receive RF chain")
