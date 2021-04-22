@@ -187,7 +187,7 @@ void ack_prepare (tsFIFO<Block<bool>>& fifo_out)
         logger.logf("Pushing ACK Block: " + std::to_string(out_block.first));
         fifo_out.push(out_block);
         // yield after grabbing block
-        std::this_thread::yield();
+        //std::this_thread::yield();
     }
     logger.log("Total number of ACKs: " + std::to_string(fifo_out.size()));
     // notify user that processing thread is done
