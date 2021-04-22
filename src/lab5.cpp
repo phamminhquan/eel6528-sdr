@@ -1404,7 +1404,7 @@ int UHD_SAFE_MAIN(int argc, char* argv[])
         ("rx-post-cap-len", po::value<int>(&rx_post_cap_len)->default_value(200), "Back extension length of rx capture")
         ("packets-per-sec", po::value<size_t>(&packets_per_sec)->default_value(1), "Transmit packets per seconds (max 800)")
         ("payload", po::value<std::string>(&payload_filename)->default_value("payload.jpeg"), "File to transmit")
-        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(0.5), "ARQ timer timeout duration")
+        ("arq-timeout", po::value<float>(&arq_timeout)->default_value(0.03), "ARQ timer timeout duration")
     ;
 
     // clang-format on
